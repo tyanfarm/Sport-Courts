@@ -9,11 +9,9 @@ namespace BE.Controllers;
 [Route("api/v1/[controller]")]
 public class CategoryController : ControllerBase {
     private readonly ICategoryRepository _categoryRepository;
-    private readonly IConfiguration _configuration;
 
-    public CategoryController(ICategoryRepository categoryRepository, IConfiguration configuration) {
+    public CategoryController(ICategoryRepository categoryRepository) {
         _categoryRepository = categoryRepository;
-        _configuration = configuration;
     }
 
     [HttpGet]

@@ -8,8 +8,9 @@ public class Category {
     [BsonRepresentation(BsonType.ObjectId)]
     public string? CatId {get; set;}
 
-    [BsonElement("CatName")]
-    public string Name {get; set;} = null!;
+    public string SportName {get; set;} = null!;
+
+    public string Type {get; set;} = null!;
 
     public string? Description {get; set;}
 
