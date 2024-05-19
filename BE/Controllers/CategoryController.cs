@@ -63,9 +63,9 @@ public class CategoryController : ControllerBase {
     }
 
     [HttpPatch("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, string? description, int? published, string? image) {
+    public async Task<IActionResult> Update(string id, string? sportname, string? type, string? description, bool? published, string? image) {
         try {
-            var result = await _categoryRepository.Update(id, description, published, image);
+            var result = await _categoryRepository.Update(id, sportname, type, description, published, image);
 
             if (result == false) {
                 return NotFound();

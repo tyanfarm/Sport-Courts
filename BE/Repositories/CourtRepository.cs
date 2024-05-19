@@ -20,7 +20,7 @@ public class CourtRepository : ICourtRepository
     public async Task<Court> Create(Court court)
     {
         // Check if catID of court is valid
-        var isOccur = await _categoryCollection.Find(c => c.CatId == court.CatID).FirstOrDefaultAsync();
+        var isOccur = await _categoryCollection.Find(c => c.CatId == court.CatId).FirstOrDefaultAsync();
 
         if (isOccur == null) {
             return null;
@@ -52,7 +52,7 @@ public class CourtRepository : ICourtRepository
         return court;
     }
 
-    public async Task<bool> Update(string id, string? description, int? price, int? discount, string? image, int? active)
+    public async Task<bool> Update(string id, string? description, int? price, int? discount, string? image, bool? active)
     {
         var updateDefinitions = new List<UpdateDefinition<Court>>();
 
@@ -73,7 +73,7 @@ public class CourtRepository : ICourtRepository
         }
 
         if (active != null) {
-            updateDefinitions.Add(Builders<Court>.Update.Set(c => c.Active, active));
+            updateDefinitions.Add(Builders<Court>.Update.Set(c => c.Active, active.Value));
         }
 
         var updateDefinition = Builders<Court>.Update.Combine(updateDefinitions);

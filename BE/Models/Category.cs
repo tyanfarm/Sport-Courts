@@ -14,7 +14,7 @@ public class Category {
 
     public string? Description {get; set;}
 
-    public int Published {get; set;}
+    public bool Published {get; set;}
 
     public string? Image {get; set;}
 }

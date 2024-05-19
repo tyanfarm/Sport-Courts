@@ -14,7 +14,8 @@ public class Court {
     public string? Description {get; set;}
 
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? CatID {get; set;} = null!;
+    [BsonElement("CatID")]
+    public string? CatId {get; set;} = null!;
 
     public int Price {get; set;}
 
@@ -22,5 +23,5 @@ public class Court {
 
     public string? Image {get; set;} = null!;
 
-    public int Active {get; set;}
+    public bool Active {get; set;}
 }

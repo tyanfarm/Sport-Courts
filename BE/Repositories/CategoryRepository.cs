@@ -41,26 +41,35 @@ public class CategoryRepository : ICategoryRepository
         return category;
     }
 
-    public async Task<bool> Update(string id, string? description, int? published, string? image)
+    public async Task<bool> Update(string id, string? sportname, string? type, string? description, bool? published, string? image)
     {
-        var category = await _categoryCollection.Find(c => c.CatId == id).FirstOrDefaultAsync();
+        var updateDefinitions = new List<UpdateDefinition<Category>>();
+
+        if (sportname != null) {
+            updateDefinitions.Add(Builders<Category>.Update.Set(c => c.SportName, sportname));
+        }
+
+        if (type != null) {
+            updateDefinitions.Add(Builders<Category>.Update.Set(c => c.Type, type));
+        }
 
         if (description != null) {
-            category.Description = description;
+            updateDefinitions.Add(Builders<Category>.Update.Set(c => c.Description, description));
         }
 
         if (published != null) {
-            category.Published = published.Value;
+            updateDefinitions.Add(Builders<Category>.Update.Set(c => c.Published, published.Value));
         }
 
         if (image != null) {
-            category.Image = image;
+            updateDefinitions.Add(Builders<Category>.Update.Set(c => c.Image, image));
         }
 
+        var updateDefinition = Builders<Category>.Update.Combine(updateDefinitions);
         var filter = Builders<Category>.Filter.Eq(c => c.CatId, id);
 
-        await _categoryCollection.ReplaceOneAsync(filter, category);
+        var result = await _categoryCollection.UpdateOneAsync(filter, updateDefinition);
 
-        return true;
+        return result.IsAcknowledged;
     }
 }
