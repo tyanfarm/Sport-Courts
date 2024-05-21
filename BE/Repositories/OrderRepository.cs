@@ -58,8 +58,54 @@ public class OrderRepository : IOrderRepository
         return order;
     }
 
-    public Task<bool> Update(string id)
+    public async Task<bool> Update(string id, string? customerId, string? transactStatusId, bool? paid, int? totalMoney) 
     {
-        throw new NotImplementedException();
+        Customer? isCustomerOccur = null;
+        TransactStatus? isStatusOccur = null;
+
+        // Check customerID & TransactStatusID
+        if (customerId != null) {
+            isCustomerOccur = await _customerCollection.Find(c => c.CustomerId == customerId)
+                                                            .FirstOrDefaultAsync();
+        }
+        
+        if (transactStatusId != null) {
+            isStatusOccur = await _transactStatusCollection.Find(t => t.TransactStatusId == transactStatusId)
+                                                                .FirstOrDefaultAsync();
+        }
+
+        // In case wrong input customerID & transactStatusID
+        if (isCustomerOccur == null && customerId != null) {
+            return false;
+        }
+
+        if (isStatusOccur == null && transactStatusId != null) {
+            return false;
+        }
+
+        var updateDefinitions = new List<UpdateDefinition<Order>>();
+
+        if (customerId != null) {
+            updateDefinitions.Add(Builders<Order>.Update.Set(o => o.CustomerId, customerId));
+        }
+
+        if (transactStatusId != null) {
+            updateDefinitions.Add(Builders<Order>.Update.Set(o => o.TransactStatusId, transactStatusId));
+        }
+
+        if (paid != null) {
+            updateDefinitions.Add(Builders<Order>.Update.Set(o => o.Paid, paid.Value));
+        }
+
+        if (totalMoney != null) {
+            updateDefinitions.Add(Builders<Order>.Update.Set(o => o.TotalMoney, totalMoney.Value));
+        }
+
+        var updateDefinition = Builders<Order>.Update.Combine(updateDefinitions);
+        var filter = Builders<Order>.Filter.Eq(o => o.OrderId, id);
+
+        var result = await _orderCollection.UpdateOneAsync(filter, updateDefinition);
+
+        return result.IsAcknowledged;
     }
 }

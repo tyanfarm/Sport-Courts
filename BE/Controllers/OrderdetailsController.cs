@@ -6,24 +6,24 @@ namespace BE.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class OrderController : ControllerBase {
-    private readonly IOrderRepository _orderRepository;
+public class OrderdetailsController : ControllerBase {
+    private readonly IOrderdetailsRepository _orderdetailsRepository;
 
-    public OrderController(IOrderRepository orderRepository) {
-        _orderRepository = orderRepository;
+    public OrderdetailsController(IOrderdetailsRepository orderdetailsRepository) {
+        _orderdetailsRepository = orderdetailsRepository;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllOrders() {
+    public async Task<IActionResult> GetAllDetails() {
         try {
-            var orders = await _orderRepository.GetAllOrders();
+            var details = await _orderdetailsRepository.GetAllDetails();
 
-            if (orders == null) {
+            if (details == null) {
                 return NotFound();
             }
 
-            return Ok(orders);
-        }
+            return Ok(details);
+        }   
         catch {
             return StatusCode(500, "ERROR");
         }
@@ -32,13 +32,13 @@ public class OrderController : ControllerBase {
     [HttpGet("{id:length(24)}")]
     public async Task<IActionResult> GetById(string id) {
         try {
-            var order = _orderRepository.GetById(id);
+            var detail = await _orderdetailsRepository.GetById(id);
 
-            if (order == null) {
+            if (detail == null) {
                 return NotFound();
             }
 
-            return Ok(order);
+            return Ok(detail);
         }
         catch {
             return StatusCode(500, "ERROR");
@@ -46,15 +46,15 @@ public class OrderController : ControllerBase {
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Order order) {
+    public async Task<IActionResult> Create(Orderdetails orderdetails) {
         try {
-            var result = await _orderRepository.Create(order);
+            var result = await _orderdetailsRepository.Create(orderdetails);
 
             if (result == false) {
                 return NotFound("INVALID input");
             }
 
-            return Ok(order);
+            return Ok(orderdetails);
         }
         catch {
             return StatusCode(500, "ERROR");
@@ -62,15 +62,15 @@ public class OrderController : ControllerBase {
     }
 
     [HttpPatch("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, string? customerId, string? transactStatusId, bool? paid, int? totalMoney) {
+    public async Task<IActionResult> Update(string id, string? orderId, string? courtId, int? totalMoney, DateTime? usedDate) {
         try {
-            var result = await _orderRepository.Update(id, customerId, transactStatusId, paid, totalMoney);
+            var result = await _orderdetailsRepository.Update(id, orderId, courtId, totalMoney, usedDate);
 
             if (result == false) {
                 return NotFound("INVALID input");
             }
 
-            return Ok("Update Successfully");
+            return Ok("Update successfully");
         }
         catch {
             return StatusCode(500, "ERROR");
@@ -80,13 +80,13 @@ public class OrderController : ControllerBase {
     [HttpDelete]
     public async Task<IActionResult> Delete(string id) {
         try {
-            var result = await _orderRepository.Delete(id);
+            var result = await _orderdetailsRepository.Delete(id);
 
             if (result == false) {
                 return NotFound();
             }
 
-            return Ok("Delete Successfully");
+            return Ok("Delete Succeefully");
         }
         catch {
             return StatusCode(500, "ERROR");

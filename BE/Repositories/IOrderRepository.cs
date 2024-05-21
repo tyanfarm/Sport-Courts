@@ -6,6 +6,6 @@ public interface IOrderRepository {
     Task<List<Order>> GetAllOrders();
     Task<Order> GetById(string id); 
     Task<bool> Create(Order order);
-    Task<bool> Update(string id);
+    Task<bool> Update(string id, string? customerId, string? transactStatusId, bool? paid, int? totalMoney);
     Task<bool> Delete(string id);
 }
