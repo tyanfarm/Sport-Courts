@@ -1,4 +1,6 @@
+using BE.Models;
 using BE.Repositories;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,13 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderdetailsRepository, OrderdetailsRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+
+// Identity Services
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddMongoDbStores<ApplicationUser, ApplicationRole, ObjectId>(
+                    builder.Configuration.GetConnectionString("DefaultConnection"),      // Connection String
+                    builder.Configuration.GetSection("MongoDb:DatabaseName").Value       // Database Name
+                );
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
