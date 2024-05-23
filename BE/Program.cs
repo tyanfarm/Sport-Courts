@@ -1,5 +1,9 @@
+using System.Text;
 using BE.Models;
 using BE.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -12,6 +16,7 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderdetailsRepository, OrderdetailsRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 // Identity Services
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
@@ -20,12 +25,78 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                     builder.Configuration.GetSection("MongoDb:DatabaseName").Value       // Database Name
                 );
 
+// Key for checking JWT
+var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
+var tokenValidationParameter = new TokenValidationParameters() 
+{
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(key),
+    ValidateIssuer = false,     // for dev
+    ValidateAudience = false,   // for dev
+        
+    // Kiểm tra token có ngày hết hạn không
+    RequireExpirationTime = true,      // for dev - need to update when refresh token is added
+
+    // Kiểm tra token còn sống không
+    ValidateLifetime = true
+};
+
+builder.Services.AddSingleton(tokenValidationParameter);
+
+// Authentication
+builder.Services
+.AddAuthentication(options => 
+{
+    // chỉ định rằng JWT Bearer sẽ được sử dụng cho xác thực mặc định.
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+// Middleware xác thực JWT
+.AddJwtBearer(jwt => 
+{
+    // token sẽ được lưu trong HttpContext sau khi xác thực
+    jwt.SaveToken = true;
+
+    jwt.TokenValidationParameters = tokenValidationParameter;
+});
+
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Cấu hình Swagger để hỗ trợ JWT
+// Cho phép người dùng nhập token JWT vào Swagger UI và thực hiện các yêu cầu đến các endpoint bảo mật.
+builder.Services.AddSwaggerGen(options => {
+    options.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme,
+        securityScheme: new OpenApiSecurityScheme {
+            // Tên của header HTTP mà token sẽ được gửi trong đó.
+            Name = "Authorization",
+            Description = "Enter the Bearer Authorization : `Bearer Generated-JWT-Token`",
+
+            // Chỉ định rằng token sẽ được gửi trong phần header của yêu cầu HTTP.
+            In = ParameterLocation.Header,
+
+            // Chỉ định loại bảo mật là API key (JWT token hoạt động như một API key).
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+    
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement 
+    {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = JwtBearerDefaults.AuthenticationScheme
+                }
+            }, 
+            new string[] {}
+        }
+    });
+});
 
 var app = builder.Build();
 
@@ -38,6 +109,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
