@@ -4,6 +4,7 @@ using System.Text;
 using BE.DTOs;
 using BE.Models;
 using BE.Repositories;
+using BE.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -17,16 +18,19 @@ public class AuthenticationController : ControllerBase {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IConfiguration _configuration;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IEmailSender _emailSender;
 
     public AuthenticationController(
         UserManager<ApplicationUser> userManager, 
         IConfiguration configuration,
-        IRefreshTokenRepository refreshTokenRepository
+        IRefreshTokenRepository refreshTokenRepository,
+        IEmailSender emailSender
     )
     {
         _userManager = userManager;
         _configuration = configuration;
         _refreshTokenRepository = refreshTokenRepository;
+        _emailSender = emailSender;
     }
 
     [HttpPost]
@@ -56,11 +60,83 @@ public class AuthenticationController : ControllerBase {
             IdentityResult result = await _userManager.CreateAsync(newUser, userDTO.Password);
 
             // Verify email
+            if (result.Succeeded == true) {
+                var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
 
-            return Ok(result);
+                var emailBody = $"Please confirm your email address by click here: #URL# ";
+
+                // (http / https -- Scheme) + `://` + (localhost:5281 -- Host)
+                var callbackUrl = Request.Scheme + "://" + Request.Host + 
+                                    Url.Action("ConfirmEmail", "Authentication", 
+                                                new {userId = newUser.Id, code = emailToken}); 
+
+                // Thay thế link vào chuỗi string
+                var body = emailBody.Replace("#URL#", callbackUrl);
+
+                // Topic of mail
+                var subject = "Verify email";
+
+                try {
+                     // email receiver - Subject (chủ đề) - Content (nội dung mail)
+                    await _emailSender.SendEmailAsync(newUser.Email, subject, body);
+
+                    return Ok("Send email successfully");
+                }
+                catch {
+                    return BadRequest(new AuthResult() {
+                        Result = false,
+                        Errors = new List<string>()
+                        {
+                            "Verify Email ERROR!"
+                        }
+                    });
+                }
+            }
         }
 
         return BadRequest();
+    }
+
+    [HttpGet]
+    [Route("ConfirmEmail")]
+    public async Task<IActionResult> ConfirmEmail(string userId, string code) {
+        if (userId == null || code == null) {
+            return BadRequest(new AuthResult() 
+            {
+                Result = false,
+                Errors = new List<string>()
+                {
+                    "Invalid email confirmation url"
+                }
+            });
+        }
+
+        var user = await _userManager.FindByIdAsync(userId);
+
+        // invalid user
+        if (user == null) {
+            return BadRequest(new AuthResult() {
+                Result = false,
+                Errors = new List<string>()
+                {
+                    "Invalid user",
+                }
+            });
+        }
+
+        var result = await _userManager.ConfirmEmailAsync(user, code);
+        
+        if (result.Succeeded == false) {
+            return BadRequest(new AuthResult() {
+                Result = false,
+                Errors = new List<string>()
+                {
+                    "Your email is not confirmed, please try again later !"
+                }
+            });
+        }
+
+        return Ok(result);
     }
 
     [HttpPost]
@@ -80,6 +156,14 @@ public class AuthenticationController : ControllerBase {
             }
 
             // Check email confirmed
+            if (user.EmailConfirmed == false) {
+                return BadRequest(new AuthResult() {
+                    Result = false,
+                    Errors = new List<string>() {
+                        "Email haven't been confirmed yet!"
+                    }
+                });
+            }
 
             // Validate password
             var checkPassword = await _userManager.CheckPasswordAsync(user, userLogin.Password);

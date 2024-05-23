@@ -1,13 +1,22 @@
 using System.Text;
 using BE.Models;
+using BE.Private;
 using BE.Repositories;
+using BE.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Info of gmail sender
+builder.Services.AddSingleton<EmailInfo>();
+
+// EmailSender Services
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 // Add services to the container.
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -22,8 +31,8 @@ builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddMongoDbStores<ApplicationUser, ApplicationRole, ObjectId>(
                     builder.Configuration.GetConnectionString("DefaultConnection"),      // Connection String
-                    builder.Configuration.GetSection("MongoDb:DatabaseName").Value       // Database Name
-                );
+                    builder.Configuration.GetSection("MongoDb:DatabaseName").Value)      // Database Name
+                .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider);
 
 // Key for checking JWT
 var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
