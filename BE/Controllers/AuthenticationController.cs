@@ -19,18 +19,21 @@ public class AuthenticationController : ControllerBase {
     private readonly IConfiguration _configuration;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IEmailSender _emailSender;
+    private readonly TokenValidationParameters _tokenValidationParameters;
 
     public AuthenticationController(
         UserManager<ApplicationUser> userManager, 
         IConfiguration configuration,
         IRefreshTokenRepository refreshTokenRepository,
-        IEmailSender emailSender
+        IEmailSender emailSender,
+        TokenValidationParameters tokenValidationParameters
     )
     {
         _userManager = userManager;
         _configuration = configuration;
         _refreshTokenRepository = refreshTokenRepository;
         _emailSender = emailSender;
+        _tokenValidationParameters = tokenValidationParameters;
     }
 
     [HttpPost]
@@ -191,6 +194,144 @@ public class AuthenticationController : ControllerBase {
         });
     }
 
+    [HttpPost]
+    [Route("RefreshToken")]
+    public async Task<IActionResult> RefreshToken(TokenRequestDTO tokenRequest) {
+        if (ModelState.IsValid) {
+            var result = await VerifyAndGenerateToken(tokenRequest);
+
+            if (result == null) {
+                return BadRequest(new AuthResult() {
+                    Result = false,
+                    Errors = new List<string>() {
+                        "Invalid tokens"
+                    }
+                });
+            }
+
+            return Ok(result);
+        }
+
+        return BadRequest(new AuthResult() {
+            Result = false,
+            Errors = new List<string>() {
+                "Invalid parameters"
+            }
+        });
+    }
+
+    private async Task<AuthResult> VerifyAndGenerateToken(TokenRequestDTO tokenRequest) {
+        var jwtTokenHanlder = new JwtSecurityTokenHandler();
+
+        try {
+            // Xác thực access token -> Trả về ClaimsPrinciple
+            var tokenInVerification = jwtTokenHanlder.ValidateToken
+                    (tokenRequest.Token, _tokenValidationParameters, out var validatedToken);
+            
+            // Kiểm tra xem validatedToken có phải là một JwtSecurityToken hay không. 
+            // Nếu đúng, nó sẽ được gán cho biến jwtSecurityToken
+            if (validatedToken is JwtSecurityToken jwtSecurityToken) {
+                // Kiểm tra xem token có được mã hóa bằng HMACSHA256 không
+                var result = jwtSecurityToken.Header
+                                            .Alg
+                                            .Equals(SecurityAlgorithms.HmacSha256,
+                                                    StringComparison.InvariantCultureIgnoreCase);
+                
+                if (result == false) {
+                    return null;
+                }
+            }
+
+            return new AuthResult() {
+                Result = false,
+                Errors = new List<string>() {
+                    "Access token is valid"
+                }
+            };
+        }
+        // Access token has expired -> Validate refresh token
+        catch (SecurityTokenExpiredException) {
+            try {
+                var storedToken = await _refreshTokenRepository.GetByToken(tokenRequest.RefreshToken);
+
+                // Kiểm tra token có tồn tại trong DB không
+                if (storedToken == null) {
+                    return new AuthResult() {
+                        Result = false,
+                        Errors = new List<string>() {
+                            "Invalid tokens"
+                        }
+                    };
+                }
+
+                // Kiểm tra refresh token có thuộc access token được request không
+                var accessTokenJti = jwtTokenHanlder.ReadJwtToken(tokenRequest.Token)
+                                                    .Claims
+                                                    .FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?
+                                                    .Value;
+                
+                if (storedToken.JwtId != accessTokenJti) {
+                    return new AuthResult() {
+                        Result = false,
+                        Errors = new List<string>() {
+                            "Invalid tokens"
+                        }
+                    };
+                }
+
+                // Kiểm tra token đã được sử dụng chưa
+                if (storedToken.IsUsed) {
+                    return new AuthResult() {
+                        Result = false,
+                        Errors = new List<string>() {
+                            "Tokens has been used" 
+                        }
+                    };
+                }
+
+                // Token có bị thu hồi không
+                if (storedToken.IsRevoked) {
+                    return new AuthResult() {
+                        Result = false,
+                        Errors = new List<string>() {
+                            "Token has been revoked"
+                        }
+                    };
+                }
+
+                // Kiểm tra token hết hạn chưa
+                if (storedToken.ExpiryDate < DateTime.UtcNow) {
+                    return new AuthResult() {
+                        Result = false,
+                        Errors = new List<string>() {
+                            "Expired refresh tokens"
+                        }
+                    };
+                }
+
+                // Cập nhật token đã được sử dụng 
+                var isUsed = true;
+                await _refreshTokenRepository.Update(storedToken.Id, isUsed);
+
+                // Trả về cặp access - refresh token mới
+                var dbUser = await _userManager.FindByIdAsync(storedToken.UserId.ToString());
+                var result = await generateJwtToken(dbUser);
+
+                return result;
+            }
+            catch {
+                return null;
+            }
+        }
+        catch (Exception ex) {
+            return new AuthResult() {
+                Result = false,
+                Errors = new List<string>() {
+                    ex.Message
+                }
+            };
+        }
+    } 
 
     private async Task<AuthResult> generateJwtToken(ApplicationUser user) {
         // thằng xử lý và generate ra token
@@ -234,7 +375,7 @@ public class AuthenticationController : ControllerBase {
             ExpiryDate = DateTime.UtcNow.AddMonths(1),
             IsRevoked = false,
             IsUsed = false,
-            UserId = user.Id
+            UserId = user.Id.ToString()
         };
         
         // add refresh token to mongoDB

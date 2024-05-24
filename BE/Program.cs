@@ -42,6 +42,8 @@ var tokenValidationParameter = new TokenValidationParameters()
     IssuerSigningKey = new SymmetricSecurityKey(key),
     ValidateIssuer = false,     // for dev
     ValidateAudience = false,   // for dev
+
+    ClockSkew = TimeSpan.Zero,
         
     // Kiểm tra token có ngày hết hạn không
     RequireExpirationTime = true,      // for dev - need to update when refresh token is added
