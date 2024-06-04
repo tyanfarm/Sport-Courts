@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .signup-form {
+        background-color: #64C88C;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 300px;
+    }
+
+    .form-control {
+        margin-bottom: 10px;
+    }
+
+    input[type="text"], input[type="password"], input[type="email"],
+input[type="phone number"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-top: 5px;
+        border: none;
+        border-radius: 5px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: #00EFFF;
+        color: black;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background-color: #2e8b57;
+    }
+
+    .social-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 10px 0;
+    }
+
+    .social-buttons img {
+        width: 45px;
+
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+<div class="signup-form">
+    <h2 style="text-align:center; color:black;">Sign Up</h2>
+    <div class="form-control">
+        <label for="username" style="color:black;">User Name</label>
+        <input type="text" id="username" name="username">
+    </div>
+    <div class="form-control">
+        <label for="email" style="color:black;">Email Address</label>
+        <input type="email" id="email" name="email">
+    </div>
+    <div class="form-control">
+        <label for="phone number" style="color:black;">Phone Number</label>
+        <input type="phone number" id="phone_num" name="phone_num">
+    </div>
+    <div class="form-control">
+        <label for="password" style="color:black;">Password</label>
+        <input type="password" id="password" name="password">
+    </div>
+    <div class="form-control">
+        <label for="confirm-password" style="color:black;">Confirm Password</label>
+        <input type="password" id="confirm-password" name="confirm-password">
+    </div>
+    <button type="submit">SIGN UP</button>
+    <div class="social-buttons">
+        <a href="#" class="facebook"><img src="facebook-icon.png" alt="Facebook"></a>
+        <a href="#" class="google"><img src="google-icon.png" alt="Google"></a>
+	<a href="#" class="email"><img src="email-icon.png" alt="Email"></a>
+    </div>
+    <div class="login-link">
+        <a href="#" style="color: black;">Already have an account? Log in!</a>
+    </div>
+</div>
+</body>
+</html>
