@@ -1,6 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using BE.DTOs;
 using BE.Models;
 using BE.Repositories;
@@ -9,31 +7,65 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using BE.Helper;
+using System.Text;
+using System.Security.Claims;
 
 namespace BE.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
 public class AuthenticationController : ControllerBase {
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
-    private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository; 
     private readonly IEmailSender _emailSender;
     private readonly TokenValidationParameters _tokenValidationParameters;
 
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
+
     public AuthenticationController(
-        UserManager<ApplicationUser> userManager, 
+        IUserRepository userRepository,
         IConfiguration configuration,
         IRefreshTokenRepository refreshTokenRepository,
         IEmailSender emailSender,
-        TokenValidationParameters tokenValidationParameters
+        TokenValidationParameters tokenValidationParameters,
+        UserManager<ApplicationUser> userManager,
+        RoleManager<ApplicationRole> roleManager
     )
     {
-        _userManager = userManager;
+        _userRepository = userRepository;
         _configuration = configuration;
         _refreshTokenRepository = refreshTokenRepository;
         _emailSender = emailSender;
         _tokenValidationParameters = tokenValidationParameters;
+        _userManager = userManager;
+        _roleManager = roleManager;
+    }
+
+    [HttpPost]
+    [Route("AdminRegister")]
+    public async Task<IActionResult> AdminRegister(UserDTO userDTO) {
+        // Create new user
+        ApplicationUser user = new ApplicationUser() {
+            UserName = userDTO.Name,
+        };
+
+        var result = await _userManager.CreateAsync(user, userDTO.Password);
+
+        if (result.Succeeded) {
+            var adminRole = await _roleManager.RoleExistsAsync("Admin");
+            if (!adminRole) {
+                await _roleManager.CreateAsync(new ApplicationRole("Admin"));
+            }
+            
+            await _userManager.AddToRoleAsync(user, "Admin");
+
+            return Ok(user);
+        }
+
+        return NotFound();
     }
 
     [HttpPost]
@@ -41,7 +73,7 @@ public class AuthenticationController : ControllerBase {
     public async Task<IActionResult> Register(UserDTO userDTO) {
         if (ModelState.IsValid) {
             // Check if email already exist
-            var user_exist = await _userManager.FindByEmailAsync(userDTO.Email);
+            var user_exist = await _userRepository.GetUserByEmailAsync(userDTO.Email);
 
             if (user_exist != null) {
                 return BadRequest(new AuthResult() {
@@ -60,11 +92,11 @@ public class AuthenticationController : ControllerBase {
             };
 
             // IdentityResult
-            IdentityResult result = await _userManager.CreateAsync(newUser, userDTO.Password);
+            IdentityResult result = await _userRepository.CreateUserAsync(newUser, userDTO.Password);
 
             // Verify email
             if (result.Succeeded == true) {
-                var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                var emailToken = await _userRepository.GenerateEmailConfirmationTokenAsync(newUser);
 
                 var emailBody = $"Please confirm your email address by click here: #URL# ";
 
@@ -114,7 +146,7 @@ public class AuthenticationController : ControllerBase {
             });
         }
 
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userRepository.GetUserByIdAsync(userId);
 
         // invalid user
         if (user == null) {
@@ -127,7 +159,7 @@ public class AuthenticationController : ControllerBase {
             });
         }
 
-        var result = await _userManager.ConfirmEmailAsync(user, code);
+        var result = await _userRepository.ConfirmEmailAsync(user, code);
         
         if (result.Succeeded == false) {
             return BadRequest(new AuthResult() {
@@ -147,7 +179,7 @@ public class AuthenticationController : ControllerBase {
     public async Task<IActionResult> Login(UserDTO userLogin) {
         if (ModelState.IsValid) {
             // Check if user is existed
-            var user = await _userManager.FindByEmailAsync(userLogin.Email);
+            var user = await _userRepository.GetUserByEmailAsync(userLogin.Email);
 
             if (user == null) {
                 return BadRequest(new AuthResult() {
@@ -169,7 +201,7 @@ public class AuthenticationController : ControllerBase {
             }
 
             // Validate password
-            var checkPassword = await _userManager.CheckPasswordAsync(user, userLogin.Password);
+            var checkPassword = await _userRepository.CheckPasswordAsync(user, userLogin.Password);
 
             if (checkPassword == false) {
                 return BadRequest(new AuthResult() {
@@ -314,7 +346,7 @@ public class AuthenticationController : ControllerBase {
                 await _refreshTokenRepository.Update(storedToken.Id, isUsed);
 
                 // Trả về cặp access - refresh token mới
-                var dbUser = await _userManager.FindByIdAsync(storedToken.UserId.ToString());
+                var dbUser = await _userRepository.GetUserByIdAsync(storedToken.UserId.ToString());
                 var result = await generateJwtToken(dbUser);
 
                 return result;
@@ -370,7 +402,7 @@ public class AuthenticationController : ControllerBase {
 
         var refreshToken = new RefreshToken() {
             JwtId = token.Id,
-            Token = GenerateRandomString(24),           // generate a new refresh token
+            Token = Utilities.GenerateRandomString(24),           // generate a new refresh token
             AddedDate = DateTime.UtcNow,
             ExpiryDate = DateTime.UtcNow.AddMonths(1),
             IsRevoked = false,
@@ -389,12 +421,4 @@ public class AuthenticationController : ControllerBase {
 
         return result;
     }
-
-    private string GenerateRandomString(int length) {
-        var random = new Random();
-        var chars = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890qwertyuiopasdfghjklzxcvbnm_";
-
-        return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
-    }
-
 }

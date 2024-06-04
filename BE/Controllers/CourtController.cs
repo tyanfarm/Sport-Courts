@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BE.Controllers;
 
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = "Bearer")]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class CourtController : ControllerBase {

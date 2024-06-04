@@ -7,5 +7,5 @@ namespace BE.Models;
 
 [CollectionName("Users")]
 public class ApplicationUser : MongoIdentityUser<ObjectId> {
-
+    public string? Address {get; set;}
 }

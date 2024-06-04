@@ -26,6 +26,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderdetailsRepository, OrderdetailsRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Identity Services
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
@@ -70,6 +71,16 @@ builder.Services
     jwt.SaveToken = true;
 
     jwt.TokenValidationParameters = tokenValidationParameter;
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => 
+    {
+        policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Admin");
+    });
 });
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>

@@ -7,5 +7,11 @@ namespace BE.Models;
 
 [CollectionName("Roles")]
 public class ApplicationRole : MongoIdentityRole<ObjectId> {
+    public ApplicationRole() : base()
+    {
+    }
 
+    public ApplicationRole(string roleName) : base(roleName)
+    {
+    }
 }
