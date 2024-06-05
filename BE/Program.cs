@@ -73,15 +73,15 @@ builder.Services
     jwt.TokenValidationParameters = tokenValidationParameter;
 });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminOnly", policy => 
-    {
-        policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-        policy.RequireAuthenticatedUser();
-        policy.RequireRole("Admin");
-    });
-});
+// builder.Services.AddAuthorization(options =>
+// {
+//     options.AddPolicy("AdminOnly", policy => 
+//     {
+//         policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+//         policy.RequireAuthenticatedUser();
+//         policy.RequireRole("Admin");
+//     });
+// });
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

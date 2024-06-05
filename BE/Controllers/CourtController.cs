@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BE.Controllers;
 
-[Authorize(AuthenticationSchemes = "Bearer")]
 [ApiController]
 [Route("api/v1/[controller]")]
 public class CourtController : ControllerBase {
@@ -16,6 +15,7 @@ public class CourtController : ControllerBase {
         _courtRepository = courtRepository;
     }
 
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [HttpGet]
     public async Task<IActionResult> GetAllCourts() {
         try {
@@ -32,6 +32,7 @@ public class CourtController : ControllerBase {
         }
     }
 
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     [HttpGet("{id:length(24)}")]
     public async Task<IActionResult> GetById(string id) {
         try {

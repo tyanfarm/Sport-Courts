@@ -24,6 +24,7 @@ public class AuthenticationController : ControllerBase {
 
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
     public AuthenticationController(
         IUserRepository userRepository,
@@ -32,7 +33,8 @@ public class AuthenticationController : ControllerBase {
         IEmailSender emailSender,
         TokenValidationParameters tokenValidationParameters,
         UserManager<ApplicationUser> userManager,
-        RoleManager<ApplicationRole> roleManager
+        RoleManager<ApplicationRole> roleManager,
+        SignInManager<ApplicationUser> signInManager
     )
     {
         _userRepository = userRepository;
@@ -42,27 +44,107 @@ public class AuthenticationController : ControllerBase {
         _tokenValidationParameters = tokenValidationParameters;
         _userManager = userManager;
         _roleManager = roleManager;
+        _signInManager = signInManager;
     }
 
     [HttpPost]
     [Route("AdminRegister")]
     public async Task<IActionResult> AdminRegister(UserDTO userDTO) {
+        if (userDTO.Name == null || userDTO.Email == null) {
+            return BadRequest(new AuthResult() {
+                Result = false,
+                Errors = new List<string>() {
+                    "Lack Of Information !"
+                }
+            });
+        }
+
         // Create new user
         ApplicationUser user = new ApplicationUser() {
-            UserName = userDTO.Name,
+            UserName = userDTO.Name.ToLower(),
+            Email = userDTO.Email
         };
 
         var result = await _userManager.CreateAsync(user, userDTO.Password);
 
         if (result.Succeeded) {
+            // Add ADMIN role
             var adminRole = await _roleManager.RoleExistsAsync("Admin");
+
             if (!adminRole) {
                 await _roleManager.CreateAsync(new ApplicationRole("Admin"));
             }
             
             await _userManager.AddToRoleAsync(user, "Admin");
 
-            return Ok(user);
+            // Verify email
+            var emailToken = await _userRepository.GenerateEmailConfirmationTokenAsync(user);
+
+            var emailBody = $"Please confirm your email address by click here: #URL# ";
+
+            // (http / https -- Scheme) + `://` + (localhost:5281 -- Host)
+            var callbackUrl = Request.Scheme + "://" + Request.Host + 
+                                Url.Action("ConfirmEmail", "Authentication", 
+                                            new {userId = user.Id, code = emailToken}); 
+
+            // Thay thế link vào chuỗi string
+            var body = emailBody.Replace("#URL#", callbackUrl);
+
+            // Topic of mail
+            var subject = "Verify email";
+
+            try {
+                // email receiver - Subject (chủ đề) - Content (nội dung mail)
+                await _emailSender.SendEmailAsync(user.Email, subject, body);
+
+                return Ok("Send email successfully");
+            }
+            catch {
+                return BadRequest(new AuthResult() {
+                    Result = false,
+                    Errors = new List<string>()
+                    {
+                        "Verify Email ERROR!"
+                    }                   
+                });
+            }
+        }
+
+        return NotFound();
+    }
+
+    [HttpPost]
+    [Route("AdminLogin")]
+    public async Task<IActionResult> AdminLogin(UserDTO userDTO) {
+        if (ModelState.IsValid) {
+            // Check if user is existed
+            var user = await _userRepository.GetUserByNameAsync(userDTO.Name);
+
+            if (user == null) {
+                return BadRequest(new AuthResult() {
+                    Result = false,
+                    Errors = new List<string>() {
+                        "User isn't existed !"
+                    }
+                });
+            }
+
+            // Validate password
+            var validatePassword = await _userRepository.CheckPasswordAsync(user, userDTO.Password);
+
+            if (validatePassword == false) {
+                return BadRequest(new AuthResult() {
+                    Result = false,
+                    Errors = new List<string>() {
+                        "INVALID Credentials !"
+                    }
+                });
+            }
+
+            // generate jwt access token & refresh token
+            var jwtToken = await generateJwtToken(user);
+
+            return Ok(jwtToken);
         }
 
         return NotFound();
@@ -72,6 +154,15 @@ public class AuthenticationController : ControllerBase {
     [Route("Register")]
     public async Task<IActionResult> Register(UserDTO userDTO) {
         if (ModelState.IsValid) {
+            if (userDTO.Email == null) {
+                return BadRequest(new AuthResult() {
+                    Result = false,
+                    Errors = new List<string>() {
+                        "No Email Value !"
+                    }
+                });
+            }
+
             // Check if email already exist
             var user_exist = await _userRepository.GetUserByEmailAsync(userDTO.Email);
 
@@ -94,8 +185,17 @@ public class AuthenticationController : ControllerBase {
             // IdentityResult
             IdentityResult result = await _userRepository.CreateUserAsync(newUser, userDTO.Password);
 
-            // Verify email
             if (result.Succeeded == true) {
+                // Add Customer role
+                var customerRole = await _roleManager.RoleExistsAsync("Customer");
+
+                if (!customerRole) {
+                    await _roleManager.CreateAsync(new ApplicationRole("Customer"));
+                }
+
+                await _userManager.AddToRoleAsync(newUser, "Customer");
+
+                // Verify email
                 var emailToken = await _userRepository.GenerateEmailConfirmationTokenAsync(newUser);
 
                 var emailBody = $"Please confirm your email address by click here: #URL# ";
@@ -371,22 +471,31 @@ public class AuthenticationController : ControllerBase {
 
         var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);
 
+        // [Authorize] sẽ ủy quyền dựa trên các claims trong request token
+        var claims = new List<Claim>() {
+            new Claim("Id", user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+
+            // JWT ID
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+
+            // Issued At Time - Chứa thời điểm Token được tạo
+            new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString())
+        };
+
+        // Xác định role của user
+        var userRoles = await _userManager.GetRolesAsync(user);
+
+        foreach(var role in userRoles) {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
         // Token description
         var tokenDescriptor = new SecurityTokenDescriptor()
         {
             // Khai báo claims
-            Subject = new ClaimsIdentity(new []
-            {
-                new Claim("Id", user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-
-                // JWT ID
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-
-                // Issued At Time - Chứa thời điểm Token được tạo
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToUniversalTime().ToString())
-            }),
+            Subject = new ClaimsIdentity(claims),
             
             Expires = DateTime.UtcNow
                         .Add(TimeSpan.Parse(_configuration.GetSection("JwtConfig:ExpiryTimeFrame").Value)),

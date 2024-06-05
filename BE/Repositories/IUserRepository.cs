@@ -8,6 +8,7 @@ public interface IUserRepository {
     Task<ApplicationUser> GetUser(string token);
     Task<ApplicationUser> GetUserByIdAsync(string userId);
     Task<ApplicationUser> GetUserByEmailAsync(string email);
+    Task<ApplicationUser> GetUserByNameAsync(string userName);
     Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password);
     Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user);
     Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string code);

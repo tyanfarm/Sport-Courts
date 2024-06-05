@@ -31,6 +31,11 @@ public class UserRepository : IUserRepository {
     public async Task<ApplicationUser> GetUserByEmailAsync(string email) {
         return await _userManager.FindByEmailAsync(email);
     }
+
+    public async Task<ApplicationUser> GetUserByNameAsync(string userName) {
+        return await _userManager.FindByNameAsync(userName);
+    }
+
     public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password) {
         return await _userManager.CreateAsync(user, password);
     }
