@@ -12,6 +12,12 @@ using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Enable CORS
+// cho phép truy cập từ mọi nguồn gốc
+builder.Services.AddCors(c => {
+    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
+
 // Info of gmail sender
 builder.Services.AddSingleton<EmailInfo>();
 
@@ -121,6 +127,9 @@ builder.Services.AddSwaggerGen(options => {
 });
 
 var app = builder.Build();
+
+// Enable CORS
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

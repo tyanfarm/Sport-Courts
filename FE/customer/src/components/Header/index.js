@@ -10,9 +10,10 @@ const Header = () => {
                 <h1 className="site-title">CAO THỦ CẦU LÔNG</h1>
                 <nav>
                     <ul>
-                        <li><a href="" className="buttonLogin">ĐẶT SÂN</a></li>
-                        <li><a href="" className="buttonLogin">CỬA HÀNG DỤNG CỤ</a></li>
-                        <li><a href="" className="buttonRegister">ĐĂNG NHẬP / ĐĂNG KÝ</a></li>
+                        <li><a href="" className="buttonLogin">TRANG CHỦ</a></li>
+                        <li><a href="" className="buttonLogin">TÀI KHOẢN</a></li>
+                        <li><a href="" className="buttonRegister">ĐĂNG NHẬP</a></li>
+                        <li><a href="" className="buttonRegister">ĐĂNG KÝ</a></li>
                     </ul>
                 </nav>
             </div>
