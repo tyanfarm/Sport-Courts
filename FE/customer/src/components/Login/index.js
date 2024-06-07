@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
 
@@ -28,13 +29,17 @@ const Login = () => {
             .then(res => res.json())
             .then(data => {
                 if (data.result == true && data.token != null) {
+                    toast.success("Login successfully");
                     localStorage.setItem("token", data.token);
+                    return;
                 }
+                toast.error(data.errors[0]);
             });
     }
 
     return (
         <div className="login-area">
+            <ToastContainer/>
             <div className="login-container">
                 <h2 className="login-title">Login</h2>
                 <div className="input-group">
@@ -57,7 +62,6 @@ const Login = () => {
                 </div>
 
                 <button type="submit" className='login-button'
-                    disabled={email && password ? false : true}
                     onClick={() => handleLogin()}>LOGIN</button>
 
                 <div className="signup-link">

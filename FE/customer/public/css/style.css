@@ -14,6 +14,14 @@ body {
     color: #333;
 }
 
+.Toastify__close-button--light {
+    width: 20px !important;
+}
+
+.Toastify__toast-container--top-right {
+    margin-top: 80px;
+}
+
 .wrapper {
     display: flex;
 }

@@ -179,6 +179,8 @@ public class AuthenticationController : ControllerBase {
             ApplicationUser newUser = new ApplicationUser() {
                 Email = userDTO.Email,
                 UserName = userDTO.Name,
+                PhoneNumber = userDTO.Phone,
+                Address = userDTO.Address,
                 EmailConfirmed = false
             };
 
