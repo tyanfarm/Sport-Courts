@@ -107,7 +107,7 @@ const Register = () => {
                     onClick={() => handleRegister()}>SIGN UP</button>
 
                 <div className="signup-link">
-                    <a href="#">Already have an account? Log in!</a>
+                    <a href="/login">Already have an account? Log in!</a>
                 </div>
 
             </div>

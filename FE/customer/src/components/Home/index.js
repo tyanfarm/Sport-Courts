@@ -33,9 +33,9 @@ const Home = () => {
                 </div>
 
                 <div className="court-card">
-                    <img src="assets/badminton_logo.jpg" alt="Badminton Court" className="court-logo"/>
+                    <img src="https://firebasestorage.googleapis.com/v0/b/sport-courts-ab2d8.appspot.com/o/categories%2Fbadminton.jpg?alt=media&token=a95e74b5-60bb-4155-9c57-f34ab8592779" alt="Badminton Court" className="court-logo"/>
                         <div className="court-info">
-                            <h3>Cầu lông</h3>
+                            <h3>Badminton</h3>
                         </div>
                         <div className="court-schedule">
                             <p>Giờ mở cửa: 7:00 - 21:00</p>

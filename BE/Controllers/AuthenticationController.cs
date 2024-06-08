@@ -22,19 +22,12 @@ public class AuthenticationController : ControllerBase {
     private readonly IEmailSender _emailSender;
     private readonly TokenValidationParameters _tokenValidationParameters;
 
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<ApplicationRole> _roleManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-
     public AuthenticationController(
         IUserRepository userRepository,
         IConfiguration configuration,
         IRefreshTokenRepository refreshTokenRepository,
         IEmailSender emailSender,
-        TokenValidationParameters tokenValidationParameters,
-        UserManager<ApplicationUser> userManager,
-        RoleManager<ApplicationRole> roleManager,
-        SignInManager<ApplicationUser> signInManager
+        TokenValidationParameters tokenValidationParameters
     )
     {
         _userRepository = userRepository;
@@ -42,9 +35,6 @@ public class AuthenticationController : ControllerBase {
         _refreshTokenRepository = refreshTokenRepository;
         _emailSender = emailSender;
         _tokenValidationParameters = tokenValidationParameters;
-        _userManager = userManager;
-        _roleManager = roleManager;
-        _signInManager = signInManager;
     }
 
     [HttpPost]
@@ -65,17 +55,17 @@ public class AuthenticationController : ControllerBase {
             Email = userDTO.Email
         };
 
-        var result = await _userManager.CreateAsync(user, userDTO.Password);
+        var result = await _userRepository.CreateUserAsync(user, userDTO.Password);
 
         if (result.Succeeded) {
             // Add ADMIN role
-            var adminRole = await _roleManager.RoleExistsAsync("Admin");
+            var adminRole = await _userRepository.RoleExistsAsync("Admin");
 
             if (!adminRole) {
-                await _roleManager.CreateAsync(new ApplicationRole("Admin"));
+                await _userRepository.CreateRoleAsync(new ApplicationRole("Admin"));
             }
             
-            await _userManager.AddToRoleAsync(user, "Admin");
+            await _userRepository.AddRoleToUserAsync(user, "Admin");
 
             // Verify email
             var emailToken = await _userRepository.GenerateEmailConfirmationTokenAsync(user);
@@ -189,13 +179,13 @@ public class AuthenticationController : ControllerBase {
 
             if (result.Succeeded == true) {
                 // Add Customer role
-                var customerRole = await _roleManager.RoleExistsAsync("Customer");
+                var customerRole = await _userRepository.RoleExistsAsync("Customer");
 
                 if (!customerRole) {
-                    await _roleManager.CreateAsync(new ApplicationRole("Customer"));
+                    await _userRepository.CreateRoleAsync(new ApplicationRole("Customer"));
                 }
 
-                await _userManager.AddToRoleAsync(newUser, "Customer");
+                await _userRepository.AddRoleToUserAsync(newUser, "Customer");
 
                 // Verify email
                 var emailToken = await _userRepository.GenerateEmailConfirmationTokenAsync(newUser);
@@ -487,7 +477,7 @@ public class AuthenticationController : ControllerBase {
         };
 
         // Xác định role của user
-        var userRoles = await _userManager.GetRolesAsync(user);
+        var userRoles = await _userRepository.GetUserRoles(user);
 
         foreach(var role in userRoles) {
             claims.Add(new Claim(ClaimTypes.Role, role));

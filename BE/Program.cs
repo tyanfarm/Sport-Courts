@@ -21,16 +21,20 @@ builder.Services.AddCors(c => {
 // Info of gmail sender
 builder.Services.AddSingleton<EmailInfo>();
 
+// Info of firebase
+builder.Services.AddSingleton<FirebaseInfo>();
+
 // EmailSender Services
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+// ImageUploader Services
+builder.Services.AddScoped<IImageUploader, ImageUploader>();
 
 // Add services to the container.
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICourtRepository, CourtRepository>();
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderdetailsRepository, OrderdetailsRepository>();
-builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 

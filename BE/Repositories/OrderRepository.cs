@@ -1,4 +1,5 @@
 using BE.Models;
+using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
 
 namespace BE.Repositories;
@@ -6,23 +7,24 @@ namespace BE.Repositories;
 public class OrderRepository : IOrderRepository
 {
     private readonly IMongoCollection<Order> _orderCollection;
-    private readonly IMongoCollection<Customer> _customerCollection;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IMongoCollection<TransactStatus> _transactStatusCollection;
 
-    public OrderRepository(IConfiguration configuration) {
+    public OrderRepository(IConfiguration configuration, UserManager<ApplicationUser> userManager) {
+        _userManager = userManager;
+        
         var mongoClient = new MongoClient(configuration.GetConnectionString("DefaultConnection"));
         // Get Database
         var mongoDb = mongoClient.GetDatabase("SportCourts");
         // Get Collection
         _orderCollection = mongoDb.GetCollection<Order>("Orders");
-        _customerCollection = mongoDb.GetCollection<Customer>("Customers");
         _transactStatusCollection = mongoDb.GetCollection<TransactStatus>("TransactStatus");
     }
 
     public async Task<bool> Create(Order order)
     {
         // Check customerID & TransactStatusID
-        var isCustomerOccur = await _customerCollection.Find(c => c.CustomerId == order.CustomerId).FirstOrDefaultAsync();
+        var isCustomerOccur = await _userManager.FindByIdAsync(order.CustomerId);
         var isStatusOccur = await _transactStatusCollection.Find(t => t.TransactStatusId == order.TransactStatusId).FirstOrDefaultAsync();
 
         if (isCustomerOccur == null || isStatusOccur == null) {
@@ -60,13 +62,12 @@ public class OrderRepository : IOrderRepository
 
     public async Task<bool> Update(string id, string? customerId, string? transactStatusId, bool? paid, int? totalMoney) 
     {
-        Customer? isCustomerOccur = null;
+        ApplicationUser? isCustomerOccur = null;
         TransactStatus? isStatusOccur = null;
 
         // Check customerID & TransactStatusID
         if (customerId != null) {
-            isCustomerOccur = await _customerCollection.Find(c => c.CustomerId == customerId)
-                                                            .FirstOrDefaultAsync();
+            isCustomerOccur = await _userManager.FindByIdAsync(customerId);
         }
         
         if (transactStatusId != null) {

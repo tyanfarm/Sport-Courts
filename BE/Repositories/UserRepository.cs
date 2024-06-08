@@ -6,9 +6,17 @@ namespace BE.Repositories;
 
 public class UserRepository : IUserRepository {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
     
-    public UserRepository(UserManager<ApplicationUser> userManager) {
+    public UserRepository(
+        UserManager<ApplicationUser> userManager,
+        RoleManager<ApplicationRole> roleManager,
+        SignInManager<ApplicationUser> signInManager
+    ) {
         _userManager = userManager;
+        _roleManager = roleManager;
+        _signInManager = signInManager;
     }
 
     public async Task<ApplicationUser> GetUser(string token) {
@@ -38,6 +46,23 @@ public class UserRepository : IUserRepository {
 
     public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password) {
         return await _userManager.CreateAsync(user, password);
+    }
+
+    public async Task<IdentityResult> CreateRoleAsync(ApplicationRole role) {
+        return await _roleManager.CreateAsync(role);
+    }
+
+    public async Task<IdentityResult> AddRoleToUserAsync(ApplicationUser user, string role) {
+        return await _userManager.AddToRoleAsync(user, role);
+    }
+
+    public async Task<IList<string>> GetUserRoles(ApplicationUser user) {
+        return await _userManager.GetRolesAsync(user);
+    }
+
+
+    public async Task<bool> RoleExistsAsync(string role) {
+        return await _roleManager.RoleExistsAsync(role);
     }
 
     public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user) {

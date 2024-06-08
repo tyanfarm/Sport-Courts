@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Tyan\\ASPNET\\Test\\Sport-Courts\\BE\\BE.csproj": {}
+    "D:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj": {}
   },
   "projects": {
-    "D:\\Tyan\\ASPNET\\Test\\Sport-Courts\\BE\\BE.csproj": {
+    "D:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Tyan\\ASPNET\\Test\\Sport-Courts\\BE\\BE.csproj",
+        "projectUniqueName": "D:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj",
         "projectName": "BE",
-        "projectPath": "D:\\Tyan\\ASPNET\\Test\\Sport-Courts\\BE\\BE.csproj",
+        "projectPath": "D:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj",
         "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "D:\\Tyan\\ASPNET\\Test\\Sport-Courts\\BE\\obj\\",
+        "outputPath": "D:\\Tyan\\ASPNET\\Sport-Courts\\BE\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -48,6 +48,14 @@
             "AspNetCore.Identity.MongoDbCore": {
               "target": "Package",
               "version": "[3.1.2, )"
+            },
+            "Firebase.Auth": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "FirebaseStorage.net": {
+              "target": "Package",
+              "version": "[1.0.3, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",

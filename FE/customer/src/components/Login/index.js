@@ -65,7 +65,7 @@ const Login = () => {
                     onClick={() => handleLogin()}>LOGIN</button>
 
                 <div className="signup-link">
-                    <a href="#">Sign up!</a>
+                    <a href="/register">Sign up!</a>
                 </div>
 
             </div>

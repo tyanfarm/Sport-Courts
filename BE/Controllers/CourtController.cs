@@ -1,5 +1,6 @@
 using BE.Models;
 using BE.Repositories;
+using BE.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +11,14 @@ namespace BE.Controllers;
 [Route("api/v1/[controller]")]
 public class CourtController : ControllerBase {
     private readonly ICourtRepository _courtRepository;
+    private readonly IImageUploader _imageUploader;
 
-    public CourtController(ICourtRepository courtRepository) {
+    public CourtController(ICourtRepository courtRepository, IImageUploader imageUploader) {
         _courtRepository = courtRepository;
+        _imageUploader = imageUploader;
     }
 
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    // [Authorize(AuthenticationSchemes = "Bearer")]
     [HttpGet]
     public async Task<IActionResult> GetAllCourts() {
         try {
@@ -50,8 +53,13 @@ public class CourtController : ControllerBase {
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Court court) {
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Create(IFormFile file, [FromForm] Court court) {
         try {
+            var imageUrl = await _imageUploader.Upload(file, "courts", court.Name);
+
+            court.Image = imageUrl;
+
             var result = await _courtRepository.Create(court);
 
             if (result == null) {
@@ -66,9 +74,27 @@ public class CourtController : ControllerBase {
     }
 
     [HttpPatch("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, string? description, int? price, int? discount, string? image, bool? active) {
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Update(IFormFile? file, string id, string? name, string? description, int? price, int? discount, bool? active) {
         try {
-            var result = await _courtRepository.Update(id, description, price, discount, image, active);
+            if (file != null & name == null)
+            {
+                return BadRequest(new AuthResult()
+                {
+                    Result = false,
+                    Errors = new List<string>() {
+                    "Court Name is required !"
+                }
+                });
+            }
+
+            string? image = null;
+
+            if (file != null) {
+                image = await _imageUploader.Upload(file, "courts", name);
+            }
+
+            var result = await _courtRepository.Update(id, name, description, price, discount, image, active);
 
             if (result == false) {
                 return NotFound();
