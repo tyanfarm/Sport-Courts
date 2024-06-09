@@ -1,0 +1,284 @@
+/* Default styles for the browser */
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.wrapper {
+    display: flex;
+}
+
+ul {
+    display: flex;
+}
+
+li {
+    padding: 0 5px;
+}
+
+header {
+    width: 100vw;
+    height: 70px; /* Tăng chiều cao của header */
+    align-items: center;
+    justify-content: center;
+    border-bottom: 9px solid grey;
+    font-family: 'Arial';
+    position: sticky;
+    top: 0;
+    display: flex;
+    padding: 0 10px; /* Giảm padding */
+    background-color: #aeefc8;
+}
+
+header .inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+    margin-right: 0; /* Loại bỏ margin phải */
+}
+
+header .logo img {
+    height: 50px;
+    margin-right: 5px; /* Giảm khoảng cách giữa logo và tên trang web */
+}
+
+header .site-title {
+    font-size: 40px;
+    text-align: left;
+    margin-left: 0; /* Loại bỏ margin trái */
+    flex: 0 1 auto; /* Allow the title to take only as much space as needed */
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    height: 100%; /* Đặt chiều cao cho navigation */
+}
+
+header nav ul {
+    display: flex;
+    align-items: center;
+    height: 100%; /* Đặt chiều cao cho ul */
+}
+
+header nav li {
+    margin-left: 5px; /* Giảm khoảng cách giữa các nút */
+    height: 100%; /* Đặt chiều cao cho từng mục li */
+}
+
+header nav a {
+    color: #101010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Đặt chiều cao cho liên kết */
+    padding: 0 10px; /* Giảm padding để các nút gần nhau hơn */
+    border-radius: 0; /* Đặt góc nhọn cho các nút */
+    background-color: #000000; /* Màu nền mặc định cho các nút */
+    color: #FFF; /* Màu chữ của nút */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Thêm hiệu ứng chuyển đổi */
+}
+
+header nav .buttonRegister {
+    background-color: #1ab26b; /* Màu nền của nút đăng ký */
+}
+
+header nav a:hover {
+    background-color: #0d6553; /* Thay đổi màu nền khi di chuột */
+    transform: scale(1.05); /* Phóng to nhẹ khi di chuột */
+    cursor: pointer; /* Thay đổi con trỏ chuột thành hình tay */
+}
+
+footer {
+    border-top: 9px solid grey;
+    background-color: #64c88c;
+}
+
+.footerContainer {
+    width: 100%;
+    padding: 70px 30px 20px;
+}
+
+.socialIcons {
+    display: flex;
+    justify-content: center;
+}
+
+.socialIcons a {
+    text-decoration: none;
+    padding: 10px;
+    background-color: white;
+    margin: 10px;
+    border-radius: 50%;
+}
+
+.socialIcons a i {
+    font-size: 2em;
+    color: black;
+    opacity: 0.9;
+}
+
+/* Hover affect on social media icon */
+.socialIcons a:hover {
+    background-color: #111;
+    transition: 0.5s;
+}
+
+.socialIcons a:hover i {
+    color: white;
+    transition: 0.5s;
+}
+
+.footerNav {
+    margin: 30px 0;
+}
+
+.footerNav ul {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+}
+
+.footerNav ul li a {
+    color: white;
+    margin: 20px;
+    text-decoration: none;
+    font-size: 1.3em;
+    opacity: 0.7;
+    transition: 0.5s;
+}
+
+.footerNav ul li a:hover {
+    opacity: 1;
+}
+
+.footerBottom {
+    background-color: #000;
+    padding: 20px;
+    text-align: center;
+}
+
+.footerBottom p {
+    color: white;
+}
+
+.designer {
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 400;
+    margin: 0px 5px;
+}
+
+@media (max-width: 700px) {
+    .footerNav ul {
+        flex-direction: column;
+    } 
+    .footerNav ul li {
+        width: 100%;
+        text-align: center;
+        margin: 10px;
+    }
+    .socialIcons a {
+        padding: 8px;
+        margin: 4px;
+    }
+}
+
+.container {
+    max-width: 1000px; /* Adjust according to your layout */
+    margin: auto;
+    padding: 16px;
+}
+
+.bg-zinc-100, .dark .bg-zinc-800 {
+    background-color: #ffffff; /* Light theme background */
+    border: 1px solid #d1d5db; /* Light theme border */
+}
+
+.dark .bg-zinc-800 {
+    background-color: #1f2937; /* Dark theme background */
+    border-color: #374151; /* Dark theme border */
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.text-xl {
+    font-size: 1.5rem; /* Increased from 1.25rem to 1.5rem for larger header text */
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.border-collapse {
+    border-collapse: collapse;
+}
+
+.border, .dark .border-zinc-700 {
+    border: 1px solid #d1d5db;
+}
+
+.dark .border-zinc-700 {
+    border-color: #4b5563;
+}
+
+.p-2 {
+    padding: 0.5rem;
+    font-size: 1.1rem; /* Increased from default to 1.1rem for larger table text */
+}
+
+.p-4 {
+    padding: 1rem;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-blue-500, .dark .text-blue-300 {
+    color: #3b82f6; /* Light theme link color */
+}
+
+.dark .text-333 {
+    color: #333; 
+}
+
+/* Hover effects for interactive elements */
+a:hover {
+    text-decoration: underline;
+}
+
