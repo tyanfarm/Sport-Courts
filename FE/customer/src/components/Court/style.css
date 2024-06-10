@@ -1,0 +1,115 @@
+.container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.navigation,
+.date-picker {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.date-picker input:hover{
+    cursor: pointer;
+}
+
+.session-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    width: 15%;
+}
+
+.session-navigation button {
+    margin: 8px;
+    background-color: #7e8d8a;
+}
+
+.session-navigation button.active {
+    background-color: #00796b;
+}
+
+.booking-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-bottom: 20px;
+}
+
+.booking-table th,
+.booking-table td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.booking-table th {
+    background-color: #f4f4f4;
+}
+
+.day {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    width: 80px;
+}
+
+.time-slot {
+    background-color: #e6f2ff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.time-slot:hover {
+    background-color: #d0e7ff;
+}
+
+.time-slot.past {
+    background-color: #f0f0f0;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.selected {
+    background-color: #00796b;
+    color: #fff;
+}
+
+.time-slot.selected {
+    background-color: #007bff;
+    color: #fff;
+}
+
+#selected-time {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+button {
+    margin: 0 16px;
+    padding: 10px 20px;
+    background-color: #00796b;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #00b395;
+}
+
+input[type="date"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}

@@ -5,7 +5,7 @@ const Header = () => {
         <header>
             <div className="inner">
                 <div className="logo">
-                    <img src="assets/logo-removebg.png" alt="Google logo"/>
+                    <img src="https://firebasestorage.googleapis.com/v0/b/sport-courts-ab2d8.appspot.com/o/logo-removebg.png?alt=media&token=c68ae97e-8d28-4c4d-96f5-44d40d669e49" alt="Google logo"/>
                 </div>
                 <h1 className="site-title">CAO THỦ CẦU LÔNG</h1>
                 <nav>

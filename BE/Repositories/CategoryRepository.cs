@@ -34,6 +34,27 @@ public class CategoryRepository : ICategoryRepository
         return await _categoryCollection.Find(_ => true).ToListAsync();
     }
 
+    public async Task<List<Category>> GetAllUniqueSportName() {
+        // Lấy ra tất cả các category từ collection
+        var allCategories = await _categoryCollection.Find(_ => true).ToListAsync();
+
+        // Lọc và lấy ra tất cả các category với điều kiện mỗi category có sportname chỉ lấy 1 lần
+        var distinctCategories = allCategories.GroupBy(c => c.SportName)
+                                                .Select(group => group.First())
+                                                .ToList();
+
+        return distinctCategories;
+    }
+
+    public async Task<List<string>> GetAllTypes(string sportname) {
+        var categories = await _categoryCollection.Find(c => c.SportName == sportname).ToListAsync();
+
+        var types = categories.Select(c => c.Type).ToList();
+
+        return types;  
+    }
+
+
     public async Task<Category> GetById(string id)
     {
         var category = await _categoryCollection.Find(c => c.CatId == id).FirstOrDefaultAsync();

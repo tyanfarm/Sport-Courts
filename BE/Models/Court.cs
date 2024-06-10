@@ -15,7 +15,9 @@ public class Court {
 
     [BsonRepresentation(BsonType.ObjectId)]
     [BsonElement("CatID")]
-    public string? CatId {get; set;} = null!;
+    public string? CatId {get; set;}
+
+    public string? Address {get; set;}
 
     public int Price {get; set;}
 

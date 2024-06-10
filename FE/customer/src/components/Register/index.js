@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { checkPassword } from '../../services/userService';
+import { localhost } from '../../services/server';
 
 const Register = () => {
 
@@ -44,7 +45,7 @@ const Register = () => {
             })
         };
         
-        fetch('http://localhost:5102/api/v1/Authentication/Register', requestOptions)
+        fetch(localhost + '/api/v1/Authentication/Register', requestOptions)
             .then(res => res.json())
             .then(data => {
                 console.log(data);

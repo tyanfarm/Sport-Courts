@@ -82,6 +82,46 @@ public class CategoryController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [Route("sports")]
+    public async Task<IActionResult> GetAllUniqueSportName() {
+        try
+        {
+            var categories = await _categoryRepository.GetAllUniqueSportName();
+
+            if (categories == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(categories);
+        }
+        catch
+        {
+            return StatusCode(500, "ERROR !");
+        }
+    }
+
+    [HttpGet]
+    [Route("types/{sportname}")]
+    public async Task<IActionResult> GetAllTypes(string sportname) {
+        try
+        {
+            var types = await _categoryRepository.GetAllTypes(sportname);
+
+            if (types == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(types);
+        }
+        catch
+        {
+            return StatusCode(500, "ERROR !");
+        }
+    }
+
     [HttpPost]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Create(IFormFile file, [FromForm] Category category)

@@ -12,4 +12,5 @@ const checkPassword = (str) => {
     return containsNumber && containsUpperCase && containsSymbol;
 }
 
+
 export { checkPassword }

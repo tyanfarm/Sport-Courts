@@ -1,8 +1,39 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { localhost } from '../../services/server'
 
 const Home = () => {
+
+    const [listCategories, setListCategories] = useState([]);
+
+    useEffect(() => {
+        fetchCategories();
+    }, []); // Tham số thứ hai là một mảng rỗng để chỉ chạy một lần khi component mount
+
+    const fetchCategories = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        };
+
+        fetch(localhost + '/api/v1/Category/sports', requestOptions)
+            .then(res => res.json())
+            .then(data => {
+                const dataArray = Array.isArray(data) ? data : [];
+
+                setListCategories(dataArray);
+            });
+    }
+
     return (
         <div>
+            <ToastContainer />
             <div className="features">
                 <div className="feature-item">
                     <img src="assets/field-icon.png" alt="Field icon" />
@@ -21,38 +52,22 @@ const Home = () => {
                 </div>
             </div>
             <div className="court-cards">
-                <div className="court-card">
-                    <img src="assets/footbal_logo.jpg" alt="Football Court" className="court-logo"/>
-                        <div className="court-info">
-                            <h3>Bóng đá</h3>
+                {listCategories && listCategories.map((item, index) => {
+                    return (
+                    <Link to={`/courts/sport/${item.sportName}`} state={{sportName: item.sportName}}>
+                        <div key={index} className="court-card">
+                            <img src={item.image} alt="Football Court" className="court-logo" />
+                            <div className="court-info">
+                                <h3>{item.sportName}</h3>
+                            </div>
+                            <div className="court-schedule">
+                                <p>Giờ mở cửa: 6:00 - 22:00</p>
+                                <p>Ngày mở cửa: Thứ 2 - Chủ Nhật</p>
+                            </div>
                         </div>
-                        <div className="court-schedule">
-                            <p>Giờ mở cửa: 6:00 - 22:00</p>
-                            <p>Ngày mở cửa: Thứ 2 - Chủ Nhật</p>
-                        </div>
-                </div>
-
-                <div className="court-card">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/sport-courts-ab2d8.appspot.com/o/categories%2Fbadminton.jpg?alt=media&token=a95e74b5-60bb-4155-9c57-f34ab8592779" alt="Badminton Court" className="court-logo"/>
-                        <div className="court-info">
-                            <h3>Badminton</h3>
-                        </div>
-                        <div className="court-schedule">
-                            <p>Giờ mở cửa: 7:00 - 21:00</p>
-                            <p>Ngày mở cửa: Thứ 2 - Chủ Nhật</p>
-                        </div>
-                </div>
-
-                <div className="court-card">
-                    <img src="assets/tennis_logo.jpg" alt="Tennis Court" className="court-logo"/>
-                        <div className="court-info">
-                            <h3>Tennis</h3>
-                        </div>
-                        <div className="court-schedule">
-                            <p>Giờ mở cửa: 6:00 - 22:00</p>
-                            <p>Ngày mở cửa: Thứ 2 - Chủ Nhật</p>
-                        </div>
-                </div>
+                    </Link>
+                    )
+                })}
             </div>
         </div>
 

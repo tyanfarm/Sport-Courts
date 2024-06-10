@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { localhost } from '../../services/server';
 
 const Login = () => {
 
@@ -25,7 +26,7 @@ const Login = () => {
                 password: password
             })
         };
-        fetch('http://localhost:5102/api/v1/Authentication/Login', requestOptions)
+        fetch(localhost + '/api/v1/Authentication/Login', requestOptions)
             .then(res => res.json())
             .then(data => {
                 if (data.result == true && data.token != null) {

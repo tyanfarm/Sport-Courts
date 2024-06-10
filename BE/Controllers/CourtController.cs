@@ -35,6 +35,39 @@ public class CourtController : ControllerBase {
         }
     }
 
+    [HttpGet]
+    [Route("category/{catId:length(24)}")]
+    public async Task<IActionResult> GetByCatId(string catId) {
+        try {
+            var courts = await _courtRepository.GetByCatId(catId);
+
+            if (courts == null) {
+                return NotFound();
+            }
+
+            return Ok(courts);
+        }
+        catch {
+            return StatusCode(500, "ERROR");
+        }
+    }
+
+    [HttpGet("category/{sportname}")]
+    public async Task<IActionResult> GetBySportName(string sportname) {
+        try {
+            var courts = await _courtRepository.GetBySportName(sportname);
+
+            if (courts == null) {
+                return NotFound();
+            }
+
+            return Ok(courts);
+        }
+        catch {
+            return StatusCode(500, "ERROR");
+        }
+    }
+
     [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     [HttpGet("{id:length(24)}")]
     public async Task<IActionResult> GetById(string id) {
