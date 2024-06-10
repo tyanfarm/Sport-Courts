@@ -79,11 +79,11 @@ const ListCourts = () => {
                     <ul className="grid-list">
                         {listCourts && listCourts.map((item, index) => {
                             return (
-                                <li>
+                                <li className="list-products">
                                     <div className="product-card">
 
                                         <figure className="card-banner">
-                                            <img src={item.image} width="300" height="300" loading="lazy" alt={item.name} />
+                                            <img src={item.image} loading="lazy" alt={item.name} />
                                         </figure>
 
                                         <h3 className="h4 card-title">
@@ -93,10 +93,8 @@ const ListCourts = () => {
                                         <div className="address-wrapper">
                                             <data className="address" value="85.00">{item.address}</data>
                                         </div>
-
-                                        <button className="btn btn-primary">Add to Cart</button>
-
                                     </div>
+                                    <button className="btn btn-primary">Add to Cart</button>
                                 </li>
                             )
                         })}

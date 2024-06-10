@@ -73,7 +73,7 @@ public class CourtRepository : ICourtRepository
         return court;
     }
 
-    public async Task<bool> Update(string id, string? name, string? description, int? price, int? discount, string? image, bool? active)
+    public async Task<bool> Update(string id, string? name, string? description, string? address, int? price, int? discount, string? image, bool? active)
     {
         var updateDefinitions = new List<UpdateDefinition<Court>>();
 
@@ -83,6 +83,10 @@ public class CourtRepository : ICourtRepository
 
         if (description != null) {
             updateDefinitions.Add(Builders<Court>.Update.Set(c => c.Description, description));
+        }
+
+        if (address != null) {
+            updateDefinitions.Add(Builders<Court>.Update.Set(c => c.Address, address));
         }
 
         if (price != null) {

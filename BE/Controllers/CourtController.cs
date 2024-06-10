@@ -108,7 +108,7 @@ public class CourtController : ControllerBase {
 
     [HttpPatch("{id:length(24)}")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Update(IFormFile? file, string id, string? name, string? description, int? price, int? discount, bool? active) {
+    public async Task<IActionResult> Update(IFormFile? file, string id, string? name, string? description, string? address, int? price, int? discount, bool? active) {
         try {
             if (file != null & name == null)
             {
@@ -127,7 +127,7 @@ public class CourtController : ControllerBase {
                 image = await _imageUploader.Upload(file, "courts", name);
             }
 
-            var result = await _courtRepository.Update(id, name, description, price, discount, image, active);
+            var result = await _courtRepository.Update(id, name, description, address, price, discount, image, active);
 
             if (result == false) {
                 return NotFound();

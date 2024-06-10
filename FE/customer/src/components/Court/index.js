@@ -59,6 +59,20 @@ const Court = () => {
 
     return (
         <div>
+            <div className="field-details-container">
+                <div className="image-section">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/sport-courts-ab2d8.appspot.com/o/courts%2FCourt%20A?alt=media&token=18efeb6a-d80b-4f89-b1d0-69c39d5a25d7" alt="Old Trafford" className="field-image" />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/sport-courts-ab2d8.appspot.com/o/courts%2FCourt%20A?alt=media&token=18efeb6a-d80b-4f89-b1d0-69c39d5a25d7" alt="Old Trafford" className="field-image" />
+                </div>
+                <div className="details-section">
+                    <p className="court-id">ID: 12345</p>
+                    <h1 className="court-name">Sân bóng đá A</h1>
+                    <a href="#" className="court-cat">Sân bóng đá</a>
+                    <p className="description">Mô tả: Sân bóng đá A có kích thước tiêu chuẩn, mặt cỏ nhân tạo chất lượng cao, hệ thống chiếu sáng đầy đủ và tiện nghi hiện đại. Phù hợp cho các trận đấu giao hữu và luyện tập.</p>
+                    <p className="price">Giá thuê mỗi giờ: <span className="price-amount">200,000 VND</span></p>
+                    <a href="#" className="button-reserve">Đặt sân</a>
+                </div>
+            </div>
             <div className="container">
                 <div className="navigation">
                     <button onClick={() => setCurrentWeek(currentWeek - 1)}>Previous Week</button>

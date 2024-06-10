@@ -10,6 +10,6 @@ public interface ICourtRepository {
     Task<List<Court>> GetByCatId(string catId);
     Task<List<Court>> GetBySportName(string sportname);
     Task<Court> Create(Court court);
-    Task<bool> Update(string id, string? name, string? description, int? price, int? discount, string? image, bool? active);
+    Task<bool> Update(string id, string? name, string? description, string? address, int? price, int? discount, string? image, bool? active);
     Task<bool> Delete(string id);
 }
