@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 // import { useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -80,20 +80,24 @@ const ListCourts = () => {
                         {listCourts && listCourts.map((item, index) => {
                             return (
                                 <li className="list-products">
-                                    <div className="product-card">
+                                    {/* <Link to={`./${item.courtId}`}> */}
+                                    <a href={`./${sportName}/${item.courtId}`} >
+                                        <div className="product-card">
 
-                                        <figure className="card-banner">
-                                            <img src={item.image} loading="lazy" alt={item.name} />
-                                        </figure>
+                                            <figure className="card-banner">
+                                                <img src={item.image} loading="lazy" alt={item.name} />
+                                            </figure>
 
-                                        <h3 className="h4 card-title">
-                                            <a href="">{item.name}</a>
-                                        </h3>
+                                            <h3 className="h4 card-title">
+                                                <a href="">{item.name}</a>
+                                            </h3>
 
-                                        <div className="address-wrapper">
-                                            <data className="address" value="85.00">{item.address}</data>
+                                            <div className="address-wrapper">
+                                                <data className="address" value="85.00">{item.address}</data>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
+                                    {/* </Link> */}
                                     <button className="btn btn-primary">Add to Cart</button>
                                 </li>
                             )
