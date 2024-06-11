@@ -176,6 +176,40 @@ header nav .buttonRegister:hover {
   /* Thay đổi màu nền khi di chuột */
 }
 
+header .cart-button {
+  background-color: #00796b;
+  padding: 8px 12px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-right: 90px;
+}
+
+header .cart-button:hover {
+  background-color: #00b395;
+  /* Thay đổi màu nền khi di chuột */
+  transform: scale(1.03);
+  /* Phóng to nhẹ khi di chuột */
+  cursor: pointer;
+}
+
+header .cart-icon {
+  width: 32px;
+  height: 32px;
+}
+
+header .cart-count {
+  background-color: #ff6f61;
+  color: #ffffff;
+  font-size: 12px;
+  border-radius: 50%;
+  padding: 4px 8px;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+}
+
 /* HOME PAGE */
 .features {
   display: flex;

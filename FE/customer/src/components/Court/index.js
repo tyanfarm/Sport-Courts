@@ -174,21 +174,21 @@ const Court = () => {
                                         className={`time-slot ${timeSlot.past ? 'past' : ''}`}
                                         onClick={() => !timeSlot.past && handleTimeSlotClick(slot.fullDate, timeSlot.time)}
                                     >
-                                        {timeSlot.time}<br />{timeSlot.past ? 'Expired' : '350K'}
+                                        {timeSlot.time}<br />{timeSlot.past ? 'Expired' : `${courtDetails.price} VND`}
                                     </td>
                                 ))}
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                <div id="selected-time">{selectedTime}</div>
             </div>
             {/* <!-- Modal --> */}
 
                 <div id="confirmationModal" className={isModalOpen ? 'modal active' : 'modal'}>
                     <div className="modal-content">
-                        <span className="close" onClick={closeModal}>&times;</span>
+                        <div className="close" onClick={closeModal}>&times;</div>
                         <p>Bạn có chắc chắn muốn chốt đơn không?</p>
+                        <div id="selected-time">{selectedTime}</div>
                         <button className="modal-button yes" onClick={confirmBooking}>YES</button>
                         <button className="modal-button no" onClick={closeModal}>NO</button>
                     </div>
