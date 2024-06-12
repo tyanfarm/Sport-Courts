@@ -1,0 +1,11 @@
+## REQUIREMENT:
+    NPM installed
+
+download these module before running:
+@material-ui/core
+@material-ui/icons
+ra-data-json-server
+react-admin
+
+just use this command:
+npm -f install @material-ui/core @material-ui/icons ra-data-json-server react-admin
