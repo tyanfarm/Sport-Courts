@@ -16,6 +16,14 @@ const ListCourts = () => {
     const [listCourts, setListCourts] = useState([]);
     const [selectedType, setSelectedType] = useState('all');
 
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    };
+
     useEffect(() => {
         fetchTypes();
         fetchCourts();
@@ -26,15 +34,6 @@ const ListCourts = () => {
     }, [selectedType]);
 
     const fetchTypes = async () => {
-        const requestOptions = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        };
-
-
         fetch(localhost + `/api/v1/Category/types/${sportName}`, requestOptions)
             .then(res => res.json())
             .then(data => {
@@ -44,25 +43,33 @@ const ListCourts = () => {
             });
     }
 
+    const fetchCatId = async (type) => {
+        const response = await fetch(`${localhost}/api/v1/Category/getId/${sportName}/${type}`, requestOptions)
+        const data = await response.json();
+        return data;
+    }
+
     const fetchCourts = async (type = 'all') => {
-        const requestOptions = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        };
+        let url = "";
+        if (type !== 'all') {
+            const categoryId = await fetchCatId(type);
+            url = `${localhost}/api/v1/Court/category/${categoryId}`;
+            console.log(url);
+        }
+        else {
+            url = `${localhost}/api/v1/Court/category/${sportName}`;
+        }
 
-        let url = `${localhost}/api/v1/`
-
-
-        fetch(localhost + `/api/v1/Court/category/${sportName}`, requestOptions)
+        fetch(url, requestOptions)
             .then(res => res.json())
             .then(data => {
-                const dataArray = Array.isArray(data) ? data : [];
-
-                setListCourts(dataArray);
+                console.log(data)
+                setListCourts(data);
             });
+    }
+
+    const handleFilterClick = (type) => {
+        setSelectedType(type);
     }
 
     return (
@@ -75,16 +82,24 @@ const ListCourts = () => {
                     <h2 className="h2 section-title">All {sportName} Courts</h2>
 
                     <div className="filter-section">
-                        <button className="filter-btn" data-filter="all">All</button>
+                        <button className={`filter-btn ${selectedType === 'all' ? 'active' : ''}`} 
+                        onClick={() => handleFilterClick('all')}>All</button>
                         {listTypes && listTypes.map((item, index) => {
                             return (
-                                <button className="filter-btn">{item}</button>
+                                <button key={index} 
+                                className={`filter-btn ${selectedType === item ? 'active' : ''}`}
+                                onClick={() => handleFilterClick(item)}>
+                                    {item}
+                                </button>
                             )
                         })}
                     </div>
 
                     <ul className="grid-list">
-                        {listCourts && listCourts.map((item, index) => {
+                        {listCourts.length === 0 ? (
+                            <h1 className='font-semibold uppercase'>No Courts</h1>
+                        ) : (<></>)} 
+                        {listCourts.length !== 0 && listCourts.map((item, index) => {
                             return (
                                 <li className="list-products">
                                     {/* <Link to={`./${item.courtId}`}> */}
