@@ -1,11 +1,14 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { localhost } from '../../services/server';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './style.css';
+import { CartContext } from '../../contexts/cartContext';
 
 const Court = () => {
+
+    const { addToCart, isInCart } = useContext(CartContext);
 
     const courtId = useParams().courtId;        // Get CourtId
     const sportName = useParams().sportname;
@@ -76,8 +79,10 @@ const Court = () => {
     };
 
     const handleTimeSlotClick = (day, time) => {
-        setSelectedTime(`Selected time: ${day} ${time}`);
-        openModal();
+        setSelectedTime(`${day} ${time}`);
+        if (!isInCart(courtDetails.courtId, selectedTime)) {
+            openModal();
+        }
     };
 
     const handleDateChange = (event) => {
@@ -103,6 +108,7 @@ const Court = () => {
 
     const confirmBooking = () => {
         toast.success('Booking confirmed!');
+        addToCart(courtDetails, selectedTime);
         closeModal();
     };
 
@@ -171,8 +177,8 @@ const Court = () => {
                                 {(isMorning ? slot.times.morning : slot.times.afternoon).map((timeSlot, i) => (
                                     <td
                                         key={i}
-                                        className={`time-slot ${timeSlot.past ? 'past' : ''}`}
-                                        onClick={() => !timeSlot.past && handleTimeSlotClick(slot.fullDate, timeSlot.time)}
+                                        className={`time-slot ${timeSlot.past ? 'past' : ''} ${isInCart(courtDetails.courtId, `${slot.fullDate} ${timeSlot.time}`) ? 'in-cart' : ''}`}
+                                        onClick={() => !timeSlot.past && !isInCart(courtDetails.courtId, `${slot.fullDate} ${timeSlot.time}`) && handleTimeSlotClick(slot.fullDate, timeSlot.time)}
                                     >
                                         {timeSlot.time}<br />{timeSlot.past ? 'Expired' : `${courtDetails.price} VND`}
                                     </td>
@@ -188,7 +194,7 @@ const Court = () => {
                     <div className="modal-content">
                         <div className="close" onClick={closeModal}>&times;</div>
                         <p>Bạn có chắc chắn muốn chốt đơn không?</p>
-                        <div id="selected-time">{selectedTime}</div>
+                        <div id="selected-time">Selected time: {selectedTime}</div>
                         <button className="modal-button yes" onClick={confirmBooking}>YES</button>
                         <button className="modal-button no" onClick={closeModal}>NO</button>
                     </div>

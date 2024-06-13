@@ -2,9 +2,14 @@ import { useParams, Link } from 'react-router-dom';
 import { localhost } from '../../services/server';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { CartContext } from '../../contexts/cartContext';
 
 const Cart = () => {
+
+    const { cart } = useContext(CartContext);
+    console.log(cart);
+
     return (
         <div className="container mx-auto mt-10">
             <div className="flex shadow-md my-10">
@@ -19,36 +24,36 @@ const Cart = () => {
                         <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5">Price</h3>
                         <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5">Total</h3>
                     </div>
-                    {/* {
-                        carts?.map(cart => {
+                    {
+                        cart?.map((item, index) => {
                             return (
                                 <div className="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5">
                                     <div className="flex w-2/5">
                                         <div className="w-20">
-                                            <img className="h-24" src={cart?.image} alt={cart?.title} />
+                                            <img className="h-24" src={item?.court.image} alt={item?.court.courtId} />
                                         </div>
                                         <div className="flex flex-col justify-between ml-4 flex-grow">
-                                            <span className="font-bold text-sm">{cart?.title}</span>
-                                            <span className="text-red-500 text-xs capitalize">{cart?.category}</span>
-                                            <div className="font-semibold hover:text-red-500 text-gray-500 text-xs cursor-pointer" onClick={() => removeProduct(cart?.id)}>Remove</div>
+                                            <span className="font-bold text-sm">{item?.court.name}</span>
+                                            <span className="text-red-500 text-xs capitalize">{item?.court.catId}</span>
+                                            <div className="font-semibold hover:text-red-500 text-gray-500 text-xs cursor-pointer" /*onClick={()}*/>Remove</div>
                                         </div>
                                     </div>
                                     <div className="flex justify-center w-1/5">
-                                        <svg className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512" onClick={() => handleDec(cart?.id)}><path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
+                                        <svg className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512" /*onClick={()}*/><path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
                                         </svg>
 
-                                        <input className="mx-2 border text-center w-8" type="text" value={cart?.quantity} />
+                                        <input className="mx-2 border text-center w-8" type="text" value='1' />
 
-                                        <svg className="fill-current text-gray-600 w-3 cursor-pointer" onClick={() => handleInc(cart?.id)} viewBox="0 0 448 512">
+                                        <svg className="fill-current text-gray-600 w-3 cursor-pointer" /*onClick={()}*/ viewBox="0 0 448 512">
                                             <path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
                                         </svg>
                                     </div>
-                                    <span className="text-center w-1/5 font-semibold text-sm">${cart?.price}</span>
-                                    <span className="text-center w-1/5 font-semibold text-sm">${cart?.price * cart?.quantity}</span>
+                                    <span className="text-center w-1/5 font-semibold text-sm">${item?.court.price}</span>
+                                    <span className="text-center w-1/5 font-semibold text-sm">${item?.court.price}</span>
                                 </div>
                             )
                         })
-                    } */}
+                    }
                     <div className="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5">
                         <div className="flex w-2/5">
                             <div className="w-20">

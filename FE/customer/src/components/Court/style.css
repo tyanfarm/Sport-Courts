@@ -80,6 +80,12 @@
     cursor: not-allowed;
 }
 
+.time-slot.in-cart {
+    background-color: #f0ad4e;
+    color: #ffffff;
+    cursor: not-allowed;
+}
+
 .selected {
     background-color: #00796b;
     color: #fff;
