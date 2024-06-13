@@ -14,11 +14,16 @@ const ListCourts = () => {
 
     const [listTypes, setListTypes] = useState([]);
     const [listCourts, setListCourts] = useState([]);
+    const [selectedType, setSelectedType] = useState('all');
 
     useEffect(() => {
         fetchTypes();
         fetchCourts();
     }, [])
+
+    useEffect(() => {
+        fetchCourts(selectedType);
+    }, [selectedType]);
 
     const fetchTypes = async () => {
         const requestOptions = {
@@ -39,7 +44,7 @@ const ListCourts = () => {
             });
     }
 
-    const fetchCourts = async () => {
+    const fetchCourts = async (type = 'all') => {
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -47,6 +52,8 @@ const ListCourts = () => {
                 'Content-Type': 'application/json'
             }
         };
+
+        let url = `${localhost}/api/v1/`
 
 
         fetch(localhost + `/api/v1/Court/category/${sportName}`, requestOptions)

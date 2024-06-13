@@ -54,6 +54,12 @@ public class CategoryRepository : ICategoryRepository
         return types;  
     }
 
+    public async Task<string> GetBySportsAndType(string sportname, string type) {
+        var category = await _categoryCollection.Find(c => c.SportName == sportname && c.Type == type).FirstOrDefaultAsync();
+
+        return category.CatId;
+    }
+
 
     public async Task<Category> GetById(string id)
     {

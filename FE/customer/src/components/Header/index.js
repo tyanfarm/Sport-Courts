@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { CartContext } from '../../contexts/cartContext'
 
 const Header = () => {
+
+    const { cart } = useContext(CartContext);
+
     return (
         <header>
             <div className="inner">
@@ -19,7 +23,7 @@ const Header = () => {
             </div>
                     <a href="/cart" className="cart-button">
                         <img src="https://firebasestorage.googleapis.com/v0/b/sport-courts-ab2d8.appspot.com/o/cart.png?alt=media&token=f6cb50e1-b111-463e-8197-4eca147924a1" alt="Cart" className="cart-icon" />
-                        <span className="cart-count">0</span>
+                        <span className="cart-count">{cart.length}</span>
                     </a>
         </header>
     )

@@ -122,6 +122,26 @@ public class CategoryController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [Route("getId/{sportname}/{type}")]
+    public async Task<IActionResult> GetBySportsAndType(string sportname, string type) {
+        try
+        {
+            var catId = await _categoryRepository.GetBySportsAndType(sportname, type);
+
+            if (catId == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(catId);
+        }
+        catch
+        {
+            return StatusCode(500, "ERROR !");
+        }
+    }
+
     [HttpPost]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Create(IFormFile file, [FromForm] Category category)
