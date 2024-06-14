@@ -1,8 +1,15 @@
-import React, { act, useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { AuthContext } from '../../contexts/authContext';
+import { Navigate } from 'react-router-dom';
 
 const Profile = () => {
 
     const [activeTab, setActiveTab] = useState('dashboard');
+    const { auth } = useContext(AuthContext);
+
+    if (!auth.isAuthenticated) {
+        return <Navigate to="/login" /> 
+    }
 
     const renderContent = () => {
         switch (activeTab) {

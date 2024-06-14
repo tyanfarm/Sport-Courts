@@ -1,14 +1,17 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { localhost } from '../../services/server';
+import { AuthContext } from '../../contexts/authContext';
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isShowPassword, setIsShowPassword] = useState(false);
+    const { setAuth } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     // Get API
     const handleLogin = async () => {
@@ -29,12 +32,15 @@ const Login = () => {
         fetch(localhost + '/api/v1/Authentication/Login', requestOptions)
             .then(res => res.json())
             .then(data => {
-                if (data.result == true && data.token != null) {
+                if (data.result === true && data.token !== null && data.refreshToken !== null) {
                     toast.success("Login successfully");
-                    localStorage.setItem("token", data.token);
-                    return;
+                    console.log(data);
+                    setAuth({token: data.token, refreshToken: data.refreshToken, isAuthenticated: true});
+                    // navigate('/profile');
                 }
-                toast.error(data.errors[0]);
+                else {
+                    toast.error(data.errors[0]);
+                }
             });
     }
 

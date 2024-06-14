@@ -11,26 +11,29 @@ import Court from './components/Court';
 import Cart from './components/Cart';
 import { CartProvider } from './contexts/cartContext';
 import Profile from './components/Profile';
+import AuthProvider from './contexts/authContext';
 
 function App() {
   return (
     <div>
-      <CartProvider>
-        <Header/>
-        <BrowserRouter>
-          <Routes>
-            <Route index element={<Home/>} />
-            <Route path='/home' element={<Home/>} />
-            <Route path='/login' element={<Login/>} />
-            <Route path='/register' element={<Register/>} />
-            <Route path='/courts/sport/:name' element={<ListCourts/>}/>
-            <Route path='/courts/sport/:sportname/:courtId' element={<Court/>}></Route>
-            <Route path='/cart' element={<Cart/>}></Route>
-            <Route path='/profile' element={<Profile/>}></Route>
-          </Routes>
-        </BrowserRouter>
-        <Footer/>
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Header />
+          <BrowserRouter>
+            <Routes>
+              <Route index element={<Home />} />
+              <Route path='/home' element={<Home />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/register' element={<Register />} />
+              <Route path='/courts/sport/:name' element={<ListCourts />} />
+              <Route path='/courts/sport/:sportname/:courtId' element={<Court />}></Route>
+              <Route path='/cart' element={<Cart />}></Route>
+              <Route path='/profile' element={<Profile />}></Route>
+            </Routes>
+          </BrowserRouter>
+          <Footer />
+        </CartProvider>
+      </AuthProvider>
     </div>
   );
 }
