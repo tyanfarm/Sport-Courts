@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { localhost } from '../../services/server';
 import { AuthContext } from '../../contexts/authContext';
 import { useNavigate } from 'react-router-dom'
+import LoadingSpinner from '../../services/loadingSpinner';
 
 const Login = () => {
 
@@ -11,6 +12,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [isShowPassword, setIsShowPassword] = useState(false);
     const { setAuth } = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(false); // Add loading state
     const navigate = useNavigate();
 
     // Get API
@@ -19,6 +21,7 @@ const Login = () => {
             toast.error("Email/Password is required");
             return;
         }
+        setIsLoading(true); // Set loading state to true when the request starts
         const requestOptions = {
             method: 'POST',
             headers: { 
@@ -32,6 +35,7 @@ const Login = () => {
         fetch(localhost + '/api/v1/Authentication/Login', requestOptions)
             .then(res => res.json())
             .then(data => {
+                setIsLoading(false);
                 if (data.result === true && data.token !== null && data.refreshToken !== null) {
                     toast.success("Login successfully");
                     console.log(data);
@@ -46,6 +50,7 @@ const Login = () => {
 
     return (
         <div className="login-area">
+            {isLoading && <LoadingSpinner />} {/* Show the spinner when loading */}
             <ToastContainer/>
             <div className="login-container">
                 <h2 className="login-title">Login</h2>
