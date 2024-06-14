@@ -10,6 +10,7 @@ import ListCourts from './components/ListCourts';
 import Court from './components/Court';
 import Cart from './components/Cart';
 import { CartProvider } from './contexts/cartContext';
+import Profile from './components/Profile';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path='/courts/sport/:name' element={<ListCourts/>}/>
             <Route path='/courts/sport/:sportname/:courtId' element={<Court/>}></Route>
             <Route path='/cart' element={<Cart/>}></Route>
+            <Route path='/profile' element={<Profile/>}></Route>
           </Routes>
         </BrowserRouter>
         <Footer/>

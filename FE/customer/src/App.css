@@ -737,6 +737,203 @@ footer {
   background-color: #00796b;
 }
 
+/* PROFILE */
+.breadcrumb-area {
+  background-size: cover;
+  background-position: center;
+  padding: 20px 0;
+}
+
+.breadcrumb-item {
+  text-align: center;
+  color: #fff;
+}
+
+.breadcrumb-item h2 {
+  margin: 0;
+  font-size: 2em;
+}
+
+.breadcrumb-item ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+}
+
+.breadcrumb-item ul li {
+  display: inline;
+  color: #fff;
+}
+
+.breadcrumb-item ul li a {
+  color: #c0d678;
+  text-decoration: none;
+}
+
+.breadcrumb-item ul li i {
+  margin: 0 5px;
+}
+
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.section-space-y-axis-100 {
+  padding: 100px 0;
+}
+
+.nav.myaccount-tab-trigger {
+  list-style: none;
+  padding: 0;
+}
+
+.nav.myaccount-tab-trigger .nav-item {
+  margin-bottom: 10px;
+}
+
+.nav.myaccount-tab-trigger .nav-link {
+  display: block;
+  padding: 10px;
+  color: #000;
+  text-decoration: none;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.nav.myaccount-tab-trigger .nav-link.active {
+  background-color: #c0d678;
+  color: #fff;
+}
+
+.nav.myaccount-tab-trigger .nav-link:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.myaccount-tab-content {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.myaccount-dashboard,
+.myaccount-orders,
+.myaccount-address,
+.myaccount-details {
+  margin-bottom: 20px;
+}
+
+.myaccount-dashboard p {
+  margin: 0 0 10px;
+}
+
+.myaccount-dashboard a {
+  color: #c0d678;
+  text-decoration: none;
+}
+
+.myaccount-dashboard a:hover {
+  text-decoration: underline;
+}
+
+.small-title {
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table-bordered {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f4f4f4;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #000;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.btn-secondary {
+  background-color: #444;
+}
+
+.btn-primary-hover:hover {
+  background-color: #c0d678;
+  color: #000;
+}
+
+.single-input {
+  margin-bottom: 20px;
+}
+
+.single-input label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.single-input input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.single-input-half {
+  width: 48%;
+  float: left;
+}
+
+.single-input-half:first-child {
+  margin-right: 4%;
+}
+
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.address {
+  margin-bottom: 20px;
+}
+
+address {
+  font-style: normal;
+  line-height: 1.6;
+}
+
+.btn-custom-size {
+  padding: 15px 30px;
+}
+
+.rounded-0 {
+  border-radius: 0;
+}
+
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .grid-list {

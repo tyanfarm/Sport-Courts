@@ -15,7 +15,7 @@ const Header = () => {
                 <nav>
                     <ul>
                         <li><a href="/home" className="buttonLogin">HOME PAGE</a></li>
-                        <li><a href="" className="buttonLogin">MY ACCOUNT</a></li>
+                        <li><a href="/profile" className="buttonLogin">MY ACCOUNT</a></li>
                         <li><a href="/login" className="buttonRegister">SIGN IN</a></li>
                         <li><a href="/register" className="buttonRegister">SIGN UP</a></li>
                     </ul>
