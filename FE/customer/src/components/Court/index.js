@@ -108,7 +108,7 @@ const Court = () => {
 
     const confirmBooking = () => {
         toast.success('Booking confirmed!');
-        addToCart(courtDetails, selectedTime);
+        addToCart(courtDetails, sportName, selectedTime);
         closeModal();
     };
 

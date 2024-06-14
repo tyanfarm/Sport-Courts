@@ -14,8 +14,8 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem('cart', JSON.stringify(cart));
     }, [cart])      // đối số [cart] -> mỗi khi [cart] thay đổi thì sẽ run `useEffect()`
 
-    const addToCart = (court, time) => {
-        const updatedCart = [...cart, { court, time }];
+    const addToCart = (court, sport, time) => {
+        const updatedCart = [...cart, { court, sport, time }];
         setCart(updatedCart);
     }
 

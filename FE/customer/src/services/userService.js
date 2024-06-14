@@ -12,5 +12,11 @@ const checkPassword = (str) => {
     return containsNumber && containsUpperCase && containsSymbol;
 }
 
+const convertStringToInt = (str) => {
+    // Loại bỏ dấu phân cách và chuyển đổi thành số nguyên
+    const intValue = parseInt(str.replace(/,/g, ''), 10);
 
-export { checkPassword }
+    return intValue;
+}
+
+export { checkPassword, convertStringToInt }
