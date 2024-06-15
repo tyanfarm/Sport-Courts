@@ -13,7 +13,7 @@ public class UserController : ControllerBase {
     }
 
     [HttpGet]
-    [Route("/{token}")]
+    [Route("{token}")]
     public async Task<IActionResult> GetUser(string token) {
         var user = await _userRepository.GetUser(token);
 

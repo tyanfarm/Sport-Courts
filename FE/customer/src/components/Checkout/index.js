@@ -1,16 +1,43 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { CartContext } from '../../contexts/cartContext'
 import { convertStringToInt } from '../../services/userService';
+import { localhost } from '../../services/server';
 
 const Checkout = () => {
 
-    const { cart, removeFromCart } = useContext(CartContext);
+    const { cart } = useContext(CartContext);
+    const token = localStorage.getItem('AT');
+    const [user, setUser] = useState(Object);
     const [total, setTotal] = useState(0);
+    const [activePayment, setActivePayment] = useState('');
+
+    const handlePaymentClick = (paymentType) => {
+        setActivePayment(paymentType);
+    };
+
+    useEffect(() => {
+        fetchUser();
+    })
 
     useEffect(() => {
         const totalPrice = cart.reduce((acc, item) => acc + convertStringToInt(item.court.price), 0);
         setTotal(totalPrice);
     }, [cart])
+
+    const fetchUser = () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        };
+
+        fetch(`${localhost}/api/v1/User/${token}`, requestOptions)
+            .then(res => res.json())
+            .then(data => setUser(data));
+    }
+
 
     return (
         <div className="checkout-area section-space-y-axis-100">
@@ -41,19 +68,19 @@ const Checkout = () => {
                                     <div className="col-md-6">
                                         <div className="checkout-form-list">
                                             <label>Full Name <span className="required">*</span></label>
-                                            <input placeholder="" type="text" />
+                                            <input placeholder="Fullname" type="text" value={user.userName !== null ? user.userName : ''} />
                                         </div>
                                     </div>
                                     <div className="col-md-12">
                                         <div className="checkout-form-list">
                                             <label>Address <span className="required">*</span></label>
-                                            <input placeholder="Street address" type="text" />
+                                            <input placeholder="Street address" type="text" value={user.address !== null ? user.address : ''} />
                                         </div>
                                     </div>
                                     <div className="col-md-6">
                                         <div className="checkout-form-list">
                                             <label>Phone <span className="required">*</span></label>
-                                            <input type="text" />
+                                            <input type="text" value={user.phoneNumber !== null ? user.phoneNumber : ''} />
                                         </div>
                                     </div>
                                 </div>
@@ -78,7 +105,7 @@ const Checkout = () => {
                                                 <tr className="cart_item">
                                                     <td className="cart-product-name">{item.court.name}</td>
                                                     <td><strong className="product-quantity">{item.time}</strong></td>
-                                                    <td className="cart-product-total"><span className="amount">$165.00</span></td>
+                                                    <td className="cart-product-total"><span className="amount">{item.court.price} VNĐ</span></td>
                                                 </tr>
                                             )
                                         })}
@@ -88,71 +115,32 @@ const Checkout = () => {
                                         <tr className="cart-subtotal">
                                             <th>Cart Subtotal</th>
                                             <th></th>
-                                            <th><span className="amount">$215.00</span></th>
+                                            <th><span className="amount">{total.toLocaleString('en-US')} VNĐ</span></th>
                                         </tr>
                                         <tr className="order-total">
                                             <th>Order Total</th>
                                             <th></th>
-                                            <th><strong><span className="amount">$215.00</span></strong></th>
+                                            <th><strong><span className="amount">{total.toLocaleString('en-US')} VNĐ</span></strong></th>
                                         </tr>
                                     </tfoot>
                                 </table>
                             </div>
+                            
+                        </div>
+                    </div>
+                    <div className="col-lg-6 col-12">
+                        <div className="your-order">
+                            <h3>Payment</h3>
+                            <div className="payment-options">
+                                <button className={`payment-button ${activePayment === 'bank-transfer' ? 'active' : ''}`} id="bank-transfer"
+                                onClick={() => handlePaymentClick('bank-transfer')}>Direct Bank Transfer</button>
+                                <button className={`payment-button ${activePayment === 'cheque-payment' ? 'active' : ''}`} id="cheque-payment"
+                                onClick={() => handlePaymentClick('cheque-payment')}>By Cash</button>
+                                <button className={`payment-button ${activePayment === 'paypal' ? 'active' : ''}`} id="paypal"
+                                onClick={() => handlePaymentClick('paypal')}>Momo</button>
+                            </div>
                             <div className="payment-method">
                                 <div className="payment-accordion">
-                                    <div id="accordion">
-                                        <div className="card">
-                                            <div className="card-header" id="#payment-1">
-                                                <h5 className="panel-title">
-                                                    <a href="javascript:void(0)" className="" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true">
-                                                        Direct Bank Transfer.
-                                                    </a>
-                                                </h5>
-                                            </div>
-                                            <div id="collapseOne" className="collapse show" data-bs-parent="#accordion">
-                                                <div className="card-body">
-                                                    <p>Make your payment directly into our bank account. Please use your Order
-                                                        ID as the payment
-                                                        reference. Your order won’t be shipped until the funds have cleared in
-                                                        our account.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="card">
-                                            <div className="card-header" id="#payment-2">
-                                                <h5 className="panel-title">
-                                                    <a href="javascript:void(0)" className="collapsed" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false">
-                                                        Cheque Payment
-                                                    </a>
-                                                </h5>
-                                            </div>
-                                            <div id="collapseTwo" className="collapse" data-bs-parent="#accordion">
-                                                <div className="card-body">
-                                                    <p>Make your payment directly into our bank account. Please use your Order
-                                                        ID as the payment
-                                                        reference. Your order won’t be shipped until the funds have cleared in
-                                                        our account.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="card">
-                                            <div className="card-header" id="#payment-3">
-                                                <h5 className="panel-title">
-                                                    <a href="javascript:void(0)" className="collapsed" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false">
-                                                        PayPal
-                                                    </a>
-                                                </h5>
-                                            </div>
-                                            <div id="collapseThree" className="collapse" data-bs-parent="#accordion">
-                                                <div className="card-body">
-                                                    <p>Make your payment directly into our bank account. Please use your Order
-                                                        ID as the payment
-                                                        reference. Your order won’t be shipped until the funds have cleared in
-                                                        our account.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div className="order-button-payment">
                                         <input value="Place order" type="submit" />
                                     </div>

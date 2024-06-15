@@ -986,7 +986,7 @@ address {
 
 .coupon-inner_btn {
   background-color: #00796b;
-  color: #ccc;
+  color: #ffffff;
 }
 
 .coupon-inner_btn:hover {
@@ -1077,33 +1077,6 @@ address {
   margin-top: 20px;
 }
 
-.payment-accordion .card {
-  margin-bottom: 10px;
-}
-
-.payment-accordion .card-header {
-  background: #f8f8f8;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.payment-accordion .card-body {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-top: none;
-  display: none;
-}
-
-.payment-accordion .card-header a {
-  text-decoration: none;
-  color: #333;
-}
-
-.payment-accordion .card-header a.collapsed {
-  color: #3498db;
-}
-
 .order-button-payment {
   text-align: right;
   margin-top: 20px;
@@ -1129,7 +1102,35 @@ address {
   }
 }
 
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #fff;
+  padding: 20px;
+}
 
+/* Payment Buttons */
+.payment-button {
+  background-color: #00796b;
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-transform: uppercase;
+}
+
+.payment-button:hover {
+  opacity: 0.7;
+}
+
+.payment-button.active {
+  background-color: #c0d678;
+  opacity: 1;
+}
 
 /* Responsive styles */
 @media (max-width: 768px) {
