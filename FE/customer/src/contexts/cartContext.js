@@ -1,4 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const CartContext = createContext();
 
@@ -22,6 +24,7 @@ export const CartProvider = ({ children }) => {
     const removeFromCart = (court, time) => {
         const updatedCart = cart.filter(item => item.court.courtId !== court.courtId || item.time != time);
         setCart(updatedCart);
+        toast.info("Remove successfully");
     }
 
     const isInCart = (courtId, time) => {

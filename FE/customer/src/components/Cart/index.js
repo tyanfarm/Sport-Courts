@@ -1,5 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
-import { localhost } from '../../services/server';
+import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import React, { useState, useEffect, useContext } from 'react';
@@ -8,6 +7,7 @@ import { convertStringToInt } from '../../services/userService';
 
 const Cart = () => {
 
+    const navigate = useNavigate();
     const { cart, removeFromCart } = useContext(CartContext);
     const [total, setTotal] = useState(0);
 
@@ -19,6 +19,7 @@ const Cart = () => {
 
     return (
         <div className="container mx-auto mt-10">
+            <ToastContainer/>
             <div className="flex shadow-md my-10">
                 <div className="w-3/4 bg-white px-10 py-10">
                     {cart.length !== 0 ? (
@@ -42,11 +43,11 @@ const Cart = () => {
                         ) : (
                             cart?.map((item, index) => {
                                 return (
-                                    <a href={`/courts/sport/${item.sport}/${item.court.courtId}`} className="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5">
+                                    <div className="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5">
                                         <div className="flex w-2/5">
-                                            <div className="w-20">
+                                            <a href={`/courts/sport/${item.sport}/${item.court.courtId}`} className="w-20">
                                                 <img className="h-24" src={item?.court.image} alt={item?.court.courtId} />
-                                            </div>
+                                            </a>
                                             <div className="flex flex-col justify-between ml-4 flex-grow">
                                                 <span className="font-bold text-sm">{item?.court.name}</span>
                                                 <span className="text-red-500 text-xs capitalize">{item?.court.catId}</span>
@@ -56,7 +57,7 @@ const Cart = () => {
                                         <span className="text-center w-1/5 font-semibold text-sm">{item?.time}</span>
                                         <span className="text-center w-1/5 font-semibold text-sm">{item?.sport}</span>
                                         <span className="text-center w-1/5 font-semibold text-sm">{item?.court.price} VNĐ</span>
-                                    </a>
+                                    </div>
                                 )
                             })
                         )
@@ -91,7 +92,9 @@ const Cart = () => {
                                     <span >Total cost</span>
                                     <span style={{fontSize: '17px' }}>{total.toLocaleString('en-US')} VNĐ</span>
                                 </div>
-                                <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">Checkout</button>
+                                <a href="checkout">
+                                    <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">Checkout</button>
+                                </a>
                             </div>
                         </div>
                     </>

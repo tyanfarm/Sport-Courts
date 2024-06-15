@@ -961,11 +961,15 @@ address {
   text-decoration: underline;
 }
 
-.coupon-content, .coupon-checkout-content {
+.coupon-content {
   display: none;
   padding: 15px;
   border-top: 1px solid #ddd;
   margin-top: 10px;
+}
+
+.coupon-content .active {
+  display: block;
 }
 
 .coupon-info p {
@@ -978,6 +982,16 @@ address {
   margin-bottom: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+
+.coupon-inner_btn {
+  background-color: #00796b;
+  color: #ccc;
+}
+
+.coupon-inner_btn:hover {
+  background-color: #00b395;
+  cursor: pointer;
 }
 
 /* Billing Details Form */

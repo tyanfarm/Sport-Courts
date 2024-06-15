@@ -1,36 +1,25 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { CartContext } from '../../contexts/cartContext'
+import { convertStringToInt } from '../../services/userService';
 
 const Checkout = () => {
+
+    const { cart, removeFromCart } = useContext(CartContext);
+    const [total, setTotal] = useState(0);
+
+    useEffect(() => {
+        const totalPrice = cart.reduce((acc, item) => acc + convertStringToInt(item.court.price), 0);
+        setTotal(totalPrice);
+    }, [cart])
+
     return (
         <div className="checkout-area section-space-y-axis-100">
             <div className="checkout-container">
                 <div className="row">
                     <div className="col-12">
                         <div className="coupon-accordion">
-                            <h3>Returning customer? <span id="showlogin">Click here to login</span></h3>
-                            <div id="checkout-login" className="coupon-content">
-                                <div className="coupon-info">
-                                    <p className="coupon-text mb-1">Quisque gravida turpis sit amet nulla posuere lacinia. Cras sed est
-                                        sit amet ipsum luctus.</p>
-                                    <form action="javascript:void(0)">
-                                        <p className="form-row-first">
-                                            <label className="mb-1">Username or email <span className="required">*</span></label>
-                                            <input type="text" />
-                                        </p>
-                                        <p className="form-row-last">
-                                            <label>Password <span className="required">*</span></label>
-                                            <input type="text" />
-                                        </p>
-                                        <p className="form-row">
-                                            <input type="checkbox" id="remember_me" />
-                                            <label for="remember_me">Remember me</label>
-                                        </p>
-                                        <p className="lost-password"><a href="javascript:void(0)">Lost your password?</a></p>
-                                    </form>
-                                </div>
-                            </div>
-                            <h3>Have a coupon? <span id="showcoupon">Click here to enter your code</span></h3>
-                            <div id="checkout_coupon" className="coupon-checkout-content">
+                            <h3>Have a coupon? <span id="showcoupon">Don't wait any longer and enter right now</span></h3>
+                            <div id="checkout_coupon active" className="coupon-checkout-content">
                                 <div className="coupon-info">
                                     <form action="javascript:void(0)">
                                         <p className="checkout-coupon">
@@ -78,30 +67,33 @@ const Checkout = () => {
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th className="cart-product-name">Product</th>
+                                            <th className="cart-product-name">Court</th>
+                                            <th className="cart-product-name">Time</th>
                                             <th className="cart-product-total">Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr className="cart_item">
-                                            <td className="cart-product-name"> Vestibulum suscipit<strong className="product-quantity">
-                                                × 1</strong></td>
-                                            <td className="cart-product-total"><span className="amount">$165.00</span></td>
-                                        </tr>
-                                        <tr className="cart_item">
-                                            <td className="cart-product-name"> Vestibulum suscipit<strong className="product-quantity">
-                                                × 1</strong></td>
-                                            <td className="cart-product-total"><span className="amount">$165.00</span></td>
-                                        </tr>
+                                        {cart.map(item => {
+                                            return (
+                                                <tr className="cart_item">
+                                                    <td className="cart-product-name">{item.court.name}</td>
+                                                    <td><strong className="product-quantity">{item.time}</strong></td>
+                                                    <td className="cart-product-total"><span className="amount">$165.00</span></td>
+                                                </tr>
+                                            )
+                                        })}
+
                                     </tbody>
                                     <tfoot>
                                         <tr className="cart-subtotal">
                                             <th>Cart Subtotal</th>
-                                            <td><span className="amount">$215.00</span></td>
+                                            <th></th>
+                                            <th><span className="amount">$215.00</span></th>
                                         </tr>
                                         <tr className="order-total">
                                             <th>Order Total</th>
-                                            <td><strong><span className="amount">$215.00</span></strong></td>
+                                            <th></th>
+                                            <th><strong><span className="amount">$215.00</span></strong></th>
                                         </tr>
                                     </tfoot>
                                 </table>
