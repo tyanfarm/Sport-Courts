@@ -17,7 +17,6 @@ const Cart = () => {
         setTotal(totalPrice);
     }, [cart]);
 
-    console.log(total)
     return (
         <div className="container mx-auto mt-10">
             <div className="flex shadow-md my-10">

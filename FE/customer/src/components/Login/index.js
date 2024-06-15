@@ -37,10 +37,9 @@ const Login = () => {
             .then(data => {
                 setIsLoading(false);
                 if (data.result === true && data.token !== null && data.refreshToken !== null) {
-                    toast.success("Login successfully");
-                    console.log(data);
                     setAuth({token: data.token, refreshToken: data.refreshToken, isAuthenticated: true});
-                    // navigate('/profile');
+                    // toast.success("Login successfully");
+                    navigate('/profile', { state: { message: 'Login successfully'} });
                 }
                 else {
                     toast.error(data.errors[0]);

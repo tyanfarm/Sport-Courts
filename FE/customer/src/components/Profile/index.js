@@ -1,11 +1,21 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../contexts/authContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Profile = () => {
 
+    const location = useLocation();
     const [activeTab, setActiveTab] = useState('dashboard');
-    const { auth } = useContext(AuthContext);
+    const { auth, logOut } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (location.state && location.state.message) {
+            const { message } = location.state;
+            toast.success(message);
+        }
+    })
 
     if (!auth.isAuthenticated) {
         return <Navigate to="/login" /> 
@@ -26,6 +36,7 @@ const Profile = () => {
 
     return (
         <div>
+            <ToastContainer/>
             <main className="profile-content">
                 <div className="account-page-area section-space-y-axis-100">
                     <div className="profile-container">
@@ -42,7 +53,7 @@ const Profile = () => {
                                         <a onClick={() => setActiveTab('accountDetails')} className={`nav-link ${activeTab === 'accountDetails' ? 'active' : ''}`} id="account-details-tab" data-bs-toggle="tab" role="tab" aria-controls="account-details" aria-selected="false">Account Details</a>
                                     </li>
                                     <li className="nav-item">
-                                        <a className="nav-link" id="account-logout-tab" href="login-register.html" role="tab" aria-selected="false">Logout</a>
+                                        <a onClick={() => {logOut()}} className="nav-link" id="account-logout-tab" href="/home" role="tab" aria-selected="false">Logout</a>
                                     </li>
                                 </ul>
                                 <div className='profile-content-area'>

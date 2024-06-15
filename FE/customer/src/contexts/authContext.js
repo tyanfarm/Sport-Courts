@@ -22,8 +22,13 @@ const AuthProvider = ({ children }) => {
         }
     }, [auth.token, auth.refreshToken])
 
+    const logOut = () => {
+        localStorage.removeItem('AT');
+        localStorage.removeItem('RT');
+    }
+
     return (
-        <AuthContext.Provider value={{ auth, setAuth }}>
+        <AuthContext.Provider value={{ auth, setAuth, logOut }}>
             {children}
         </AuthContext.Provider>
     );
