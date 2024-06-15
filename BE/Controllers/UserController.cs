@@ -13,8 +13,20 @@ public class UserController : ControllerBase {
     }
 
     [HttpGet]
+    [Route("/{token}")]
     public async Task<IActionResult> GetUser(string token) {
         var user = await _userRepository.GetUser(token);
+
+        if (user == null) {
+            return NotFound();
+        }
+
+        return Ok(user);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers() {
+        var user = await _userRepository.GetAllUsers();
 
         if (user == null) {
             return NotFound();

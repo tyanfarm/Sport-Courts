@@ -31,6 +31,10 @@ public class UserRepository : IUserRepository {
 
         return user;
     }
+
+    public async Task<List<ApplicationUser>> GetAllUsers() {
+        return _userManager.Users.ToList();
+    }
     
     public async Task<ApplicationUser> GetUserByIdAsync(string userId) {
         return await _userManager.FindByIdAsync(userId);
