@@ -24,7 +24,7 @@ public class UserController : ControllerBase {
         return Ok(user);
     }
 
-    [HttpGet]
+    [HttpGet]                                   
     public async Task<IActionResult> GetAllUsers() {
         var user = await _userRepository.GetAllUsers();
 

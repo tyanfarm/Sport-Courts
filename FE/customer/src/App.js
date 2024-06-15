@@ -12,6 +12,7 @@ import Cart from './components/Cart';
 import { CartProvider } from './contexts/cartContext';
 import Profile from './components/Profile';
 import AuthProvider from './contexts/authContext';
+import Checkout from './components/Checkout';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               <Route path='/courts/sport/:sportname/:courtId' element={<Court />}></Route>
               <Route path='/cart' element={<Cart />}></Route>
               <Route path='/profile' element={<Profile />}></Route>
+              <Route path='/checkout' element={<Checkout />}></Route>
             </Routes>
           </BrowserRouter>
           <Footer />

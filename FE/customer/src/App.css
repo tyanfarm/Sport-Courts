@@ -929,6 +929,193 @@ address {
   100% { transform: rotate(360deg); }
 }
 
+/* CHECKOUT */
+.checkout-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+.section-space-y-axis-100 {
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+
+/* Coupon Accordion */
+.coupon-accordion {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.coupon-accordion h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.coupon-accordion h3 span {
+  color: #3498db;
+  text-decoration: underline;
+}
+
+.coupon-content, .coupon-checkout-content {
+  display: none;
+  padding: 15px;
+  border-top: 1px solid #ddd;
+  margin-top: 10px;
+}
+
+.coupon-info p {
+  margin-bottom: 10px;
+}
+
+.coupon-info input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Billing Details Form */
+.checkbox-form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.checkbox-form h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.checkbox-form .checkout-form-list {
+  margin-bottom: 15px;
+}
+
+.checkbox-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.checkbox-form input, 
+.checkbox-form select, 
+.checkbox-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.country-select .nice-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.create-acc {
+  margin-top: 20px;
+}
+
+.create-account {
+  display: none;
+  margin-top: 15px;
+}
+
+/* Order Summary */
+.your-order {
+  background: #fff;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.your-order h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.your-order-table table {
+  width: 100%;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+}
+
+.your-order-table th, 
+.your-order-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.your-order-table th {
+  background: #f8f8f8;
+  text-align: left;
+}
+
+.payment-method {
+  margin-top: 20px;
+}
+
+.payment-accordion .card {
+  margin-bottom: 10px;
+}
+
+.payment-accordion .card-header {
+  background: #f8f8f8;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.payment-accordion .card-body {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-top: none;
+  display: none;
+}
+
+.payment-accordion .card-header a {
+  text-decoration: none;
+  color: #333;
+}
+
+.payment-accordion .card-header a.collapsed {
+  color: #3498db;
+}
+
+.order-button-payment {
+  text-align: right;
+  margin-top: 20px;
+}
+
+.order-button-payment input[type="submit"] {
+  background: #3498db;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.order-button-payment input[type="submit"]:hover {
+  background: #2980b9;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .checkbox-form, .your-order {
+      margin-bottom: 20px;
+  }
+}
+
+
 
 /* Responsive styles */
 @media (max-width: 768px) {
