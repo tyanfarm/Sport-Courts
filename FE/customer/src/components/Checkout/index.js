@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const Checkout = () => {
     const [isLoading, setIsLoading] = useState(false); // Add loading state
 
-    const { cart } = useContext(CartContext);
+    const { cart, clearCart } = useContext(CartContext);
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
     const token = localStorage.getItem('AT');
@@ -107,7 +107,8 @@ const Checkout = () => {
         }
 
         setIsLoading(false);
-
+        clearCart();
+        navigate('/home', { state: { message: 'Thank you for your order'} });
     }
 
     return (

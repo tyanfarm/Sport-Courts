@@ -31,8 +31,12 @@ export const CartProvider = ({ children }) => {
         return cart.some(item => item.court.courtId === courtId && item.time === time);;
     };
 
+    const clearCart = () => {
+        setCart([]);
+    }
+
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart, isInCart }}>
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, isInCart, clearCart }}>
             {children}
         </CartContext.Provider>
     )
