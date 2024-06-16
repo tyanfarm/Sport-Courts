@@ -4,11 +4,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import React, { useState, useEffect, useContext } from 'react';
 import { CartContext } from '../../contexts/cartContext';
 import { convertStringToInt } from '../../services/userService';
+import { AuthContext } from '../../contexts/authContext';
 
 const Cart = () => {
 
     const navigate = useNavigate();
     const { cart, removeFromCart } = useContext(CartContext);
+    const { auth } = useContext(AuthContext);
     const [total, setTotal] = useState(0);
 
     useEffect(() => {
@@ -16,6 +18,19 @@ const Cart = () => {
         const totalPrice = cart.reduce((acc, item) => acc + convertStringToInt(item.court.price), 0);
         setTotal(totalPrice);
     }, [cart]);
+
+    const handleNavigation = () => {
+        window.scrollTo(0, 0);
+
+        if (!auth.isAuthenticated) {
+            navigate('/login');
+        }
+        else {
+            navigate('/checkout');
+        }
+
+    }
+    
 
     return (
         <div className="container mx-auto mt-10">
@@ -92,9 +107,9 @@ const Cart = () => {
                                     <span >Total cost</span>
                                     <span style={{fontSize: '17px' }}>{total.toLocaleString('en-US')} VNĐ</span>
                                 </div>
-                                <a href="checkout">
-                                    <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">Checkout</button>
-                                </a>
+                                <div >
+                                    <button onClick={() => handleNavigation()} className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">Checkout</button>
+                                </div>
                             </div>
                         </div>
                     </>

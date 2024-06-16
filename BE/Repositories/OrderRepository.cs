@@ -25,9 +25,10 @@ public class OrderRepository : IOrderRepository
     {
         // Check customerID & TransactStatusID
         var isCustomerOccur = await _userManager.FindByIdAsync(order.CustomerId);
-        var isStatusOccur = await _transactStatusCollection.Find(t => t.TransactStatusId == order.TransactStatusId).FirstOrDefaultAsync();
+        // Default Status
+        order.TransactStatusId = "66422093e8954ff9bba2bf5d";
 
-        if (isCustomerOccur == null || isStatusOccur == null) {
+        if (isCustomerOccur == null) {
             return false;
         }
 

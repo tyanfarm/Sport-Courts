@@ -62,7 +62,7 @@ public class OrderdetailsController : ControllerBase {
     }
 
     [HttpPatch("{id:length(24)}")]
-    public async Task<IActionResult> Update(string id, string? orderId, string? courtId, int? totalMoney, DateTime? usedDate) {
+    public async Task<IActionResult> Update(string id, string? orderId, string? courtId, int? totalMoney, string? usedDate) {
         try {
             var result = await _orderdetailsRepository.Update(id, orderId, courtId, totalMoney, usedDate);
 

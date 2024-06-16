@@ -18,5 +18,5 @@ public class Orderdetails {
 
     public int TotalMoney {get; set;}
 
-    public DateTime UsedDate {get; set;}
+    public string? UsedDate {get; set;}
 }

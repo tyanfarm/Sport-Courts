@@ -348,10 +348,18 @@ header .cart-count {
 }
 
 /* LOGIN */
-.login-area {
+.login-area,
+.register-area {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.login-area {
+  height: 88vh;
+}
+
+.register-area {
   height: 100vh;
 }
 

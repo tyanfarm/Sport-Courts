@@ -207,7 +207,9 @@ public class AuthenticationController : ControllerBase {
                      // email receiver - Subject (chủ đề) - Content (nội dung mail)
                     await _emailSender.SendEmailAsync(newUser.Email, subject, body);
 
-                    return Ok("Send email successfully");
+                    return Ok(new AuthResult() {
+                        Result = true
+                    });
                 }
                 catch {
                     return BadRequest(new AuthResult() {

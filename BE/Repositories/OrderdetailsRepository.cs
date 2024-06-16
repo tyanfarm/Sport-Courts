@@ -59,7 +59,7 @@ public class OrderdetailsRepository : IOrderdetailsRepository
         return detail;
     }
 
-    public async Task<bool> Update(string id, string? orderId, string? courtId, int? totalMoney, DateTime? usedDate)
+    public async Task<bool> Update(string id, string? orderId, string? courtId, int? totalMoney, string? usedDate)
     {
         Order? isOrderOccur = null;
         Court? isCourtOccur = null;
@@ -99,7 +99,7 @@ public class OrderdetailsRepository : IOrderdetailsRepository
         }
 
         if (usedDate != null) {
-            updateDefinitions.Add(Builders<Orderdetails>.Update.Set(o => o.UsedDate, usedDate.Value));
+            updateDefinitions.Add(Builders<Orderdetails>.Update.Set(o => o.UsedDate, usedDate));
         }
 
         var updateDefinition = Builders<Orderdetails>.Update.Combine(updateDefinitions);

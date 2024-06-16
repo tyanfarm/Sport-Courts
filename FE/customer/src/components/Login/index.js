@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { localhost } from '../../services/server';
@@ -8,12 +8,21 @@ import LoadingSpinner from '../../services/loadingSpinner';
 
 const Login = () => {
 
+    const { auth } = useContext(AuthContext);
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isShowPassword, setIsShowPassword] = useState(false);
     const { setAuth } = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(false); // Add loading state
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (auth.isAuthenticated) {
+            window.scrollTo(0, 0);
+            navigate('/profile');
+        }
+    })
 
     // Get API
     const handleLogin = async () => {

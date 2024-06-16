@@ -2,12 +2,18 @@ import React, { useContext, useEffect, useState } from 'react'
 import { CartContext } from '../../contexts/cartContext'
 import { convertStringToInt } from '../../services/userService';
 import { localhost } from '../../services/server';
+import { AuthContext } from '../../contexts/authContext';
+import LoadingSpinner from '../../services/loadingSpinner';
+import { useNavigate } from 'react-router-dom';
 
 const Checkout = () => {
+    const [isLoading, setIsLoading] = useState(false); // Add loading state
 
     const { cart } = useContext(CartContext);
+    const { auth } = useContext(AuthContext);
+    const navigate = useNavigate();
     const token = localStorage.getItem('AT');
-    const [user, setUser] = useState(Object);
+    const [user, setUser] = useState({});
     const [total, setTotal] = useState(0);
     const [activePayment, setActivePayment] = useState('');
 
@@ -16,15 +22,22 @@ const Checkout = () => {
     };
 
     useEffect(() => {
+
+        if (!auth.isAuthenticated) {
+            window.scrollTo(0, 0);
+            navigate('/login');
+        }
+
         fetchUser();
     })
 
     useEffect(() => {
         const totalPrice = cart.reduce((acc, item) => acc + convertStringToInt(item.court.price), 0);
         setTotal(totalPrice);
+
     }, [cart])
 
-    const fetchUser = () => {
+    const fetchUser = async () => {
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -38,9 +51,68 @@ const Checkout = () => {
             .then(data => setUser(data));
     }
 
+    const postOrder = async () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 
+                'Accept': 'application/json',
+                'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                customerId: user.id,
+                payment: activePayment,
+                paid: false,
+                totalMoney: total
+            })
+        };
+
+        const response = await fetch(`${localhost}/api/v1/Order`, requestOptions);
+        const data = await response.json();
+        console.log(data);
+        return data;
+    }
+
+    const postOrderDetails = async (detail) => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                orderId: detail.orderId,
+                courtId: detail.courtId,
+                totalMoney: detail.totalMoney,
+                usedDate: detail.usedDate
+            })
+        };
+
+        const response = await fetch(`${localhost}/api/v1/Orderdetails`, requestOptions);
+        const data = await response.json();
+        console.log(data);
+    }
+
+    const handleCheckout = async () => {
+        setIsLoading(true); // Set loading state to true when the request starts
+        const createdOrder = await postOrder();
+
+        const details = cart.map(item => ({
+            orderId: createdOrder.orderId,
+            courtId: item.court.courtId,
+            totalMoney: convertStringToInt(item.court.price),
+            usedDate: item.time
+        }));
+        
+        for (const detail of details) {
+            await postOrderDetails(detail);
+        }
+
+        setIsLoading(false);
+
+    }
 
     return (
         <div className="checkout-area section-space-y-axis-100">
+            {isLoading && <LoadingSpinner />} {/* Show the spinner when loading */}
             <div className="checkout-container">
                 <div className="row">
                     <div className="col-12">
@@ -74,13 +146,13 @@ const Checkout = () => {
                                     <div className="col-md-12">
                                         <div className="checkout-form-list">
                                             <label>Address <span className="required">*</span></label>
-                                            <input placeholder="Street address" type="text" value={user.address !== null ? user.address : ''} />
+                                            <input placeholder="Address" type="text" value={user.address !== null ? user.address : ''} />
                                         </div>
                                     </div>
                                     <div className="col-md-6">
                                         <div className="checkout-form-list">
                                             <label>Phone <span className="required">*</span></label>
-                                            <input type="text" value={user.phoneNumber !== null ? user.phoneNumber : ''} />
+                                            <input placeholder="Phone number" type="text" value={user.phoneNumber !== null ? user.phoneNumber : ''} />
                                         </div>
                                     </div>
                                 </div>
@@ -142,7 +214,7 @@ const Checkout = () => {
                             <div className="payment-method">
                                 <div className="payment-accordion">
                                     <div className="order-button-payment">
-                                        <input value="Place order" type="submit" />
+                                        <input onClick={() => handleCheckout()} value="Place order" type="submit" />
                                     </div>
                                 </div>
                             </div>

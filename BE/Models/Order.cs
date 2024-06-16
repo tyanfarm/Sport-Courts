@@ -18,6 +18,8 @@ public class Order {
     [BsonElement("TransactStatusID")]
     public string? TransactStatusId {get; set;}
 
+    public string? Payment {get; set;}
+
     public bool Paid {get; set;}
 
     public int TotalMoney {get; set;}
