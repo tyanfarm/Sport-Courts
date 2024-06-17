@@ -158,41 +158,65 @@ const Orders = ({ orders }) => {
     );
 };
 
-const AccountDetails = () => (
-    <div className="tab-pane fade" id="account-details" role="tabpanel" aria-labelledby="account-details-tab">
-        <div className="myaccount-details">
-            <form action="#" className="myaccount-form">
-                <div className="myaccount-form-inner">
-                    <div className="single-input">
-                        <label>Full Name*</label>
-                        <input type="text" />
+const AccountDetails = () => {
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+
+    return (
+        <div className="tab-pane fade" id="account-details" role="tabpanel" aria-labelledby="account-details-tab">
+            <div className="myaccount-details">
+                <form action="#" className="myaccount-form">
+                    <div className="myaccount-form-inner">
+                        <div className="single-input">
+                            <label>Full Name*</label>
+                            <input 
+                                type="text" 
+                                onChange={(e) => setFullName(e.target.value)}
+                            />
+                        </div>
+                        <div className="single-input">
+                            <label>Email*</label>
+                            <input 
+                                type="email"
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                        <div className="single-input">
+                            <label>Current Password</label>
+                            <input 
+                                type="password" 
+                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                />
+                        </div>
+                        <div className="single-input">
+                            <label>New Password</label>
+                            <input
+                                type="password" 
+                                onChange={(e) => setNewPassword(e.target.value)}
+                            />
+                        </div>
+                        <div className="single-input">
+                            <label>Confirm New Password</label>
+                            <input
+                                type="password" 
+                                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                            />
+                        </div>
+                        <div className="single-input">
+                            <button className="btn btn-custom-size lg-size btn-secondary btn-primary-hover rounded-0" type="submit">
+                                <span>SAVE CHANGES</span>
+                            </button>
+                        </div>
                     </div>
-                    <div className="single-input">
-                        <label>Email*</label>
-                        <input type="email" />
-                    </div>
-                    <div className="single-input">
-                        <label>Current Password</label>
-                        <input type="password" />
-                    </div>
-                    <div className="single-input">
-                        <label>New Password</label>
-                        <input type="password" />
-                    </div>
-                    <div className="single-input">
-                        <label>Confirm New Password</label>
-                        <input type="password" />
-                    </div>
-                    <div className="single-input">
-                        <button className="btn btn-custom-size lg-size btn-secondary btn-primary-hover rounded-0" type="submit">
-                            <span>SAVE CHANGES</span>
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
-);
+    )
+};
 
 export default Profile
 
