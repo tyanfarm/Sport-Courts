@@ -13,6 +13,7 @@ import { CartProvider } from './contexts/cartContext';
 import Profile from './components/Profile';
 import AuthProvider from './contexts/authContext';
 import Checkout from './components/Checkout';
+import OrderDetails from './components/OrderDetails';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
               <Route path='/courts/sport/:sportname/:courtId' element={<Court />}></Route>
               <Route path='/cart' element={<Cart />}></Route>
               <Route path='/profile' element={<Profile />}></Route>
+              <Route path='/orderdetails/orderId/:id' element={<OrderDetails />}></Route>
               <Route path='/checkout' element={<Checkout />}></Route>
             </Routes>
           </BrowserRouter>

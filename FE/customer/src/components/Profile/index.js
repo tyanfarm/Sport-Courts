@@ -142,7 +142,8 @@ const Orders = ({ orders }) => {
                                                 <td>{formatDate(item.orderDate)}</td>
                                                 <td>{item.transactStatus.status}</td>
                                                 <td>{item.totalMoney.toLocaleString('en-US')} VNĐ</td>
-                                                <td><a href="javascript:void(0)" className="btn btn-secondary btn-primary-hover"><span>View</span></a>
+                                                <td>
+                                                    <a href={`/orderdetails/orderId/${item.orderId}`} className="btn btn-secondary btn-primary-hover"><span>View</span></a>
                                                 </td>
                                             </tr>
                                         )

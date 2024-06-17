@@ -1110,6 +1110,12 @@ address {
   background: #2980b9;
 }
 
+.details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 15px 170px;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
   .checkbox-form, .your-order {
