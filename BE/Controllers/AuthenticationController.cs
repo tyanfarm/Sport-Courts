@@ -347,16 +347,16 @@ public class AuthenticationController : ControllerBase {
     }
 
     [HttpPost]
-    [Route("ResetPassword")]
-    public async Task<IActionResult> ResetPasswordUser(string token, string newPassword) {
+    [Route("ChangePassword")]
+    public async Task<IActionResult> ChangePasswordUser(string token, string newPassword) {
         try {
-            var result = await _userRepository.ResetPasswordUser(token, newPassword);
+            var result = await _userRepository.ChangePasswordUser(token, newPassword);
 
             if (result == false) {
                 return NotFound();
             }
 
-            return Ok("Reset Password Successfully");
+            return Ok("Change Password Successfully");
         }
         catch {
             return StatusCode(500, "ERROR");

@@ -36,7 +36,7 @@ public class UserRepository : IUserRepository {
         return _userManager.Users.ToList();
     }
     
-    public async Task<bool> ResetPasswordUser(string token, string newPassword) {
+    public async Task<bool> ChangePasswordUser(string token, string newPassword) {
         var jwtTokenHanlder = new JwtSecurityTokenHandler();
 
         var userId = jwtTokenHanlder.ReadJwtToken(token)
