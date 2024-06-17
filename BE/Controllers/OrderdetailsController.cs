@@ -29,6 +29,25 @@ public class OrderdetailsController : ControllerBase {
         }
     }
 
+    [HttpGet]
+    [Route("orders/{orderId}")]
+    public async Task<IActionResult> GetByOrderId(string orderId) {
+        // var details = await _orderdetailsRepository.GetByOrderId(orderId);
+        // return Ok(details);
+        try {
+            var details = await _orderdetailsRepository.GetByOrderId(orderId);
+
+            if (details == null) {
+                return NotFound();
+            }
+
+            return Ok(details);
+        }   
+        catch {
+            return StatusCode(500, "ERROR");
+        }
+    }
+
     [HttpGet("{id:length(24)}")]
     public async Task<IActionResult> GetById(string id) {
         try {

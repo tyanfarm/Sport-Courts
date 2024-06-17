@@ -51,6 +51,22 @@ public class OrderdetailsRepository : IOrderdetailsRepository
         return details;
     }
 
+    public async Task<List<Orderdetails>> GetByOrderId(string orderId) {
+        var aggregate = _orderdetailsCollection.Aggregate()
+            .Match(orderdetails => orderdetails.OrderId == orderId)
+            .Lookup<Orderdetails, Court, Orderdetails>(
+                _courtCollection,
+                orderdetails => orderdetails.CourtId,
+                court => court.CourtId,
+                orderdetails => orderdetails.Court
+            )
+            .Unwind<Orderdetails, Orderdetails>(orderdetails => orderdetails.Court)
+            .As<Orderdetails>();
+
+        return await aggregate.ToListAsync();
+    }
+
+
     public async Task<Orderdetails> GetById(string id)
     {
         var detail = await _orderdetailsCollection.Find(d => d.OrderdetailsId == id)

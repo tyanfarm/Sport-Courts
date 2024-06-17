@@ -19,4 +19,6 @@ public class Orderdetails {
     public int TotalMoney {get; set;}
 
     public string? UsedDate {get; set;}
+
+    public Court? Court {get; set;}
 }

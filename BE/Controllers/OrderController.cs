@@ -15,20 +15,20 @@ public class OrderController : ControllerBase {
 
     [HttpGet]
     public async Task<IActionResult> GetAllOrders() {
-        var orders = await _orderRepository.GetAllOrders();
-        return Ok(orders);
-        // try {
-        //     var orders = await _orderRepository.GetAllOrders();
+        // var orders = await _orderRepository.GetAllOrders();
+        // return Ok(orders);
+        try {
+            var orders = await _orderRepository.GetAllOrders();
 
-        //     if (orders == null) {
-        //         return NotFound();
-        //     }
+            if (orders == null) {
+                return NotFound();
+            }
 
-        //     return Ok(orders);
-        // }
-        // catch {
-        //     return StatusCode(500, "ERROR");
-        // }
+            return Ok(orders);
+        }
+        catch {
+            return StatusCode(500, "ERROR");
+        }
     }
 
     [HttpGet("{id:length(24)}")]
