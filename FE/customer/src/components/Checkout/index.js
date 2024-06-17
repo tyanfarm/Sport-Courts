@@ -207,10 +207,10 @@ const Checkout = () => {
                             <div className="payment-options">
                                 <button className={`payment-button ${activePayment === 'bank-transfer' ? 'active' : ''}`} id="bank-transfer"
                                 onClick={() => handlePaymentClick('bank-transfer')}>Direct Bank Transfer</button>
-                                <button className={`payment-button ${activePayment === 'cheque-payment' ? 'active' : ''}`} id="cheque-payment"
-                                onClick={() => handlePaymentClick('cheque-payment')}>By Cash</button>
-                                <button className={`payment-button ${activePayment === 'paypal' ? 'active' : ''}`} id="paypal"
-                                onClick={() => handlePaymentClick('paypal')}>Momo</button>
+                                <button className={`payment-button ${activePayment === 'by-cash' ? 'active' : ''}`} id="by-cash"
+                                onClick={() => handlePaymentClick('by-cash')}>By Cash</button>
+                                <button className={`payment-button ${activePayment === 'momo' ? 'active' : ''}`} id="momo"
+                                onClick={() => handlePaymentClick('momo')}>Momo</button>
                             </div>
                             <div className="payment-method">
                                 <div className="payment-accordion">

@@ -1,5 +1,6 @@
 using BE.Models;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace BE.Repositories;
@@ -18,7 +19,7 @@ public class OrderRepository : IOrderRepository
         var mongoDb = mongoClient.GetDatabase("SportCourts");
         // Get Collection
         _orderCollection = mongoDb.GetCollection<Order>("Orders");
-        _transactStatusCollection = mongoDb.GetCollection<TransactStatus>("TransactStatus");
+        _transactStatusCollection = mongoDb.GetCollection<TransactStatus>("TransactStatuses");
     }
 
     public async Task<bool> Create(Order order)
@@ -49,9 +50,17 @@ public class OrderRepository : IOrderRepository
 
     public async Task<List<Order>> GetAllOrders()
     {
-        var orders = await _orderCollection.Find(_ => true).ToListAsync();
+        var aggregate = _orderCollection.Aggregate()
+                .Lookup<Order, TransactStatus, Order>(
+                    _transactStatusCollection,
+                    order => order.TransactStatusId,
+                    status => status.TransactStatusId,
+                    order => order.TransactStatus
+                )
+                .Unwind<Order, Order>(order => order.TransactStatus)
+                .As<Order>();
 
-        return orders;
+        return await aggregate.ToListAsync();
     }
 
     public async Task<Order> GetById(string id)

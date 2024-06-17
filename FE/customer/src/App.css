@@ -789,6 +789,14 @@ footer {
   color: #fff;
 }
 
+.nav.myaccount-tab-trigger .nav-link.nav-logout {
+  background-color: #ff6f61;
+}
+
+.nav.myaccount-tab-trigger .nav-link.nav-logout:hover {
+  background-color: #e44438;
+}
+
 .myaccount-tab-content {
   background-color: #fff;
   padding: 20px 60px;

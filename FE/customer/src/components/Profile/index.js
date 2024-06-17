@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../contexts/authContext';
 import { Navigate, useLocation } from 'react-router-dom';
+import { localhost } from '../../services/server';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -8,29 +9,50 @@ const Profile = () => {
 
     const location = useLocation();
     const [activeTab, setActiveTab] = useState('dashboard');
+    const [messageDisplayed, setMessageDisplayed] = useState(false);
+    const [user, setUser] = useState({});
     const { auth, logOut } = useContext(AuthContext);
+    const token = localStorage.getItem('AT');
 
     useEffect(() => {
-        if (location.state && location.state.message) {
+        if (!auth.isAuthenticated) {
+            return <Navigate to="/login" /> 
+        }
+
+        if (location.state && location.state.message && !messageDisplayed) {
             const { message } = location.state;
             toast.success(message);
+
+            setMessageDisplayed(true);
         }
+
+        fetchUser();
     })
 
-    if (!auth.isAuthenticated) {
-        return <Navigate to="/login" /> 
+    const fetchUser = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        };
+
+        fetch(`${localhost}/api/v1/User/${token}`, requestOptions)
+            .then(res => res.json())
+            .then(data => setUser(data));
     }
 
     const renderContent = () => {
         switch (activeTab) {
             case 'dashboard':
-                return <Dashboard />;
+                return <Dashboard user={user} logOut={logOut} />;
             case 'orders':
                 return <Orders />;
             case 'accountDetails':
                 return <AccountDetails />;
             default:
-                return <Dashboard />;
+                return <Dashboard user={user} logOut={logOut} />;
         }
     };
 
@@ -53,7 +75,7 @@ const Profile = () => {
                                         <a onClick={() => setActiveTab('accountDetails')} className={`nav-link ${activeTab === 'accountDetails' ? 'active' : ''}`} id="account-details-tab" data-bs-toggle="tab" role="tab" aria-controls="account-details" aria-selected="false">Account Details</a>
                                     </li>
                                     <li className="nav-item">
-                                        <a onClick={() => {logOut()}} className="nav-link" id="account-logout-tab" href="/home" role="tab" aria-selected="false">Logout</a>
+                                        <a onClick={() => {logOut()}} className="nav-link nav-logout" id="account-logout-tab" href="/home" role="tab" aria-selected="false">Logout</a>
                                     </li>
                                 </ul>
                                 <div className='profile-content-area'>
@@ -68,13 +90,12 @@ const Profile = () => {
     )
 }
 
-const Dashboard = () => (
+const Dashboard = ({ user }) => (
     <div style={{paddingBottom: '200px'}} className="tab-pane fade show active" id="account-dashboard" role="tabpanel" aria-labelledby="account-dashboard-tab">
         <div className="myaccount-dashboard">
-            <p>Hello <b>Harmic</b> (not Harmic? <a href="login-register.html">Sign
-                out</a>)</p>
+            <p>Hello <b>{user.userName} ---</b> Welcome to Cao Thu Cau Long.</p>
             <p>From your account dashboard you can view your recent orders, manage your shipping and
-                billing addresses and <a href="javascript:void(0)">edit your password and account details</a>.</p>
+                billing addresses and <b>edit your password and account details</b>.</p>
         </div>
     </div>
 );

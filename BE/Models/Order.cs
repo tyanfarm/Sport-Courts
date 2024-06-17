@@ -23,4 +23,6 @@ public class Order {
     public bool Paid {get; set;}
 
     public int TotalMoney {get; set;}
+
+    public TransactStatus? TransactStatus {get; set;}
 }
