@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../contexts/authContext';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { localhost } from '../../services/server';
 import { formatDate } from '../../services/userService';
 import { ToastContainer, toast } from 'react-toastify';
@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Profile = () => {
 
+    const navigate = useNavigate();
     const location = useLocation();
     const [activeTab, setActiveTab] = useState('dashboard');
     const [messageDisplayed, setMessageDisplayed] = useState(false);
@@ -15,22 +16,22 @@ const Profile = () => {
     const token = localStorage.getItem('AT');
     const [user, setUser] = useState({});
     const [orders, setOrders] = useState([]);
-
+    
     useEffect(() => {
         if (!auth.isAuthenticated) {
-            return <Navigate to="/login" />
+            navigate('/login');
         }
 
         if (location.state && location.state.message && !messageDisplayed) {
             const { message } = location.state;
             toast.success(message);
-
+            
             setMessageDisplayed(true);
         }
-
+        
         fetchUser();
         fetchOrders();
-    }, [auth.isAuthenticated, location.state, messageDisplayed])
+    }, [auth.isAuthenticated])
 
     const requestOptions = {
         method: 'GET',
@@ -64,7 +65,6 @@ const Profile = () => {
                 return <Dashboard user={user}  />;
         }
     };
-    console.log(orders);
 
     return (
         <div>
@@ -163,12 +163,8 @@ const AccountDetails = () => (
         <div className="myaccount-details">
             <form action="#" className="myaccount-form">
                 <div className="myaccount-form-inner">
-                    <div className="single-input single-input-half">
-                        <label>First Name*</label>
-                        <input type="text" />
-                    </div>
-                    <div className="single-input single-input-half">
-                        <label>Last Name*</label>
+                    <div className="single-input">
+                        <label>Full Name*</label>
                         <input type="text" />
                     </div>
                     <div className="single-input">
@@ -176,13 +172,11 @@ const AccountDetails = () => (
                         <input type="email" />
                     </div>
                     <div className="single-input">
-                        <label>Current Password(leave blank to leave
-                            unchanged)</label>
+                        <label>Current Password</label>
                         <input type="password" />
                     </div>
                     <div className="single-input">
-                        <label>New Password (leave blank to leave
-                            unchanged)</label>
+                        <label>New Password</label>
                         <input type="password" />
                     </div>
                     <div className="single-input">

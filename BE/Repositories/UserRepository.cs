@@ -36,6 +36,22 @@ public class UserRepository : IUserRepository {
         return _userManager.Users.ToList();
     }
     
+    public async Task<bool> ResetPasswordUser(string token, string newPassword) {
+        var jwtTokenHanlder = new JwtSecurityTokenHandler();
+
+        var userId = jwtTokenHanlder.ReadJwtToken(token)
+                                    .Claims
+                                    .FirstOrDefault(x => x.Type == "Id")?
+                                    .Value;
+        
+        var user = await _userManager.FindByIdAsync(userId);
+
+        await _userManager.RemovePasswordAsync(user);
+        await _userManager.AddPasswordAsync(user, newPassword);
+
+        return true;
+    }
+
     public async Task<ApplicationUser> GetUserByIdAsync(string userId) {
         return await _userManager.FindByIdAsync(userId);
     }

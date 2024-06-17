@@ -346,6 +346,23 @@ public class AuthenticationController : ControllerBase {
         });
     }
 
+    [HttpPost]
+    [Route("ResetPassword")]
+    public async Task<IActionResult> ResetPasswordUser(string token, string newPassword) {
+        try {
+            var result = await _userRepository.ResetPasswordUser(token, newPassword);
+
+            if (result == false) {
+                return NotFound();
+            }
+
+            return Ok("Reset Password Successfully");
+        }
+        catch {
+            return StatusCode(500, "ERROR");
+        }
+    }
+
     private async Task<AuthResult> VerifyAndGenerateToken(TokenRequestDTO tokenRequest) {
         var jwtTokenHanlder = new JwtSecurityTokenHandler();
 
