@@ -861,12 +861,11 @@ footer {
 }
 
 .btn-secondary {
-  background-color: #444;
+  background-color: #00796b;
 }
 
 .btn-primary-hover:hover {
-  background-color: #c0d678;
-  color: #000;
+  background-color: #00b395;
 }
 
 .single-input {

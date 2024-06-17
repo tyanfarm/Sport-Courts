@@ -57,6 +57,8 @@ public class OrderRepository : IOrderRepository
                     status => status.TransactStatusId,
                     order => order.TransactStatus
                 )
+                // Vì kết quả aggregate có thể là 1 mảng các TransactStatus
+                // Dùng `unwind` để đưa thành 1 Object
                 .Unwind<Order, Order>(order => order.TransactStatus)
                 .As<Order>();
 

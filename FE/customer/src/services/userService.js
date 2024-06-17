@@ -19,4 +19,26 @@ const convertStringToInt = (str) => {
     return intValue;
 }
 
-export { checkPassword, convertStringToInt }
+const formatDate = (dateString) => {
+    // Tạo đối tượng Date từ chuỗi
+    const date = new Date(dateString);
+
+    // Định nghĩa mảng tên các tháng
+    const monthNames = [
+        "Jan", "Feb", "Mar",
+        "Apr", "May", "Jun", "Jul",
+        "Aug", "Sep", "Oct",
+        "Nov", "Dec"
+    ];
+
+    // Lấy tên tháng và năm từ đối tượng Date
+    const monthName = monthNames[date.getUTCMonth()];
+    const day = date.getUTCDate();
+    const year = date.getUTCFullYear();
+
+    const formattedDate = `${monthName} ${day}, ${year}`;
+
+    return formattedDate;
+}
+
+export { checkPassword, convertStringToInt, formatDate }
