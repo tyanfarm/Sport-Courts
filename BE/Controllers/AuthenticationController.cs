@@ -416,9 +416,9 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("VerifyEmail")]
-    public async Task<IActionResult> VerifyEmail(string email, string url)
+    public async Task<IActionResult> VerifyEmail(VerifyEmailDTO data)
     {
         try
         {
@@ -490,7 +490,7 @@ public class AuthenticationController : ControllerBase
 </html>";
 
             // (http / https -- Scheme) + `://` + (localhost:5281 -- Host)
-            var callbackUrl = url;
+            var callbackUrl = data.Url;
 
             // Thay thế link vào chuỗi string
             var body = emailBody.Replace("#URL#", callbackUrl);
@@ -498,9 +498,9 @@ public class AuthenticationController : ControllerBase
             // Topic of mail
             var subject = "Verify email";
 
-            await _emailSender.SendEmailAsync(email, subject, body);
+            await _emailSender.SendEmailAsync(data.Email, subject, body);
 
-            return Ok("Email sent");
+            return Ok(callbackUrl);
         }
         catch
         {

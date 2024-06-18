@@ -41,12 +41,15 @@ const formatDate = (dateString) => {
     return formattedDate;
 }
 
+// Vì url tạo ra có chứa token, trong token chứa kí tự `/` bị lỗi khi hiển thị page
+// Ta sẽ chuyển `/` về `_`
 const encodeToken = async (str) => {
     const result = await str.replace(/\//g, "_");
 
     return result;
 }
 
+// Chuyển lại từ `_` về `/` để đưa token cho Server xử lý
 const decodeToken = async (str) => {
     const result = await str.replace(/_/g, "/");
 

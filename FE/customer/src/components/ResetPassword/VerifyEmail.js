@@ -37,9 +37,23 @@ const VerifyEmail = () => {
         const encoded = await encodeToken(data);
         
         try {
+            // Đưa token và email vào url
             const url = `${window.location.protocol}//${window.location.host}/resetPassword/${encoded}/${email}`;
-            const response = await fetch(`${localhost}/api/v1/Authentication/VerifyEmail?email=${email}&url=${url}`, requestOptions);
 
+            // Thiết lập để gửi email với nội dung là 1 url chứa email kèm token cho user
+            const requestVerify = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    email: email,
+                    url: url
+                })
+            }
+            const response = await fetch(`${localhost}/api/v1/Authentication/VerifyEmail`, requestVerify);
+            
             setIsLoading(false); // Set loading state to true when the request starts
 
             if (response.ok) {
