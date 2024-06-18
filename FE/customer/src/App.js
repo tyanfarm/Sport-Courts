@@ -14,6 +14,8 @@ import Profile from './components/Profile';
 import AuthProvider from './contexts/authContext';
 import Checkout from './components/Checkout';
 import OrderDetails from './components/OrderDetails';
+import VerifyEmail from './components/ResetPassword/VerifyEmail';
+import ResetPassword from './components/ResetPassword/ResetPassword';
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
               <Route path='/home' element={<Home />} />
               <Route path='/login' element={<Login />} />
               <Route path='/register' element={<Register />} />
+              <Route path='/verifyEmail' element={<VerifyEmail />} />
+              <Route path='/resetPassword/:resetToken' element={<ResetPassword />} />
               <Route path='/courts/sport/:name' element={<ListCourts />} />
               <Route path='/courts/sport/:sportname/:courtId' element={<Court />}></Route>
               <Route path='/cart' element={<Cart />}></Route>

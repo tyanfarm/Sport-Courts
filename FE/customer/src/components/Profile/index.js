@@ -5,6 +5,7 @@ import { localhost } from '../../services/server';
 import { formatDate, checkPassword } from '../../services/userService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LoadingSpinner from '../../services/loadingSpinner';
 
 const Profile = () => {
 
@@ -16,7 +17,7 @@ const Profile = () => {
     const token = localStorage.getItem('AT');
     const [user, setUser] = useState({});
     const [orders, setOrders] = useState([]);
-    
+
     useEffect(() => {
         if (!auth.isAuthenticated) {
             navigate('/login');
@@ -25,10 +26,10 @@ const Profile = () => {
         if (location.state && location.state.message && !messageDisplayed) {
             const { message } = location.state;
             toast.success(message);
-            
+
             setMessageDisplayed(true);
         }
-        
+
         fetchUser();
         fetchOrders();
     }, [auth.isAuthenticated])
@@ -56,13 +57,13 @@ const Profile = () => {
     const renderContent = () => {
         switch (activeTab) {
             case 'dashboard':
-                return <Dashboard user={user}  />;
+                return <Dashboard user={user} />;
             case 'orders':
                 return <Orders orders={orders} />;
             case 'accountDetails':
                 return <AccountDetails />;
             default:
-                return <Dashboard user={user}  />;
+                return <Dashboard user={user} />;
         }
     };
 
@@ -162,9 +163,13 @@ const AccountDetails = () => {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
+    const [isShowCurrentPass, setIsShowCurrentPass] = useState(false);
     const [newPassword, setNewPassword] = useState('');
+    const [isShowNewPass, setIsShowNewPass] = useState(false);
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [isShowConfirmNewPass, setIsShowConfirmNewPass] = useState(false);
     const token = localStorage.getItem('AT');
+    const [isLoading, setIsLoading] = useState(false); // Add loading state
 
     const validateForm = () => {
         if (!fullName) {
@@ -205,13 +210,16 @@ const AccountDetails = () => {
         return true;
     }
 
-    const handleChangePassword = async () => {
+    const handleChangePassword = async (e) => {
+        e.preventDefault();
+
         if (!validateForm()) {
             return;
         }
         console.log(currentPassword, newPassword, confirmNewPassword);
         console.log(token)
 
+        setIsLoading(true); // Set loading state to true when the request starts
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -222,6 +230,8 @@ const AccountDetails = () => {
 
         try {
             const response = await fetch(`${localhost}/api/v1/Authentication/ChangePassword?token=${token}&currentPassword=${currentPassword}&newPassword=${newPassword}`, requestOptions);
+
+            setIsLoading(false); // Set loading state to true when the request starts
 
             if (response.ok) {
                 toast.success('Password reset successfully!');
@@ -237,46 +247,56 @@ const AccountDetails = () => {
 
     return (
         <div className="tab-pane fade" id="account-details" role="tabpanel" aria-labelledby="account-details-tab">
+            {isLoading && <LoadingSpinner />} {/* Show the spinner when loading */}
             <div className="myaccount-details">
-                <form action="#" className="myaccount-form">
+                <form className="myaccount-form" onSubmit={handleChangePassword}>
                     <div className="myaccount-form-inner">
                         <div className="single-input">
                             <label>Full Name*</label>
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 onChange={(e) => setFullName(e.target.value)}
                             />
                         </div>
                         <div className="single-input">
                             <label>Email*</label>
-                            <input 
+                            <input
                                 type="email"
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div className="single-input">
                             <label>Current Password</label>
-                            <input 
-                                type="password" 
+                            <input
+                                type={isShowCurrentPass === true ? "text" : "password"}
                                 onChange={(e) => setCurrentPassword(e.target.value)}
-                                />
+                            />
+                            <i style={{ marginTop: '16px' }} className={isShowCurrentPass === true ? "fa-solid fa-eye eye-icon" : "fa-solid fa-eye eye-icon"}
+                                onClick={() => setIsShowCurrentPass(!isShowCurrentPass)}
+                            ></i>
                         </div>
                         <div className="single-input">
                             <label>New Password</label>
                             <input
-                                type="password" 
+                                type={isShowNewPass === true ? "text" : "password"}
                                 onChange={(e) => setNewPassword(e.target.value)}
                             />
+                            <i style={{ marginTop: '16px' }} className={isShowNewPass === true ? "fa-solid fa-eye eye-icon" : "fa-solid fa-eye eye-icon"}
+                                onClick={() => setIsShowNewPass(!isShowNewPass)}
+                            ></i>
                         </div>
                         <div className="single-input">
                             <label>Confirm New Password</label>
                             <input
-                                type="password" 
+                                type={isShowConfirmNewPass === true ? "text" : "password"}
                                 onChange={(e) => setConfirmNewPassword(e.target.value)}
                             />
+                            <i style={{ marginTop: '16px' }} className={isShowConfirmNewPass === true ? "fa-solid fa-eye eye-icon" : "fa-solid fa-eye eye-icon"}
+                                onClick={() => setIsShowConfirmNewPass(!isShowConfirmNewPass)}
+                            ></i>
                         </div>
                         <div className="single-input">
-                            <button onClick={() => handleChangePassword()} className="btn btn-custom-size lg-size btn-secondary btn-primary-hover rounded-0" type="submit">
+                            <button className="btn btn-custom-size lg-size btn-secondary btn-primary-hover rounded-0" type="submit">
                                 <span>SAVE CHANGES</span>
                             </button>
                         </div>

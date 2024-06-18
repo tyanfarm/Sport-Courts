@@ -431,10 +431,6 @@ button:hover {
   margin-top: 12px;
 }
 
-/* LIST COURTS */
-
-
-
 /* FOOTER */
 footer {
   background-color: #004d40;
@@ -940,8 +936,13 @@ address {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* CHECKOUT */
@@ -1031,8 +1032,8 @@ address {
   margin-bottom: 5px;
 }
 
-.checkbox-form input, 
-.checkbox-form select, 
+.checkbox-form input,
+.checkbox-form select,
 .checkbox-form textarea {
   width: 100%;
   padding: 10px;
@@ -1077,7 +1078,7 @@ address {
   border-collapse: collapse;
 }
 
-.your-order-table th, 
+.your-order-table th,
 .your-order-table td {
   padding: 10px;
   border: 1px solid #ddd;
@@ -1118,8 +1119,10 @@ address {
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-  .checkbox-form, .your-order {
-      margin-bottom: 20px;
+
+  .checkbox-form,
+  .your-order {
+    margin-bottom: 20px;
   }
 }
 
