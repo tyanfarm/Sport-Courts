@@ -15,10 +15,11 @@ namespace BE.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class AuthenticationController : ControllerBase {
+public class AuthenticationController : ControllerBase
+{
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
-    private readonly IRefreshTokenRepository _refreshTokenRepository; 
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IEmailSender _emailSender;
     private readonly TokenValidationParameters _tokenValidationParameters;
 
@@ -39,9 +40,12 @@ public class AuthenticationController : ControllerBase {
 
     [HttpPost]
     [Route("AdminRegister")]
-    public async Task<IActionResult> AdminRegister(UserDTO userDTO) {
-        if (userDTO.Name == null || userDTO.Email == null) {
-            return BadRequest(new AuthResult() {
+    public async Task<IActionResult> AdminRegister(UserDTO userDTO)
+    {
+        if (userDTO.Name == null || userDTO.Email == null)
+        {
+            return BadRequest(new AuthResult()
+            {
                 Result = false,
                 Errors = new List<string>() {
                     "Lack Of Information !"
@@ -50,21 +54,24 @@ public class AuthenticationController : ControllerBase {
         }
 
         // Create new user
-        ApplicationUser user = new ApplicationUser() {
+        ApplicationUser user = new ApplicationUser()
+        {
             UserName = userDTO.Name.ToLower(),
             Email = userDTO.Email
         };
 
         var result = await _userRepository.CreateUserAsync(user, userDTO.Password);
 
-        if (result.Succeeded) {
+        if (result.Succeeded)
+        {
             // Add ADMIN role
             var adminRole = await _userRepository.RoleExistsAsync("Admin");
 
-            if (!adminRole) {
+            if (!adminRole)
+            {
                 await _userRepository.CreateRoleAsync(new ApplicationRole("Admin"));
             }
-            
+
             await _userRepository.AddRoleToUserAsync(user, "Admin");
 
             // Verify email
@@ -73,9 +80,9 @@ public class AuthenticationController : ControllerBase {
             var emailBody = $"Please confirm your email address by click here: #URL# ";
 
             // (http / https -- Scheme) + `://` + (localhost:5281 -- Host)
-            var callbackUrl = Request.Scheme + "://" + Request.Host + 
-                                Url.Action("ConfirmEmail", "Authentication", 
-                                            new {userId = user.Id, code = emailToken}); 
+            var callbackUrl = Request.Scheme + "://" + Request.Host +
+                                Url.Action("ConfirmEmail", "Authentication",
+                                            new { userId = user.Id, code = emailToken });
 
             // Thay thế link vào chuỗi string
             var body = emailBody.Replace("#URL#", callbackUrl);
@@ -83,19 +90,22 @@ public class AuthenticationController : ControllerBase {
             // Topic of mail
             var subject = "Verify email";
 
-            try {
+            try
+            {
                 // email receiver - Subject (chủ đề) - Content (nội dung mail)
                 await _emailSender.SendEmailAsync(user.Email, subject, body);
 
                 return Ok("Send email successfully");
             }
-            catch {
-                return BadRequest(new AuthResult() {
+            catch
+            {
+                return BadRequest(new AuthResult()
+                {
                     Result = false,
                     Errors = new List<string>()
                     {
                         "Verify Email ERROR!"
-                    }                   
+                    }
                 });
             }
         }
@@ -105,13 +115,17 @@ public class AuthenticationController : ControllerBase {
 
     [HttpPost]
     [Route("AdminLogin")]
-    public async Task<IActionResult> AdminLogin(UserDTO userDTO) {
-        if (ModelState.IsValid) {
+    public async Task<IActionResult> AdminLogin(UserDTO userDTO)
+    {
+        if (ModelState.IsValid)
+        {
             // Check if user is existed
             var user = await _userRepository.GetUserByNameAsync(userDTO.Name);
 
-            if (user == null) {
-                return BadRequest(new AuthResult() {
+            if (user == null)
+            {
+                return BadRequest(new AuthResult()
+                {
                     Result = false,
                     Errors = new List<string>() {
                         "User isn't existed !"
@@ -122,8 +136,10 @@ public class AuthenticationController : ControllerBase {
             // Validate password
             var validatePassword = await _userRepository.CheckPasswordAsync(user, userDTO.Password);
 
-            if (validatePassword == false) {
-                return BadRequest(new AuthResult() {
+            if (validatePassword == false)
+            {
+                return BadRequest(new AuthResult()
+                {
                     Result = false,
                     Errors = new List<string>() {
                         "INVALID Credentials !"
@@ -142,10 +158,14 @@ public class AuthenticationController : ControllerBase {
 
     [HttpPost]
     [Route("Register")]
-    public async Task<IActionResult> Register(UserDTO userDTO) {
-        if (ModelState.IsValid) {
-            if (userDTO.Email == null) {
-                return BadRequest(new AuthResult() {
+    public async Task<IActionResult> Register(UserDTO userDTO)
+    {
+        if (ModelState.IsValid)
+        {
+            if (userDTO.Email == null)
+            {
+                return BadRequest(new AuthResult()
+                {
                     Result = false,
                     Errors = new List<string>() {
                         "No Email Value !"
@@ -156,8 +176,10 @@ public class AuthenticationController : ControllerBase {
             // Check if email already exist
             var user_exist = await _userRepository.GetUserByEmailAsync(userDTO.Email);
 
-            if (user_exist != null) {
-                return BadRequest(new AuthResult() {
+            if (user_exist != null)
+            {
+                return BadRequest(new AuthResult()
+                {
                     Result = false,
                     Errors = new List<string>() {
                         "Email already exist !"
@@ -166,7 +188,8 @@ public class AuthenticationController : ControllerBase {
             }
 
             // Create new user
-            ApplicationUser newUser = new ApplicationUser() {
+            ApplicationUser newUser = new ApplicationUser()
+            {
                 Email = userDTO.Email,
                 UserName = userDTO.Name,
                 PhoneNumber = userDTO.Phone,
@@ -177,11 +200,13 @@ public class AuthenticationController : ControllerBase {
             // IdentityResult
             IdentityResult result = await _userRepository.CreateUserAsync(newUser, userDTO.Password);
 
-            if (result.Succeeded == true) {
+            if (result.Succeeded == true)
+            {
                 // Add Customer role
                 var customerRole = await _userRepository.RoleExistsAsync("Customer");
 
-                if (!customerRole) {
+                if (!customerRole)
+                {
                     await _userRepository.CreateRoleAsync(new ApplicationRole("Customer"));
                 }
 
@@ -193,9 +218,9 @@ public class AuthenticationController : ControllerBase {
                 var emailBody = $"Please confirm your email address by click here: #URL# ";
 
                 // (http / https -- Scheme) + `://` + (localhost:5281 -- Host)
-                var callbackUrl = Request.Scheme + "://" + Request.Host + 
-                                    Url.Action("ConfirmEmail", "Authentication", 
-                                                new {userId = newUser.Id, code = emailToken}); 
+                var callbackUrl = Request.Scheme + "://" + Request.Host +
+                                    Url.Action("ConfirmEmail", "Authentication",
+                                                new { userId = newUser.Id, code = emailToken });
 
                 // Thay thế link vào chuỗi string
                 var body = emailBody.Replace("#URL#", callbackUrl);
@@ -203,16 +228,20 @@ public class AuthenticationController : ControllerBase {
                 // Topic of mail
                 var subject = "Verify email";
 
-                try {
-                     // email receiver - Subject (chủ đề) - Content (nội dung mail)
+                try
+                {
+                    // email receiver - Subject (chủ đề) - Content (nội dung mail)
                     await _emailSender.SendEmailAsync(newUser.Email, subject, body);
 
-                    return Ok(new AuthResult() {
+                    return Ok(new AuthResult()
+                    {
                         Result = true
                     });
                 }
-                catch {
-                    return BadRequest(new AuthResult() {
+                catch
+                {
+                    return BadRequest(new AuthResult()
+                    {
                         Result = false,
                         Errors = new List<string>()
                         {
@@ -228,9 +257,11 @@ public class AuthenticationController : ControllerBase {
 
     [HttpPatch]
     [Route("ConfirmEmail")]
-    public async Task<IActionResult> ConfirmEmail(string userId, string code) {
-        if (userId == null || code == null) {
-            return BadRequest(new AuthResult() 
+    public async Task<IActionResult> ConfirmEmail(string userId, string code)
+    {
+        if (userId == null || code == null)
+        {
+            return BadRequest(new AuthResult()
             {
                 Result = false,
                 Errors = new List<string>()
@@ -243,8 +274,10 @@ public class AuthenticationController : ControllerBase {
         var user = await _userRepository.GetUserByIdAsync(userId);
 
         // invalid user
-        if (user == null) {
-            return BadRequest(new AuthResult() {
+        if (user == null)
+        {
+            return BadRequest(new AuthResult()
+            {
                 Result = false,
                 Errors = new List<string>()
                 {
@@ -254,9 +287,11 @@ public class AuthenticationController : ControllerBase {
         }
 
         var result = await _userRepository.ConfirmEmailAsync(user, code);
-        
-        if (result.Succeeded == false) {
-            return BadRequest(new AuthResult() {
+
+        if (result.Succeeded == false)
+        {
+            return BadRequest(new AuthResult()
+            {
                 Result = false,
                 Errors = new List<string>()
                 {
@@ -270,13 +305,17 @@ public class AuthenticationController : ControllerBase {
 
     [HttpPost]
     [Route("Login")]
-    public async Task<IActionResult> Login(UserDTO userLogin) {
-        if (ModelState.IsValid) {
+    public async Task<IActionResult> Login(UserDTO userLogin)
+    {
+        if (ModelState.IsValid)
+        {
             // Check if user is existed
             var user = await _userRepository.GetUserByEmailAsync(userLogin.Email);
 
-            if (user == null) {
-                return BadRequest(new AuthResult() {
+            if (user == null)
+            {
+                return BadRequest(new AuthResult()
+                {
                     Result = false,
                     Errors = new List<string>() {
                         "User isn't existed !"
@@ -285,8 +324,10 @@ public class AuthenticationController : ControllerBase {
             }
 
             // Check email confirmed
-            if (user.EmailConfirmed == false) {
-                return BadRequest(new AuthResult() {
+            if (user.EmailConfirmed == false)
+            {
+                return BadRequest(new AuthResult()
+                {
                     Result = false,
                     Errors = new List<string>() {
                         "Email haven't been confirmed yet!"
@@ -297,8 +338,10 @@ public class AuthenticationController : ControllerBase {
             // Validate password
             var checkPassword = await _userRepository.CheckPasswordAsync(user, userLogin.Password);
 
-            if (checkPassword == false) {
-                return BadRequest(new AuthResult() {
+            if (checkPassword == false)
+            {
+                return BadRequest(new AuthResult()
+                {
                     Result = false,
                     Errors = new List<string>() {
                         "INVALID Credentials !"
@@ -312,7 +355,8 @@ public class AuthenticationController : ControllerBase {
             return Ok(jwtToken);
         }
 
-        return BadRequest(new AuthResult() {
+        return BadRequest(new AuthResult()
+        {
             Result = false,
             Errors = new List<string>() {
                 "INVALID Payload !"
@@ -322,12 +366,16 @@ public class AuthenticationController : ControllerBase {
 
     [HttpPost]
     [Route("RefreshToken")]
-    public async Task<IActionResult> RefreshToken(TokenRequestDTO tokenRequest) {
-        if (ModelState.IsValid) {
+    public async Task<IActionResult> RefreshToken(TokenRequestDTO tokenRequest)
+    {
+        if (ModelState.IsValid)
+        {
             var result = await VerifyAndGenerateToken(tokenRequest);
 
-            if (result == null) {
-                return BadRequest(new AuthResult() {
+            if (result == null)
+            {
+                return BadRequest(new AuthResult()
+                {
                     Result = false,
                     Errors = new List<string>() {
                         "Invalid tokens"
@@ -338,7 +386,8 @@ public class AuthenticationController : ControllerBase {
             return Ok(result);
         }
 
-        return BadRequest(new AuthResult() {
+        return BadRequest(new AuthResult()
+        {
             Result = false,
             Errors = new List<string>() {
                 "Invalid parameters"
@@ -348,44 +397,159 @@ public class AuthenticationController : ControllerBase {
 
     [HttpPatch]
     [Route("ChangePassword")]
-    public async Task<IActionResult> ChangePasswordUser(string token, string currentPassword, string newPassword) {
-        try {
+    public async Task<IActionResult> ChangePasswordUser(string token, string currentPassword, string newPassword)
+    {
+        try
+        {
             var result = await _userRepository.ChangePasswordUser(token, currentPassword, newPassword);
 
-            if (result == false) {
+            if (result == false)
+            {
                 return BadRequest();
             }
 
             return Ok("Change Password Successfully");
         }
-        catch {
+        catch
+        {
             return StatusCode(500, "ERROR");
         }
     }
 
-    private async Task<AuthResult> VerifyAndGenerateToken(TokenRequestDTO tokenRequest) {
+    [HttpGet]
+    [Route("VerifyEmail")]
+    public async Task<IActionResult> VerifyEmail(string email, string url)
+    {
+        try
+        {
+            // Verify email
+            var emailBody = @"
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .verify-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .verify-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .verify-content {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .verify-button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white !important;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .verify-button:hover {
+            background-color: #45a049;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class=""verify-container"">
+        <h2>Email Verification</h2>
+        <div class=""verify-content"">
+            <p>Dear User,</p>
+            <p>Please click the button below to verify your email address and complete the process:</p>
+            <p><a href=""#URL#"" class=""verify-button"">Verify Email Address</a></p>
+            <p>If you did not create an account with us, no further action is required.</p>
+        </div>
+        <p class=""footer"">This email was sent automatically. Please do not reply to this email.</p>
+    </div>
+</body>
+</html>";
+
+            // (http / https -- Scheme) + `://` + (localhost:5281 -- Host)
+            var callbackUrl = url;
+
+            // Thay thế link vào chuỗi string
+            var body = emailBody.Replace("#URL#", callbackUrl);
+
+            // Topic of mail
+            var subject = "Verify email";
+
+            await _emailSender.SendEmailAsync(email, subject, body);
+
+            return Ok("Email sent");
+        }
+        catch
+        {
+            return StatusCode(500, "ERROR");
+        }
+    }
+
+    // [HttpPatch]
+    // [Route("ResetPassword")]
+    // public async Task<IActionResult> ResetPasswordUser(string code, string newPassword)
+    // {
+    //     try
+    //     {
+
+    //     }
+    //     catch
+    //     {
+    //         return StatusCode(500, "ERROR");
+    //     }
+    // }
+
+    private async Task<AuthResult> VerifyAndGenerateToken(TokenRequestDTO tokenRequest)
+    {
         var jwtTokenHanlder = new JwtSecurityTokenHandler();
 
-        try {
+        try
+        {
             // Xác thực access token -> Trả về ClaimsPrinciple
             var tokenInVerification = jwtTokenHanlder.ValidateToken
                     (tokenRequest.Token, _tokenValidationParameters, out var validatedToken);
-            
+
             // Kiểm tra xem validatedToken có phải là một JwtSecurityToken hay không. 
             // Nếu đúng, nó sẽ được gán cho biến jwtSecurityToken
-            if (validatedToken is JwtSecurityToken jwtSecurityToken) {
+            if (validatedToken is JwtSecurityToken jwtSecurityToken)
+            {
                 // Kiểm tra xem token có được mã hóa bằng HMACSHA256 không
                 var result = jwtSecurityToken.Header
                                             .Alg
                                             .Equals(SecurityAlgorithms.HmacSha256,
                                                     StringComparison.InvariantCultureIgnoreCase);
-                
-                if (result == false) {
+
+                if (result == false)
+                {
                     return null;
                 }
             }
 
-            return new AuthResult() {
+            return new AuthResult()
+            {
                 Result = false,
                 Errors = new List<string>() {
                     "Access token is valid"
@@ -393,13 +557,17 @@ public class AuthenticationController : ControllerBase {
             };
         }
         // Access token has expired -> Validate refresh token
-        catch (SecurityTokenExpiredException) {
-            try {
+        catch (SecurityTokenExpiredException)
+        {
+            try
+            {
                 var storedToken = await _refreshTokenRepository.GetByToken(tokenRequest.RefreshToken);
 
                 // Kiểm tra token có tồn tại trong DB không
-                if (storedToken == null) {
-                    return new AuthResult() {
+                if (storedToken == null)
+                {
+                    return new AuthResult()
+                    {
                         Result = false,
                         Errors = new List<string>() {
                             "Invalid tokens"
@@ -412,9 +580,11 @@ public class AuthenticationController : ControllerBase {
                                                     .Claims
                                                     .FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?
                                                     .Value;
-                
-                if (storedToken.JwtId != accessTokenJti) {
-                    return new AuthResult() {
+
+                if (storedToken.JwtId != accessTokenJti)
+                {
+                    return new AuthResult()
+                    {
                         Result = false,
                         Errors = new List<string>() {
                             "Invalid tokens"
@@ -423,18 +593,22 @@ public class AuthenticationController : ControllerBase {
                 }
 
                 // Kiểm tra token đã được sử dụng chưa
-                if (storedToken.IsUsed) {
-                    return new AuthResult() {
+                if (storedToken.IsUsed)
+                {
+                    return new AuthResult()
+                    {
                         Result = false,
                         Errors = new List<string>() {
-                            "Tokens has been used" 
+                            "Tokens has been used"
                         }
                     };
                 }
 
                 // Token có bị thu hồi không
-                if (storedToken.IsRevoked) {
-                    return new AuthResult() {
+                if (storedToken.IsRevoked)
+                {
+                    return new AuthResult()
+                    {
                         Result = false,
                         Errors = new List<string>() {
                             "Token has been revoked"
@@ -443,8 +617,10 @@ public class AuthenticationController : ControllerBase {
                 }
 
                 // Kiểm tra token hết hạn chưa
-                if (storedToken.ExpiryDate < DateTime.UtcNow) {
-                    return new AuthResult() {
+                if (storedToken.ExpiryDate < DateTime.UtcNow)
+                {
+                    return new AuthResult()
+                    {
                         Result = false,
                         Errors = new List<string>() {
                             "Expired refresh tokens"
@@ -462,21 +638,25 @@ public class AuthenticationController : ControllerBase {
 
                 return result;
             }
-            catch {
+            catch
+            {
                 return null;
             }
         }
-        catch (Exception ex) {
-            return new AuthResult() {
+        catch (Exception ex)
+        {
+            return new AuthResult()
+            {
                 Result = false,
                 Errors = new List<string>() {
                     ex.Message
                 }
             };
         }
-    } 
+    }
 
-    private async Task<AuthResult> generateJwtToken(ApplicationUser user) {
+    private async Task<AuthResult> generateJwtToken(ApplicationUser user)
+    {
         // thằng xử lý và generate ra token
         var jwtTokenHanlder = new JwtSecurityTokenHandler();
 
@@ -498,7 +678,8 @@ public class AuthenticationController : ControllerBase {
         // Xác định role của user
         var userRoles = await _userRepository.GetUserRoles(user);
 
-        foreach(var role in userRoles) {
+        foreach (var role in userRoles)
+        {
             claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
@@ -507,20 +688,21 @@ public class AuthenticationController : ControllerBase {
         {
             // Khai báo claims
             Subject = new ClaimsIdentity(claims),
-            
+
             Expires = DateTime.UtcNow
                         .Add(TimeSpan.Parse(_configuration.GetSection("JwtConfig:ExpiryTimeFrame").Value)),
 
             // SymmetricSecurityKey - khóa đối xứng
             // mã hóa bằng thuật toán HMAC-SHA256
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-            
+
         };
 
         var token = jwtTokenHanlder.CreateToken(tokenDescriptor);
         var jwtToken = jwtTokenHanlder.WriteToken(token);
 
-        var refreshToken = new RefreshToken() {
+        var refreshToken = new RefreshToken()
+        {
             JwtId = token.Id,
             Token = Utilities.GenerateRandomString(24),           // generate a new refresh token
             AddedDate = DateTime.UtcNow,
@@ -529,11 +711,12 @@ public class AuthenticationController : ControllerBase {
             IsUsed = false,
             UserId = user.Id.ToString()
         };
-        
+
         // add refresh token to mongoDB
         await _refreshTokenRepository.Create(refreshToken);
 
-        var result = new AuthResult() {
+        var result = new AuthResult()
+        {
             Result = true,
             RefreshToken = refreshToken.Token,
             Token = jwtToken

@@ -23,11 +23,13 @@ public class EmailSender : IEmailSender
             Credentials = new NetworkCredential(mail, password)
         };
 
-        return client.SendMailAsync(
-            new MailMessage(from: mail,
-                            to: email,
-                            subject,
-                            message)
-        );
+        MailMessage mailMessage = new MailMessage();
+        mailMessage.From = new MailAddress(mail);
+        mailMessage.To.Add(email);
+        mailMessage.Subject = subject;
+        mailMessage.Body = message;
+        mailMessage.IsBodyHtml = true; 
+
+        return client.SendMailAsync(mailMessage);
     }
 }
