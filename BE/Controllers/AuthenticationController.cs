@@ -369,7 +369,7 @@ public class AuthenticationController : ControllerBase
     public async Task<IActionResult> RefreshToken(TokenRequestDTO tokenRequest)
     {
         if (ModelState.IsValid)
-        {
+        {       
             var result = await VerifyAndGenerateToken(tokenRequest);
 
             if (result == null)
@@ -508,19 +508,50 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    // [HttpPatch]
-    // [Route("ResetPassword")]
-    // public async Task<IActionResult> ResetPasswordUser(string code, string newPassword)
-    // {
-    //     try
-    //     {
+    [HttpGet]
+    [Route("ResetPasswordToken")]
+    public async Task<IActionResult> GetResetPasswordToken(string email) {
+        try {
+            var user = await _userRepository.GetUserByEmailAsync(email);
 
-    //     }
-    //     catch
-    //     {
-    //         return StatusCode(500, "ERROR");
-    //     }
-    // }
+            if (user == null) {
+                return NotFound();
+            }
+
+            var token = await _userRepository.GeneratePasswordResetTokenAsync(user);
+
+            return Ok(token);
+        }
+        catch {
+            return StatusCode(500, "ERROR");
+        }
+    }
+
+    [HttpPatch]
+    [Route("ResetPassword")]
+    public async Task<IActionResult> ResetPasswordUser(string email, string code, string newPassword)
+    {
+        try
+        {
+            var user = await _userRepository.GetUserByEmailAsync(email);
+
+            if (user == null) {
+                return NotFound();
+            }
+
+            var result = await _userRepository.ResetPasswordAsync(user, code, newPassword);
+
+            if (!result.Succeeded) {
+                return NotFound();
+            }
+
+            return Ok("Reset Password Successfully");
+        }
+        catch
+        {
+            return StatusCode(500, "ERROR");
+        }
+    }
 
     private async Task<AuthResult> VerifyAndGenerateToken(TokenRequestDTO tokenRequest)
     {
