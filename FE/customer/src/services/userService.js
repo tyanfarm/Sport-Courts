@@ -41,4 +41,16 @@ const formatDate = (dateString) => {
     return formattedDate;
 }
 
-export { checkPassword, convertStringToInt, formatDate }
+const encodeToken = async (str) => {
+    const result = await str.replace(/\//g, "_");
+
+    return result;
+}
+
+const decodeToken = async (str) => {
+    const result = await str.replace(/_/g, "/");
+
+    return result;
+}
+
+export { checkPassword, convertStringToInt, formatDate, encodeToken, decodeToken }

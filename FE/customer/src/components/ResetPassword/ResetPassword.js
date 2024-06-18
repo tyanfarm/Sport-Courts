@@ -3,14 +3,19 @@ import { ToastContainer, toast } from 'react-toastify';
 import { localhost } from '../../services/server';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingSpinner from '../../services/loadingSpinner';
-import { checkPassword } from '../../services/userService';
+import { checkPassword, decodeToken } from '../../services/userService';
+import { useParams } from 'react-router-dom';
 
 const ResetPassword = () => {
+
+    const email = useParams().email;
+    const token = useParams().resetToken;
+
     const [password, setPassword] = useState("");
     const [isShowPassword, setIsShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false); // Add loading state
 
-    const handleVerify = async () => {
+    const handleResetPassword = async () => {
         if (!password) {
             toast.error('Password is required');
             return;
@@ -22,20 +27,36 @@ const ResetPassword = () => {
         }
 
         setIsLoading(true); // Set loading state to true when the request starts
-
+        
+        const decoded = await decodeToken(token);
         const requestOptions = {
-            method: 'GET',
+            method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({ 
+                email: email,
+                code: decoded,
+                newPassword: password
+            })
         };
 
-        try {
 
-            
+        try {
+            const response = await fetch(`${localhost}/api/v1/Authentication/ResetPassword`, requestOptions);
+
+            setIsLoading(false);
+
+            if (response.ok) {
+                toast.success('Reset password successfully');
+            }
+            else {
+                toast.error('Failed to reset password');
+            }
         }
         catch {
+            toast.error('An error occurred while reset password');
         }
         
     }
@@ -55,7 +76,7 @@ const ResetPassword = () => {
                 </div>
 
                 <button type="submit" className='login-button'
-                onClick={() => handleVerify()}>Reset Password</button>
+                onClick={() => handleResetPassword()}>Reset Password</button>
 
             </div>
         </div>

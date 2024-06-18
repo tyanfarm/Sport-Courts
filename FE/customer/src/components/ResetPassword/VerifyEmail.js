@@ -3,9 +3,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import { localhost } from '../../services/server';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingSpinner from '../../services/loadingSpinner';
+import { encodeToken } from '../../services/userService';
 
 const VerifyEmail = () => {
     const [email, setEmail] = useState("");
+    const [token, setToken] = useState("");
     const [isLoading, setIsLoading] = useState(false); // Add loading state
 
     const handleVerify = async () => {
@@ -23,13 +25,23 @@ const VerifyEmail = () => {
                 'Content-Type': 'application/json'
             }
         };
-        const url = `https://github.com/tyanfarm`;
 
+        // Get Reset Password Token
+        const res = await fetch(`${localhost}/api/v1/Authentication/ResetPasswordToken?email=${email}`, requestOptions);
+        const data = await res.json();
+        if (data == null) {
+            return;
+        }
+
+        // Encode token
+        const encoded = await encodeToken(data);
+        
         try {
+            const url = `${window.location.protocol}//${window.location.host}/resetPassword/${encoded}/${email}`;
             const response = await fetch(`${localhost}/api/v1/Authentication/VerifyEmail?email=${email}&url=${url}`, requestOptions);
 
             setIsLoading(false); // Set loading state to true when the request starts
-            
+
             if (response.ok) {
                 toast.success('Email sent');
                 toast.info('Check your email and open the link we sent to continue');
@@ -41,13 +53,15 @@ const VerifyEmail = () => {
         catch {
             toast.error('An error occurred while send email');
         }
-        
+
     }
+
+
 
     return (
         <div className="login-area">
             {isLoading && <LoadingSpinner />} {/* Show the spinner when loading */}
-            <ToastContainer/>
+            <ToastContainer />
             <div className="login-container">
                 <h2 className="login-title">Verify Email</h2>
                 <div className="input-group">
@@ -56,7 +70,7 @@ const VerifyEmail = () => {
                 </div>
 
                 <button type="submit" className='login-button'
-                onClick={() => handleVerify()}>Send link to email</button>
+                    onClick={() => handleVerify()}>Send link to email</button>
 
             </div>
         </div>

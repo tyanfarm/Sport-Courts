@@ -529,17 +529,17 @@ public class AuthenticationController : ControllerBase
 
     [HttpPatch]
     [Route("ResetPassword")]
-    public async Task<IActionResult> ResetPasswordUser(string email, string code, string newPassword)
+    public async Task<IActionResult> ResetPasswordUser(ResetPassTokenDTO data)
     {
         try
         {
-            var user = await _userRepository.GetUserByEmailAsync(email);
+            var user = await _userRepository.GetUserByEmailAsync(data.Email);
 
             if (user == null) {
                 return NotFound();
             }
 
-            var result = await _userRepository.ResetPasswordAsync(user, code, newPassword);
+            var result = await _userRepository.ResetPasswordAsync(user, data.Code, data.newPassword);
 
             if (!result.Succeeded) {
                 return NotFound();

@@ -114,10 +114,6 @@ const Dashboard = ({ user }) => (
 const Orders = ({ orders }) => {
     const [selectedOrderId, setSelectedOrderId] = useState(null);
 
-    const handleViewClick = (orderId) => {
-        setSelectedOrderId(orderId === selectedOrderId ? null : orderId);
-    };
-
     return (
         <div className="tab-pane fade" id="account-orders" role="tabpanel" aria-labelledby="account-orders-tab">
             <div className="myaccount-orders">
