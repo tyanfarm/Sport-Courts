@@ -36,7 +36,7 @@ public class UserRepository : IUserRepository {
         return _userManager.Users.ToList();
     }
     
-    public async Task<bool> ChangePasswordUser(string token, string newPassword) {
+    public async Task<bool> ChangePasswordUser(string token, string currentPassword, string newPassword) {
         var jwtTokenHanlder = new JwtSecurityTokenHandler();
 
         var userId = jwtTokenHanlder.ReadJwtToken(token)
@@ -45,6 +45,11 @@ public class UserRepository : IUserRepository {
                                     .Value;
         
         var user = await _userManager.FindByIdAsync(userId);
+        bool result = await _userManager.CheckPasswordAsync(user, currentPassword);
+
+        if (result == false) {
+            return result;
+        }
 
         await _userManager.RemovePasswordAsync(user);
         await _userManager.AddPasswordAsync(user, newPassword);

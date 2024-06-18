@@ -8,7 +8,7 @@ public interface IUserRepository {
     Task<ApplicationUser> GetUser(string token);
     // Task<bool> UpdateUser(string token);
     Task<List<ApplicationUser>> GetAllUsers();
-    Task<bool> ChangePasswordUser(string token, string newPassword);
+    Task<bool> ChangePasswordUser(string token, string currentPassword, string newPassword);
     Task<ApplicationUser> GetUserByIdAsync(string userId);
     Task<ApplicationUser> GetUserByEmailAsync(string email);
     Task<ApplicationUser> GetUserByNameAsync(string userName);

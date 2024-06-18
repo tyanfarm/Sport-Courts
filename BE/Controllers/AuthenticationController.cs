@@ -348,12 +348,12 @@ public class AuthenticationController : ControllerBase {
 
     [HttpPost]
     [Route("ChangePassword")]
-    public async Task<IActionResult> ChangePasswordUser(string token, string newPassword) {
+    public async Task<IActionResult> ChangePasswordUser(string token, string currentPassword, string newPassword) {
         try {
-            var result = await _userRepository.ChangePasswordUser(token, newPassword);
+            var result = await _userRepository.ChangePasswordUser(token, currentPassword, newPassword);
 
             if (result == false) {
-                return NotFound();
+                return BadRequest();
             }
 
             return Ok("Change Password Successfully");

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../contexts/authContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { localhost } from '../../services/server';
-import { formatDate } from '../../services/userService';
+import { formatDate, checkPassword } from '../../services/userService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -164,7 +164,76 @@ const AccountDetails = () => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const token = localStorage.getItem('AT');
 
+    const validateForm = () => {
+        if (!fullName) {
+            toast.warning("FullName is required !");
+            return false;
+        }
+
+        if (!email) {
+            toast.warning("Email is required !");
+            return false;
+        }
+
+        if (!currentPassword) {
+            toast.warning("Current Password is required !");
+            return false;
+        }
+
+        if (!newPassword) {
+            toast.warning("New Password is required !");
+            return false;
+        }
+
+        if (!checkPassword(newPassword)) {
+            toast.warning("New Password must contain number, uppercase, symbol");
+            return false;
+        }
+
+        if (!confirmNewPassword) {
+            toast.warning("Confirm New Password is required !");
+            return false;
+        }
+
+        if (newPassword != confirmNewPassword) {
+            toast.warning("Confirm Password isn't correct !");
+            return false;
+        }
+
+        return true;
+    }
+
+    const handleChangePassword = async () => {
+        if (!validateForm()) {
+            return;
+        }
+        console.log(currentPassword, newPassword, confirmNewPassword);
+        console.log(token)
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        };
+
+        try {
+            const response = await fetch(`${localhost}/api/v1/Authentication/ChangePassword?token=${token}&currentPassword=${currentPassword}&newPassword=${newPassword}`, requestOptions);
+
+            if (response.ok) {
+                toast.success('Password reset successfully!');
+            }
+            else {
+                toast.error('Failed to reset password.');
+            }
+        }
+        catch {
+            toast.error('An error occurred while resetting the password.');
+        }
+    }
 
     return (
         <div className="tab-pane fade" id="account-details" role="tabpanel" aria-labelledby="account-details-tab">
@@ -207,7 +276,7 @@ const AccountDetails = () => {
                             />
                         </div>
                         <div className="single-input">
-                            <button className="btn btn-custom-size lg-size btn-secondary btn-primary-hover rounded-0" type="submit">
+                            <button onClick={() => handleChangePassword()} className="btn btn-custom-size lg-size btn-secondary btn-primary-hover rounded-0" type="submit">
                                 <span>SAVE CHANGES</span>
                             </button>
                         </div>
