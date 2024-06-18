@@ -18,7 +18,9 @@ public interface IUserRepository {
     Task<IList<string>> GetUserRoles(ApplicationUser user);
     Task<bool> RoleExistsAsync(string role);
     Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user);
+    Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user);
     Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string code);
+    Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string code, string newPassword);
     Task<bool> CheckPasswordAsync(ApplicationUser user, string password);
     Task<IdentityResult> Delete(string id);
 }

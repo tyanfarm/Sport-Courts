@@ -226,7 +226,7 @@ public class AuthenticationController : ControllerBase {
         return BadRequest();
     }
 
-    [HttpGet]
+    [HttpPatch]
     [Route("ConfirmEmail")]
     public async Task<IActionResult> ConfirmEmail(string userId, string code) {
         if (userId == null || code == null) {
@@ -346,7 +346,7 @@ public class AuthenticationController : ControllerBase {
         });
     }
 
-    [HttpPost]
+    [HttpPatch]
     [Route("ChangePassword")]
     public async Task<IActionResult> ChangePasswordUser(string token, string currentPassword, string newPassword) {
         try {

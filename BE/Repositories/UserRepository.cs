@@ -26,7 +26,7 @@ public class UserRepository : IUserRepository {
                                     .Claims
                                     .FirstOrDefault(x => x.Type == "Id")?
                                     .Value;
-        
+
         var user = await _userManager.FindByIdAsync(userId);
 
         return user;
@@ -46,7 +46,7 @@ public class UserRepository : IUserRepository {
         
         var user = await _userManager.FindByIdAsync(userId);
         bool result = await _userManager.CheckPasswordAsync(user, currentPassword);
-
+        
         if (result == false) {
             return result;
         }
@@ -85,13 +85,20 @@ public class UserRepository : IUserRepository {
         return await _userManager.GetRolesAsync(user);
     }
 
-
     public async Task<bool> RoleExistsAsync(string role) {
         return await _roleManager.RoleExistsAsync(role);
     }
 
     public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user) {
         return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+    }
+
+    public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user) {
+        return await _userManager.GeneratePasswordResetTokenAsync(user);
+    }
+
+    public async Task<IdentityResult> ResetPasswordAsync(ApplicationUser user, string code, string newPassword) {
+        return await _userManager.ResetPasswordAsync(user, code, newPassword);
     }
     
     public async Task<IdentityResult> ConfirmEmailAsync(ApplicationUser user, string code) {
