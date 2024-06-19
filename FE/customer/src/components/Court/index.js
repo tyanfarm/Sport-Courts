@@ -200,7 +200,7 @@ const Court = () => {
                                     <td
                                         key={i}
                                         className={`time-slot ${timeSlot.past ? 'past' : ''} ${isInCart(courtDetails.courtId, `${slot.fullDate} ${timeSlot.time}`) ? 'in-cart' : ''} ${orderedSlots.includes(`${slot.fullDate} ${timeSlot.time}`) ? 'ordered' : '' } `}
-                                        onClick={() => !timeSlot.past && !isInCart(courtDetails.courtId, `${slot.fullDate} ${timeSlot.time}`) && handleTimeSlotClick(slot.fullDate, timeSlot.time)}
+                                        onClick={() => !timeSlot.past && !isInCart(courtDetails.courtId, `${slot.fullDate} ${timeSlot.time}`) && !orderedSlots.includes(`${slot.fullDate} ${timeSlot.time}`) && handleTimeSlotClick(slot.fullDate, timeSlot.time)}
                                     >
                                         {timeSlot.time}<br />{timeSlot.past ? 'Expired' : orderedSlots.includes(`${slot.fullDate} ${timeSlot.time}`) ? 'Ordered' : `${courtDetails.price} VND`}
                                     </td>
