@@ -19,6 +19,12 @@ const Court = () => {
     const [isMorning, setIsMorning] = useState(true); // Tracks whether morning or afternoon sessions are shown
     const [selectedDate, setSelectedDate] = useState(new Date()); // Tracks the selected date
 
+    // Add a state for ordered time slots
+    const [orderedSlots, setOrderedSlots] = useState([
+        '6/19/2024 10:00 - 11:00',
+        '6/19/2024 11:00 - 12:00'
+    ]);
+
     const getWeekDates = (weekOffset) => {
         const startOfWeek = new Date();
         startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1 + weekOffset * 7); // Start from Monday
@@ -123,10 +129,10 @@ const Court = () => {
                     <p className="court-id"></p>
                     <h1 className="court-name">{courtDetails.name}</h1>
                     <Link to={`/courts/sport/${sportName}`}>
-                        <p>Thể Loại: <a className="court-cat">{sportName}</a></p>
+                        <p><b>Thể Loại:</b> <a className="court-cat">{sportName}</a></p>
                     </Link>
                     <p className="description">{courtDetails.description}</p>
-                    <p className="description">Địa Chỉ: {courtDetails.address}</p>
+                    <p className="description"><b>Địa Chỉ:</b> {courtDetails.address}</p>
                     <p className="price">Giá thuê mỗi giờ: <span className="price-amount">{courtDetails.price} VND</span></p>
                     <a onClick={() => OrderCourt()} className="button-reserve">Đặt sân</a>
                 </div>
@@ -177,10 +183,10 @@ const Court = () => {
                                 {(isMorning ? slot.times.morning : slot.times.afternoon).map((timeSlot, i) => (
                                     <td
                                         key={i}
-                                        className={`time-slot ${timeSlot.past ? 'past' : ''} ${isInCart(courtDetails.courtId, `${slot.fullDate} ${timeSlot.time}`) ? 'in-cart' : ''}`}
+                                        className={`time-slot ${timeSlot.past ? 'past' : ''} ${isInCart(courtDetails.courtId, `${slot.fullDate} ${timeSlot.time}`) ? 'in-cart' : ''} ${orderedSlots.includes(`${slot.fullDate} ${timeSlot.time}`) ? 'ordered' : '' } `}
                                         onClick={() => !timeSlot.past && !isInCart(courtDetails.courtId, `${slot.fullDate} ${timeSlot.time}`) && handleTimeSlotClick(slot.fullDate, timeSlot.time)}
                                     >
-                                        {timeSlot.time}<br />{timeSlot.past ? 'Expired' : `${courtDetails.price} VND`}
+                                        {timeSlot.time}<br />{timeSlot.past ? 'Expired' : orderedSlots.includes(`${slot.fullDate} ${timeSlot.time}`) ? 'Ordered' : `${courtDetails.price} VND`}
                                     </td>
                                 ))}
                             </tr>

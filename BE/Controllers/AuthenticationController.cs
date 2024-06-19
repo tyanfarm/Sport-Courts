@@ -416,6 +416,10 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+    // Token gửi [FromQuery] qua API sẽ bị format string lại và không còn giống chuỗi gốc
+    // => Dùng [FromBody] để request token 
+    // => Kiểu dữ liệu Model để sử dụng [FromBody]
+    // [FromQuery] chỉ xuất hiện ở HttpGet hoặc truyền các tham số
     [HttpPost]
     [Route("VerifyEmail")]
     public async Task<IActionResult> VerifyEmail(VerifyEmailDTO data)
