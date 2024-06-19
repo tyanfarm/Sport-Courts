@@ -66,6 +66,11 @@ public class OrderdetailsRepository : IOrderdetailsRepository
         return await aggregate.ToListAsync();
     }
 
+    public async Task<List<Orderdetails>> GetByCourtId(string courtId) {
+        var details = await _orderdetailsCollection.Find(o => o.CourtId == courtId).ToListAsync();
+
+        return details;
+    }
 
     public async Task<Orderdetails> GetById(string id)
     {

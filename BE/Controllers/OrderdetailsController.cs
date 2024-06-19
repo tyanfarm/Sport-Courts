@@ -30,12 +30,29 @@ public class OrderdetailsController : ControllerBase {
     }
 
     [HttpGet]
-    [Route("orders/{orderId}")]
+    [Route("orders/{orderId:length(24)}")]
     public async Task<IActionResult> GetByOrderId(string orderId) {
         // var details = await _orderdetailsRepository.GetByOrderId(orderId);
         // return Ok(details);
         try {
             var details = await _orderdetailsRepository.GetByOrderId(orderId);
+
+            if (details == null) {
+                return NotFound();
+            }
+
+            return Ok(details);
+        }   
+        catch {
+            return StatusCode(500, "ERROR");
+        }
+    }
+
+    [HttpGet]
+    [Route("courts/{courtId:length(24)}")]
+    public async Task<IActionResult> GetByCourtId(string courtId) {
+        try {
+            var details = await _orderdetailsRepository.GetByCourtId(courtId);
 
             if (details == null) {
                 return NotFound();
