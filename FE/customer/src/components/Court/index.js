@@ -20,10 +20,7 @@ const Court = () => {
     const [selectedDate, setSelectedDate] = useState(new Date()); // Tracks the selected date
 
     // Add a state for ordered time slots
-    const [orderedSlots, setOrderedSlots] = useState([
-        '6/19/2024 10:00 - 11:00',
-        '6/19/2024 11:00 - 12:00'
-    ]);
+    const [orderedSlots, setOrderedSlots] = useState([]);
 
     const getWeekDates = (weekOffset) => {
         const startOfWeek = new Date();
@@ -42,9 +39,28 @@ const Court = () => {
 
     useEffect(() => {
         // window.scrollTo(0, 0);
+        fetchOrderedCourt();
         fetchCourt();
         updateTimeSlots();
     }, [currentWeek, selectedDate]);
+    
+    // console.log(orderedSlots);
+    const fetchOrderedCourt = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        };
+
+        fetch(`${localhost}/api/v1/Orderdetails/courts/${courtId}`, requestOptions)
+            .then(res => res.json())
+            .then(data => {
+                const newOrderedSlots = data.map(item => item.usedDate);
+                setOrderedSlots(prevOrderedSlots => [...prevOrderedSlots, ...newOrderedSlots]);
+            })
+    }
 
     const fetchCourt = async () => {
         const requestOptions = {
