@@ -15,6 +15,9 @@ const ListCourts = () => {
     const [listTypes, setListTypes] = useState([]);
     const [listCourts, setListCourts] = useState([]);
     const [selectedType, setSelectedType] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const itemsPerPage = 10;
 
     const requestOptions = {
         method: 'GET',

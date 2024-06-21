@@ -47,20 +47,25 @@ public class CourtRepository : ICourtRepository
         return courts;
     }
 
-    public async Task<List<Court>> GetByCatId(string catId) {
-        var courts = await _courtCollection.Find(c => c.CatId == catId).ToListAsync();
+    public async Task<List<Court>> GetByCatId(string catId, int pageNumber, int pageSize) {
+        var courts = await _courtCollection.Find(c => c.CatId == catId)
+                                            .Skip((pageNumber - 1) * pageSize)
+                                            .ToListAsync();
 
         return courts;
     }
 
-    public async Task<List<Court>> GetBySportName(string sportname) {
+    public async Task<List<Court>> GetBySportName(string sportname, int pageNumber, int pageSize) {
         var query = from court in _courtCollection.AsQueryable()
                     join category in _categoryCollection.AsQueryable()
                     on court.CatId equals category.CatId 
                     where category.SportName == sportname
                     select court.CourtId;
         
-        var courts = await _courtCollection.Find(c => query.Contains(c.CourtId)).ToListAsync();
+        var courts = await _courtCollection.Find(c => query.Contains(c.CourtId))
+                                            .Skip((pageNumber - 1) * pageSize)
+                                            .Limit(pageSize)
+                                            .ToListAsync();
 
         return courts;
     }
