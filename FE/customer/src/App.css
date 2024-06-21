@@ -742,6 +742,44 @@ footer {
   background-color: #00796b;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 4rem;
+  padding: 0 300px;
+}
+
+.pagination-btn {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 10px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 72px;
+}
+
+.pagination-btn:hover {
+  background-color: #00796b;
+  color: white;
+}
+
+.pagination-btn.active {
+  background-color: #00796b;
+  color: white;
+  border: 1px solid #00796b;
+}
+
+.pagination-btn:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  border: 1px solid #ccc;
+}
+
 /* PROFILE */
 .profile-container {
   max-width: 1200px;

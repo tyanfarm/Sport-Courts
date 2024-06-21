@@ -13,11 +13,11 @@ const ListCourts = () => {
     const sportName = useParams().name;
 
     const [listTypes, setListTypes] = useState([]);
-    const [listCourts, setListCourts] = useState([]);
+    const [allCourts, setAllCourts] = useState([]); // Store all courts data
+    const [displayCourts, setDisplayCourts] = useState([]); // Store courts to display on the current page
     const [selectedType, setSelectedType] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 9;
 
     const requestOptions = {
         method: 'GET',
@@ -33,8 +33,8 @@ const ListCourts = () => {
     }, [])
 
     useEffect(() => {
-        fetchCourts(selectedType);
-    }, [selectedType]);
+        paginateCourts(currentPage);
+    }, [allCourts, currentPage, selectedType]);
 
     const fetchTypes = async () => {
         fetch(localhost + `/api/v1/Category/types/${sportName}`, requestOptions)
@@ -52,12 +52,11 @@ const ListCourts = () => {
         return data;
     }
 
-    const fetchCourts = async (type = 'all') => {
+    const fetchCourts = async (type = 'all', page = 1) => {
         let url = "";
         if (type !== 'all') {
             const categoryId = await fetchCatId(type);
             url = `${localhost}/api/v1/Court/category/${categoryId}`;
-            console.log(url);
         }
         else {
             url = `${localhost}/api/v1/Court/category/${sportName}`;
@@ -66,14 +65,24 @@ const ListCourts = () => {
         fetch(url, requestOptions)
             .then(res => res.json())
             .then(data => {
-                console.log(data)
-                setListCourts(data);
+                setAllCourts(data);
+                paginateCourts(1);  // Display the first page initially
             });
+    }
+
+    const paginateCourts = (page) => {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        setDisplayCourts(allCourts.slice(startIndex, endIndex));
     }
 
     const handleFilterClick = (type) => {
         setSelectedType(type);
+        fetchCourts(type);
+        setCurrentPage(1);
     }
+
+    const totalPages = Math.ceil(allCourts.length / itemsPerPage);
 
     return (
         <div>
@@ -99,10 +108,10 @@ const ListCourts = () => {
                     </div>
 
                     <ul className="grid-list">
-                        {listCourts.length === 0 ? (
+                        {displayCourts.length === 0 ? (
                             <h1 className='font-semibold uppercase'>No Courts</h1>
                         ) : (<></>)} 
-                        {listCourts.length !== 0 && listCourts.map((item, index) => {
+                        {displayCourts.length !== 0 && displayCourts.map((item, index) => {
                             return (
                                 <li className="list-products">
                                     {/* <Link to={`./${item.courtId}`}> */}
@@ -128,6 +137,16 @@ const ListCourts = () => {
                             )
                         })}
                     </ul>
+
+                    <div className="pagination">
+                        {Array.from({ length: totalPages }, (_, index) => (
+                            <button key={index + 1} 
+                            className={`pagination-btn ${currentPage === index + 1 ? 'active' : ''}`} 
+                            onClick={() => setCurrentPage(index + 1)}>
+                                {index + 1}
+                            </button>
+                        ))}
+                    </div>
 
                 </div>
             </div>

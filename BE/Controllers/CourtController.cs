@@ -37,9 +37,9 @@ public class CourtController : ControllerBase {
 
     [HttpGet]
     [Route("category/{catId:length(24)}")]
-    public async Task<IActionResult> GetByCatId(string catId, int pageNumber = 1, int pageSize = 9) {
+    public async Task<IActionResult> GetByCatId(string catId) {
         try {
-            var courts = await _courtRepository.GetByCatId(catId, pageNumber, pageSize);
+            var courts = await _courtRepository.GetByCatId(catId);
 
             if (courts == null) {
                 return NotFound();
@@ -53,9 +53,9 @@ public class CourtController : ControllerBase {
     }
 
     [HttpGet("category/{sportname}")]
-    public async Task<IActionResult> GetBySportName(string sportname, int pageNumber = 1, int pageSize = 9) {
+    public async Task<IActionResult> GetBySportName(string sportname) {
         try {
-            var courts = await _courtRepository.GetBySportName(sportname, pageNumber, pageSize);
+            var courts = await _courtRepository.GetBySportName(sportname);
 
             if (courts == null) {
                 return NotFound();
