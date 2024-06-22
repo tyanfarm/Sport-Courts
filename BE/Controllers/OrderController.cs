@@ -1,6 +1,8 @@
 using BE.Models;
 using BE.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace BE.Controllers;
 
@@ -8,9 +10,11 @@ namespace BE.Controllers;
 [Route("api/v1/[controller]")]
 public class OrderController : ControllerBase {
     private readonly IOrderRepository _orderRepository;
+    private readonly IUserRepository _userRepository;
 
-    public OrderController(IOrderRepository orderRepository) {
+    public OrderController(IOrderRepository orderRepository, IUserRepository userRepository) {
         _orderRepository = orderRepository;
+        _userRepository = userRepository;
     }
 
     [HttpGet]
@@ -34,13 +38,37 @@ public class OrderController : ControllerBase {
     [HttpGet("{id:length(24)}")]
     public async Task<IActionResult> GetById(string id) {
         try {
-            var order = _orderRepository.GetById(id);
+            var order = await _orderRepository.GetById(id);
 
             if (order == null) {
                 return NotFound();
             }
 
             return Ok(order);
+        }
+        catch {
+            return StatusCode(500, "ERROR");
+        }
+    }
+
+    [HttpGet]
+    [Route("customers/{token}")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Customer")]
+    public async Task<IActionResult> GetByCustomerId(string token) {
+        try {
+            var user = await _userRepository.GetUser(token);
+
+            if (user == null) {
+                return NotFound();
+            }
+
+            var orders = await _orderRepository.GetByCustomerId(user.Id.ToString());
+
+            if (orders == null) {
+                return NotFound();
+            }
+
+            return Ok(orders);
         }
         catch {
             return StatusCode(500, "ERROR");

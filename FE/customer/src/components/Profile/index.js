@@ -14,8 +14,8 @@ const Profile = () => {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [messageDisplayed, setMessageDisplayed] = useState(false);
     const { auth, logOut } = useContext(AuthContext);
-    const token = localStorage.getItem('AT');
     const [user, setUser] = useState({});
+    const [token, setToken] = useState("");
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
@@ -23,35 +23,61 @@ const Profile = () => {
             navigate('/login');
         }
 
+        const storedToken = localStorage.getItem('AT');
+        if (storedToken) {
+            setToken(storedToken);
+        }
+        
         if (location.state && location.state.message && !messageDisplayed) {
             const { message } = location.state;
             toast.success(message);
 
             setMessageDisplayed(true);
         }
+    }, [auth.isAuthenticated, location.state, messageDisplayed])
 
-        fetchUser();
-        fetchOrders();
-    }, [auth.isAuthenticated])
-
-    const requestOptions = {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+    useEffect(() => {
+        if (token) {
+            fetchUser();
+            fetchOrders();
         }
-    };
+    }, [token]);
 
     const fetchUser = async () => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`, 
+                'Content-Type': 'application/json'
+            }
+        };
+
         fetch(`${localhost}/api/v1/User/${token}`, requestOptions)
             .then(res => res.json())
-            .then(data => setUser(data));
+            .then(data => {
+                setUser(data);
+                console.log(data);}
+            );
     }
 
     const fetchOrders = async () => {
-        fetch(`${localhost}/api/v1/Order`, requestOptions)
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`, 
+                'Content-Type': 'application/json'
+            }
+        };
+
+        fetch(`${localhost}/api/v1/Order/customers/${token}`, requestOptions)
             .then(res => res.json())
-            .then(data => setOrders(data));
+            .then(data => {
+                    setOrders(data);
+                    console.log(data);
+                }
+            );
     }
 
     const renderContent = () => {

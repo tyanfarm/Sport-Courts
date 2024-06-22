@@ -65,6 +65,21 @@ public class OrderRepository : IOrderRepository
         return await aggregate.ToListAsync();
     }
 
+    public async Task<List<Order>> GetByCustomerId(string customerId) {
+        var aggregate = _orderCollection.Aggregate()
+            .Match(order => order.CustomerId == customerId)
+            .Lookup<Order, TransactStatus, Order>(
+                _transactStatusCollection,
+                order => order.TransactStatusId,
+                status => status.TransactStatusId,
+                order => order.TransactStatus
+            )
+            .Unwind<Order, Order>(order => order.TransactStatus)
+            .As<Order>();
+
+        return await aggregate.ToListAsync();
+    }
+
     public async Task<Order> GetById(string id)
     {
         var order = await _orderCollection.Find(o => o.OrderId == id).FirstOrDefaultAsync();

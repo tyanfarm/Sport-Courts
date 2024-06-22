@@ -1,4 +1,5 @@
 using BE.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BE.Controllers;
@@ -14,6 +15,7 @@ public class UserController : ControllerBase {
 
     [HttpGet]
     [Route("{token}")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Customer")]
     public async Task<IActionResult> GetUser(string token) {
         var user = await _userRepository.GetUser(token);
 
@@ -24,7 +26,8 @@ public class UserController : ControllerBase {
         return Ok(user);
     }
 
-    [HttpGet]                                   
+    [HttpGet]             
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public async Task<IActionResult> GetAllUsers() {
         var user = await _userRepository.GetAllUsers();
 
