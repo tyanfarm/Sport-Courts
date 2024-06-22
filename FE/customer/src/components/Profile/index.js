@@ -87,7 +87,7 @@ const Profile = () => {
             case 'orders':
                 return <Orders orders={orders} />;
             case 'accountDetails':
-                return <AccountDetails />;
+                return <AccountDetails token={token} />;
             default:
                 return <Dashboard user={user} />;
         }
@@ -181,7 +181,7 @@ const Orders = ({ orders }) => {
     );
 };
 
-const AccountDetails = () => {
+const AccountDetails = ({ token }) => {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
@@ -190,7 +190,6 @@ const AccountDetails = () => {
     const [isShowNewPass, setIsShowNewPass] = useState(false);
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [isShowConfirmNewPass, setIsShowConfirmNewPass] = useState(false);
-    const token = localStorage.getItem('AT');
     const [isLoading, setIsLoading] = useState(false); // Add loading state
 
     const validateForm = () => {
@@ -242,16 +241,24 @@ const AccountDetails = () => {
         console.log(token)
 
         setIsLoading(true); // Set loading state to true when the request starts
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        };
+        
 
         try {
-            const response = await fetch(`${localhost}/api/v1/Authentication/ChangePassword?token=${token}&currentPassword=${currentPassword}&newPassword=${newPassword}`, requestOptions);
+            const requestOptions = {
+                method: 'PATCH',
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    token: token,
+                    currentPassword: currentPassword,
+                    newPassword: newPassword
+                })
+            };
+            console.log(requestOptions);
+            const response = await fetch(`${localhost}/api/v1/Authentication/ChangePassword`, requestOptions);
 
             setIsLoading(false); // Set loading state to true when the request starts
 

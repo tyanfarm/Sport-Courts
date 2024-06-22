@@ -10,6 +10,7 @@ using MongoDB.Driver;
 using BE.Helper;
 using System.Text;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BE.Controllers;
 
@@ -158,6 +159,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("Register")]
+    [AllowAnonymous]
     public async Task<IActionResult> Register(UserDTO userDTO)
     {
         if (ModelState.IsValid)
@@ -257,6 +259,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPatch]
     [Route("ConfirmEmail")]
+    [AllowAnonymous]
     public async Task<IActionResult> ConfirmEmail(string userId, string code)
     {
         if (userId == null || code == null)
@@ -305,6 +308,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("Login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login(UserDTO userLogin)
     {
         if (ModelState.IsValid)
@@ -364,7 +368,7 @@ public class AuthenticationController : ControllerBase
         });
     }
 
-    [HttpPost]
+    [HttpPost]                                                      
     [Route("RefreshToken")]
     public async Task<IActionResult> RefreshToken(TokenRequestDTO tokenRequest)
     {
@@ -397,11 +401,12 @@ public class AuthenticationController : ControllerBase
 
     [HttpPatch]
     [Route("ChangePassword")]
-    public async Task<IActionResult> ChangePasswordUser(string token, string currentPassword, string newPassword)
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Customer")]
+    public async Task<IActionResult> ChangePasswordUser(ChangePasswordDTO data)
     {
         try
         {
-            var result = await _userRepository.ChangePasswordUser(token, currentPassword, newPassword);
+            var result = await _userRepository.ChangePasswordUser(data.token, data.currentPassword, data.newPassword);
 
             if (result == false)
             {
@@ -417,11 +422,12 @@ public class AuthenticationController : ControllerBase
     }
 
     // Token gửi [FromQuery] qua API sẽ bị format string lại và không còn giống chuỗi gốc
-    // => Dùng [FromBody] để request token 
+    // => Dùng [FromBody] để request token      
     // => Kiểu dữ liệu Model để sử dụng [FromBody]
     // [FromQuery] chỉ xuất hiện ở HttpGet hoặc truyền các tham số
     [HttpPost]
     [Route("VerifyEmail")]
+    [AllowAnonymous]
     public async Task<IActionResult> VerifyEmail(VerifyEmailDTO data)
     {
         try
@@ -514,6 +520,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpGet]
     [Route("ResetPasswordToken")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetResetPasswordToken(string email) {
         try {
             var user = await _userRepository.GetUserByEmailAsync(email);
@@ -533,6 +540,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPatch]
     [Route("ResetPassword")]
+    [AllowAnonymous]
     public async Task<IActionResult> ResetPasswordUser(ResetPassTokenDTO data)
     {
         try
