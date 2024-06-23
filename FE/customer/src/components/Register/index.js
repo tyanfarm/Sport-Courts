@@ -44,36 +44,30 @@ const Register = () => {
         }
 
         setIsLoading(true); // Set loading state to true when the request starts
-        const requestOptions = {
+
+        const response = await fetch(`${localhost}/api/v1/Authentication/Register`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json' 
             },
-            body: JSON.stringify({
+            body: JSON.stringify({ 
                 name: name,
                 email: email,
                 phone: phone,
                 address: address,
                 password: password
             })
-        };
-        
-        fetch(localhost + '/api/v1/Authentication/Register', requestOptions)
-            .then(res => res.json())
-            .then(data => {
-                setIsLoading(false);
-                if (data.result === true)  {
-                    toast.success("Register Successfully");
-                    return;
-                }
-                else {
-                    toast.error("Register failed");
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+        });
+        setIsLoading(false); // Set loading state to true when the request starts
+        console.log(response);
+        if (response.ok) {
+            toast.success("Register Successfully");
+            toast.info('Check your email and open the link we sent to continue');
+        }
+        else {
+            toast.error("Failed to register");
+        }
     }
 
     return (

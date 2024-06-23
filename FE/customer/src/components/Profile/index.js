@@ -34,7 +34,7 @@ const Profile = () => {
 
             setMessageDisplayed(true);
         }
-    }, [auth.isAuthenticated, location.state, messageDisplayed])
+    }, [auth.token, auth.isAuthenticated, location.state, messageDisplayed])
 
     useEffect(() => {
         if (token) {

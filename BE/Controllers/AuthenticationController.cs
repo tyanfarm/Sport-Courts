@@ -192,8 +192,8 @@ public class AuthenticationController : ControllerBase
             // Create new user
             ApplicationUser newUser = new ApplicationUser()
             {
-                Email = userDTO.Name,
-                UserName = userDTO.Email,
+                Email = userDTO.Email,
+                UserName = userDTO.Name,
                 PhoneNumber = userDTO.Phone,
                 Address = userDTO.Address,
                 EmailConfirmed = false
@@ -257,7 +257,7 @@ public class AuthenticationController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPatch]
+    [HttpGet]
     [Route("ConfirmEmail")]
     [AllowAnonymous]
     public async Task<IActionResult> ConfirmEmail(string userId, string code)
