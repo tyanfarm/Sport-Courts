@@ -1,5 +1,6 @@
 using BE.DTOs;
 using BE.Models;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -61,6 +62,16 @@ public class CourtRepository : ICourtRepository
                     select court.CourtId;
         
         var courts = await _courtCollection.Find(c => query.Contains(c.CourtId)).ToListAsync();
+
+        return courts;
+    }
+
+    public async Task<List<Court>> SearchFilter(string searchString) {
+        var courts = await _courtCollection.Find(_ => true).ToListAsync();
+
+        if (!searchString.IsNullOrEmpty()) {
+            courts = courts.Where(c => c.Name.Contains(searchString)).ToList();
+        }
 
         return courts;
     }

@@ -85,6 +85,23 @@ public class CourtController : ControllerBase {
         }
     }
 
+    [HttpGet]
+    [Route("SearchFilter")]
+    public async Task<IActionResult> SearchFilter(string searchString) {
+        try {
+            var courts = await _courtRepository.SearchFilter(searchString);
+
+            if (courts == null) {
+                return NotFound();
+            }
+
+            return Ok(courts);
+        }
+        catch {
+            return StatusCode(500, "ERROR");
+        }
+    }
+
     [HttpPost]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> Create(IFormFile file, [FromForm] Court court) {
