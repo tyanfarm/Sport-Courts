@@ -742,6 +742,30 @@ footer {
   background-color: #00796b;
 }
 
+.search-area {
+  width: 360px;
+  margin-left: 8px;
+  position: relative;
+  display: flex;
+}
+
+.search-input {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.search-icon {
+  position: absolute;
+  right: 18px;
+  color: #999;
+  pointer-events: none;
+  top: 16px;
+}
+
 .pagination {
   display: flex;
   justify-content: center;
