@@ -1,0 +1,425 @@
+/* Default styles for the browser */
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.wrapper {
+    display: flex;
+}
+
+ul {
+    display: flex;
+}
+
+li {
+    padding: 0 5px;
+}
+
+header {
+    width: 100vw;
+    height: 70px; /* Tăng chiều cao của header */
+    align-items: center;
+    justify-content: center;
+    border-bottom: 9px solid grey;
+    font-family: 'Arial';
+    position: sticky;
+    top: 0;
+    display: flex;
+    padding: 0 10px; /* Giảm padding */
+    background-color: #aeefc8;
+}
+
+header .inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+
+header .logo {
+    display: flex;
+    align-items: center;
+    margin-right: 0; /* Loại bỏ margin phải */
+}
+
+header .logo img {
+    height: 50px;
+    margin-right: 5px; /* Giảm khoảng cách giữa logo và tên trang web */
+}
+
+header .site-title {
+    font-size: 40px;
+    text-align: left;
+    margin-left: 0; /* Loại bỏ margin trái */
+    flex: 0 1 auto; /* Allow the title to take only as much space as needed */
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    height: 100%; /* Đặt chiều cao cho navigation */
+}
+
+header nav ul {
+    display: flex;
+    align-items: center;
+    height: 100%; /* Đặt chiều cao cho ul */
+}
+
+header nav li {
+    margin-left: 5px; /* Giảm khoảng cách giữa các nút */
+    height: 100%; /* Đặt chiều cao cho từng mục li */
+}
+
+header nav a {
+    color: #101010;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Đặt chiều cao cho liên kết */
+    padding: 0 10px; /* Giảm padding để các nút gần nhau hơn */
+    border-radius: 0; /* Đặt góc nhọn cho các nút */
+    background-color: #000000; /* Màu nền mặc định cho các nút */
+    color: #FFF; /* Màu chữ của nút */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Thêm hiệu ứng chuyển đổi */
+}
+
+header nav .buttonRegister {
+    background-color: #1ab26b; /* Màu nền của nút đăng ký */
+}
+
+header nav a:hover {
+    background-color: #0d6553; /* Thay đổi màu nền khi di chuột */
+    transform: scale(1.05); /* Phóng to nhẹ khi di chuột */
+    cursor: pointer; /* Thay đổi con trỏ chuột thành hình tay */
+}
+
+footer {
+    border-top: 9px solid grey;
+    background-color: #64c88c;
+}
+
+.footerContainer {
+    width: 100%;
+    padding: 70px 30px 20px;
+}
+
+.socialIcons {
+    display: flex;
+    justify-content: center;
+}
+
+.socialIcons a {
+    text-decoration: none;
+    padding: 10px;
+    background-color: white;
+    margin: 10px;
+    border-radius: 50%;
+}
+
+.socialIcons a i {
+    font-size: 2em;
+    color: black;
+    opacity: 0.9;
+}
+
+/* Hover affect on social media icon */
+.socialIcons a:hover {
+    background-color: #111;
+    transition: 0.5s;
+}
+
+.socialIcons a:hover i {
+    color: white;
+    transition: 0.5s;
+}
+
+.footerNav {
+    margin: 30px 0;
+}
+
+.footerNav ul {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+}
+
+.footerNav ul li a {
+    color: white;
+    margin: 20px;
+    text-decoration: none;
+    font-size: 1.3em;
+    opacity: 0.7;
+    transition: 0.5s;
+}
+
+.footerNav ul li a:hover {
+    opacity: 1;
+}
+
+.footerBottom {
+    background-color: #000;
+    padding: 20px;
+    text-align: center;
+}
+
+.footerBottom p {
+    color: white;
+}
+
+.designer {
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 400;
+    margin: 0px 5px;
+}
+
+@media (max-width: 700px) {
+    .footerNav ul {
+        flex-direction: column;
+    } 
+    .footerNav ul li {
+        width: 100%;
+        text-align: center;
+        margin: 10px;
+    }
+    .socialIcons a {
+        padding: 8px;
+        margin: 4px;
+    }
+}
+
+/* CSS for the court details */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.court-container {
+    display: flex;
+    justify-content: space-between; /* Tách hai phần ra xa nhau */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1200px; /* Mở rộng chiều rộng tối đa */
+    width: 90%;
+    margin: 20px auto;
+    flex: 1;
+}
+
+.image-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* Sắp xếp hình ảnh theo hàng dọc */
+    margin-right: 20px;
+}
+
+.image-section img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px; /* Khoảng cách giữa các ảnh */
+}
+
+.details-section {
+    flex: 1;
+    padding-left: 20px; /* Tạo khoảng cách giữa phần chi tiết và phần hình ảnh */
+}
+
+.details-section p, .details-section h1 {
+    margin: 10px 0;
+}
+
+.court-id {
+    font-size: 20px;
+    color: #000000;
+    font-weight: bold;
+}
+
+.court-name {
+    font-size: 24px;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+.description {
+    font-size: 20px;
+    color: #000000;
+}
+
+.price {
+    font-size: 20px;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.button-reserve {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1ab26b;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.button-reserve:hover {
+    background-color: #0d6553;
+    transform: scale(1.05);
+}
+
+.court-cat {
+    font-weight: bold;
+    font-size: 20px;
+    color: #d71a1a;
+    text-decoration: none;
+}
+
+.court-cat:hover {
+    color: #441111;
+}
+
+.logo-search {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    margin-right: 10px;
+}
+
+input[type="text"] {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+}
+
+.search-button {
+    padding: 0;
+    margin-right: 20px;
+    border: none;
+    background-color: #000000;
+    border-radius: 0 5px 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    height: 26px;
+    width: 26px;
+}
+
+.search-button img {
+    height: 20px;
+    width: 20px;
+    filter: invert(1);
+}
+
+.search-button:hover {
+    background-color: #333;
+}
+
+.court-cards {
+    display: flex;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1200px; /* Mở rộng chiều rộng tối đa */
+    width: 90%;
+    margin: 20px auto;
+    height: fit-content;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.court-card {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    padding: 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: black;
+    background-color: #d3f4e2;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    width: 70%;
+    margin: 0 auto;
+}
+
+.court-card div {
+    display: flex;
+    flex-direction: column;
+}
+
+.court-card:hover {
+    background-color: #c1e4d0; /* Thay đổi màu nền khi di chuột */
+    transform: scale(1.05); /* Phóng to nhẹ khi di chuột */
+    cursor: pointer; /* Thay đổi con trỏ chuột thành hình tay */
+}
+
+.court-card img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+}
+
+.court-info {
+    flex: 2;
+    text-align: center;
+    font-size: 16px;
+}
+
+.court-info h3 {
+    margin: 0;
+    padding-top: 5px;
+    font-size: 30px;
+}
+
+.court-info p {
+    padding-top: 10px;
+    font-size: 20px;
+}
+
+.court-info ul {
+    list-style-type: none;
+    padding-left: 50px;
+    font-size: 20px;
+}
+
+.court-info li{
+    padding-left: 25px;
+    padding-right: 5px;
+    padding-top: 10px;
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+.court-schedule {
+    flex: 1;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.court-schedule p {
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 0px;
+    padding-right: 50px;
+    font-size: 18px;
+}
