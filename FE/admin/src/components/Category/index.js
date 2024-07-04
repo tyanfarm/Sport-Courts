@@ -27,18 +27,7 @@ const DeleteCategory = (id) => {
 }
 
 const ListCategories = () => {
-<<<<<<< HEAD
     const localhost = `http://localhost:5102`
-=======
-
-    let navigate = useNavigate();
-    const routeToEdit = () => {
-        navigate(`../Edit/Category`);
-    }
-
-    const localhost = `http://localhost:5102`
-
->>>>>>> 2f3f5a63e1d51e1b82ce9d6828f9d857af32cac4
     const [listCategories, setListCategories] = useState(null);
 
     useEffect(() => {
@@ -93,9 +82,9 @@ const ListCategories = () => {
                                         </div>
                                         <nav className="manipulate-buttons">
                                             {/* Modify Button */}
-                                            <a className="modify button" href={`./Edit/Category/${item.catId}`}>Edit</a>
+                                            <a className="modify button" href={`./Edit/Category/`}>Edit</a>
                                             {/* Delete Button */}
-                                            <button className="delete button" onClick={DeleteCategory(item.catId)}>Delete</button>
+                                            <a className="delete button" href={`./Delete/Category/${item.catId}`}>Delete</a>
                                         </nav>
                                     </div>
                                 </li>
