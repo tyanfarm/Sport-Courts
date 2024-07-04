@@ -27,7 +27,18 @@ const DeleteCategory = (id) => {
 }
 
 const ListCategories = () => {
+<<<<<<< HEAD
     const localhost = `http://localhost:5102`
+=======
+
+    let navigate = useNavigate();
+    const routeToEdit = () => {
+        navigate(`../Edit/Category`);
+    }
+
+    const localhost = `http://localhost:5102`
+
+>>>>>>> 2f3f5a63e1d51e1b82ce9d6828f9d857af32cac4
     const [listCategories, setListCategories] = useState(null);
 
     useEffect(() => {
