@@ -3,16 +3,14 @@ import React from "react";
 import { Link, NavLink, useParams } from "react-router-dom";
 import 'react-toastify/ReactToastify.css'
 import { localhost } from "../../../services/server";
-// import { localhost } from '../../services/server';
-import { ToastContainer, toast } from 'react-toastify';
 
 let deleteJSON;
-const DeleteCategory = () => {
+const DeleteOrderDetail = () => {
     const token = localStorage.getItem('AT');
 
     let id = useParams().Id;
 
-    const DeleteCat = (Id) => {
+    const DeleteAction = (Id) => {
         return deleteJSON = async () => { 
             const requestOptions = {
                 method: 'DELETE',
@@ -23,10 +21,10 @@ const DeleteCategory = () => {
             }; 
             console.log(Id);
     
-            fetch(localhost + `/api/v1/Category?id=${Id}`, requestOptions)
+            fetch(localhost + `/api/v1/Orderdetails?id=${Id}`, requestOptions)
                 .then(() => {
                     console.log("deleted");
-                    window.location.replace("/Category");
+                    window.location.replace("/OrderDetail");
                 });
             }
     }
@@ -39,10 +37,10 @@ const DeleteCategory = () => {
             <div className="confirmation-actions">
                 <nav>
                     <div className="action-no">
-                        <a href="/Category" className="button no">No</a>
+                        <a href="/OrderDetail" className="button no">No</a>
                     </div>
                     <div className="action-yes">
-                        <button className="button yes" onClick={DeleteCat(id)}>Yes</button>
+                        <button className="button yes" onClick={DeleteAction(id)}>Yes</button>
                     </div>
                 </nav>
             </div>
@@ -50,4 +48,4 @@ const DeleteCategory = () => {
     )
 }
 
-export default DeleteCategory;
+export default DeleteOrderDetail;

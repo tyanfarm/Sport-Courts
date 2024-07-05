@@ -15,6 +15,9 @@ import DeleteCourt from './components/Delete/Court';
 import AuthProvider, { AuthContext } from './contexts/authContext';
 import Login from './components/Login';
 import ListUsers from './components/User';
+import DeleteOrder from './components/Delete/Order';
+import DeleteOrderDetail from './components/Delete/OrderDetails';
+import DeleteUser from './components/Delete/User';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -48,6 +51,9 @@ function App() {
               <Route path='/Add/Court' element={<NewCourt/>} />
               <Route path='/Delete/Category/:Id' element={<DeleteCategory />} />
               <Route path='Delete/Court/:Id' element={<DeleteCourt/>} />
+              <Route path='Delete/Order/:Id' element={<DeleteOrder/>}/>
+              <Route path='Delete/OrderDetail/:Id' element={<DeleteOrderDetail/>}/>
+              <Route path='Delete/User/:Id' element={<DeleteUser/>}/>
             </Routes>
           </SideBar>}
         </BrowserRouter>

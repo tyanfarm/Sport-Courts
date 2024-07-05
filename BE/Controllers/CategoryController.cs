@@ -4,6 +4,7 @@ using BE.Repositories;
 using BE.Services;
 using Firebase.Auth;
 using Firebase.Storage;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
@@ -144,6 +145,7 @@ public class CategoryController : ControllerBase
 
     [HttpPost]
     [Consumes("multipart/form-data")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public async Task<IActionResult> Create(IFormFile file, [FromForm] Category category)
     {
         try
@@ -169,6 +171,7 @@ public class CategoryController : ControllerBase
 
     [HttpPatch("{id:length(24)}")]
     [Consumes("multipart/form-data")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public async Task<IActionResult> Update(IFormFile? file, string id, string? sportname, string? type, string? description, bool? published)
     {
         try
@@ -206,6 +209,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public async Task<IActionResult> Delete(string id)
     {
         try

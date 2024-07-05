@@ -37,4 +37,21 @@ public class UserController : ControllerBase {
 
         return Ok(user);
     }
+
+    [HttpDelete]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+    public async Task<IActionResult> Delete(string id) {
+        try {
+            var result = await _userRepository.Delete(id);
+
+            if (result.Succeeded == false) {
+                return NotFound();
+            }
+
+            return Ok("Delete successfully");
+        }
+        catch {
+            return StatusCode(500, "ERROR");
+        }
+    }
 }

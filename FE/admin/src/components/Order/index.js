@@ -37,10 +37,6 @@ const ListOrders = () => {
                         {/* Display name and basic prop */}
                         Order Prop Here
                     </div>
-                    {/* Add new button */}
-                    <nav className="new-section">
-                        <a className="new button" href="./Add/Category">New</a>
-                    </nav>
                 </div>
                 <div className="category-admin-list">
                     <ul>

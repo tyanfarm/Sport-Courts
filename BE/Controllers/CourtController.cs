@@ -104,6 +104,7 @@ public class CourtController : ControllerBase {
 
     [HttpPost]
     [Consumes("multipart/form-data")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public async Task<IActionResult> Create(IFormFile file, [FromForm] Court court) {
         try {
             var imageUrl = await _imageUploader.Upload(file, "courts", court.Name);
@@ -125,6 +126,7 @@ public class CourtController : ControllerBase {
 
     [HttpPatch("{id:length(24)}")]
     [Consumes("multipart/form-data")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public async Task<IActionResult> Update(IFormFile? file, Court court) {
         try {
             if (file != null & court.Name == null)
@@ -158,6 +160,7 @@ public class CourtController : ControllerBase {
     }
 
     [HttpDelete]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public async Task<IActionResult> Delete(string id) {
         try {
             var result = await _courtRepository.Delete(id);

@@ -74,7 +74,7 @@ const ListOrderDetails = () => {
                                             {/* Modify Button */}
                                             {/* <a className="modify button" href={`./Edit/Category/`}>Edit</a> */}
                                             {/* Delete Button */}
-                                            <a className="delete button" href={`./Delete/OrderDetails/${item.courtId}`}>Delete</a>
+                                            <a className="delete button" href={`./Delete/OrderDetail/${item.orderdetailsId}`}>Delete</a>
                                         </nav>
                                     </div>
                                 </li>

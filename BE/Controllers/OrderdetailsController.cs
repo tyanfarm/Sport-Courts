@@ -1,5 +1,6 @@
 using BE.Models;
 using BE.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BE.Controllers;
@@ -98,6 +99,7 @@ public class OrderdetailsController : ControllerBase {
     }
 
     [HttpPatch("{id:length(24)}")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public async Task<IActionResult> Update(string id, string? orderId, string? courtId, int? totalMoney, string? usedDate) {
         try {
             var result = await _orderdetailsRepository.Update(id, orderId, courtId, totalMoney, usedDate);
@@ -114,6 +116,7 @@ public class OrderdetailsController : ControllerBase {
     }
 
     [HttpDelete]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public async Task<IActionResult> Delete(string id) {
         try {
             var result = await _orderdetailsRepository.Delete(id);

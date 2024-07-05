@@ -38,7 +38,7 @@ const DeleteCourt = () => {
             <div className="confirmation-actions">
                 <nav>
                     <div className="action-no">
-                        <a href="/" className="button no">No</a>
+                        <a href="/Courts" className="button no">No</a>
                     </div>
                     <div className="action-yes">
                         <button className="button yes" onClick={DeleteCou(id)}>Yes</button>

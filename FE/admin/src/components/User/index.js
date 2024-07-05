@@ -35,7 +35,7 @@ const ListUsers = () => {
                 <div className="category-admin-header">
                     <div className="category-admin-header-prop">
                         {/* Display name and basic prop */}
-                        Category Prop Here
+                        User Prop Here
                     </div>
                 </div>
                 <div className="category-admin-list">
@@ -68,7 +68,7 @@ const ListUsers = () => {
                                             {/* Modify Button */}
                                             {/* <a className="modify button" href={`./Edit/Category/`}>Edit</a> */}
                                             {/* Delete Button */}
-                                            <a className="delete button" href={`./Delete/Category/${item.id}`}>Delete</a>
+                                            <a className="delete button" href={`./Delete/User/${item.id}`}>Delete</a>
                                         </nav>
                                     </div>
                                 </li>

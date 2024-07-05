@@ -67,7 +67,7 @@ const ListCourts = () => {
                                         </div>
                                         <nav className="manipulate-buttons">
                                             {/* Modify Button */}
-                                            <a className="modify button" href={`./Edit/Category/`}>Edit</a>
+                                            {/* <a className="modify button" href={`./Edit/Category/`}>Edit</a> */}
                                             {/* Delete Button */}
                                             <a className="delete button" href={`./Delete/Court/${item.courtId}`}>Delete</a>
                                         </nav>

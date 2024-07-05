@@ -39,7 +39,7 @@ public class OrderdetailsRepository : IOrderdetailsRepository
 
     public async Task<bool> Delete(string id)
     {
-        await _orderdetailsCollection.DeleteOneAsync(id);
+        await _orderdetailsCollection.DeleteOneAsync(o => o.OrderdetailsId == id);
 
         return true;
     }

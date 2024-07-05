@@ -92,6 +92,7 @@ public class OrderController : ControllerBase {
     }
 
     [HttpPatch("{id:length(24)}")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public async Task<IActionResult> Update(string id, string? customerId, string? transactStatusId, bool? paid, int? totalMoney) {
         try {
             var result = await _orderRepository.Update(id, customerId, transactStatusId, paid, totalMoney);
@@ -108,6 +109,7 @@ public class OrderController : ControllerBase {
     }
 
     [HttpDelete]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
     public async Task<IActionResult> Delete(string id) {
         try {
             var result = await _orderRepository.Delete(id);

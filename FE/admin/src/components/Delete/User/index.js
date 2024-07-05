@@ -7,7 +7,7 @@ import { localhost } from "../../../services/server";
 import { ToastContainer, toast } from 'react-toastify';
 
 let deleteJSON;
-const DeleteCategory = () => {
+const DeleteUser = () => {
     const token = localStorage.getItem('AT');
 
     let id = useParams().Id;
@@ -23,10 +23,10 @@ const DeleteCategory = () => {
             }; 
             console.log(Id);
     
-            fetch(localhost + `/api/v1/Category?id=${Id}`, requestOptions)
+            fetch(localhost + `/api/v1/User?id=${Id}`, requestOptions)
                 .then(() => {
                     console.log("deleted");
-                    window.location.replace("/Category");
+                    window.location.replace("/User");
                 });
             }
     }
@@ -39,7 +39,7 @@ const DeleteCategory = () => {
             <div className="confirmation-actions">
                 <nav>
                     <div className="action-no">
-                        <a href="/Category" className="button no">No</a>
+                        <a href="/User" className="button no">No</a>
                     </div>
                     <div className="action-yes">
                         <button className="button yes" onClick={DeleteCat(id)}>Yes</button>
@@ -50,4 +50,4 @@ const DeleteCategory = () => {
     )
 }
 
-export default DeleteCategory;
+export default DeleteUser;
