@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import { useParams } from "react-router-dom";
-//import { localhost } from '../../services/server';
-
+import { localhost } from "../../services/server";
 
 const ListUsers = () => {
-    const localhost = `http://localhost:5102`
+    const token = localStorage.getItem('AT');
 
     const [listUsers, setListUsers] = useState(null);
 
@@ -18,47 +16,69 @@ const ListUsers = () => {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, 
             }
         }; 
 
-        fetch(localhost + `/api/v1/Orders/`, requestOptions)
+        fetch(localhost + `/api/v1/User/`, requestOptions)
             .then(res => res.json())
             .then(data => {
                 const dataArray = Array.isArray(data) ? data : [];
-                //console.log(dataArray);
                 setListUsers(dataArray);
             });
     }
 
     return (
-        <div className="admin-container">
-            <div className="user-admin-header">
-                <div className="user-admin-header-prop">
-                    {/* Display name and basic prop */}
+        <div>
+            <div className="admin-container">
+                <div className="category-admin-header">
+                    <div className="category-admin-header-prop">
+                        {/* Display name and basic prop */}
+                        Category Prop Here
+                    </div>
                 </div>
-                {/* Add new button */}
-                <button className="new button" />
-            </div>
-            <div className="user-admin-list">
-                {listUsers && listUsers.map((item, index) => {
-                    return (
-                        <div className="user-admin-props" key={index}>
-                            <div className="user-props">
-                                <div className="user-info">
-                                    {/* Display Category Basic Info */}
+                <div className="category-admin-list">
+                    <ul>
+                        {/* Header Row */}
+                        <li className="category-admin-header-row">
+                            <div className="category-props">
+                                <div className="category-info">
+                                    <div style={{ fontWeight: 'bold' }}>Username</div>
+                                    <div style={{ fontWeight: 'bold' }}>Email</div>
+                                    <div style={{ fontWeight: 'bold' }}>Email Confirmed</div>
                                 </div>
-                                {/* Modify Button */}
-                                <button className="modify button" onClick={null}/>
-                                {/* Delete Button */}
-                                <button className="delete button" onclick={null}/>
+                                <div className="manipulate-buttons">
+
+                                </div>
                             </div>
-                        </div>
-                    )
-                })}
+                        </li>
+                        {listUsers && listUsers.map((item, index) => {
+                            return (
+                                <li className="category-admin-props" key={index}>
+                                    {/* ul?  */}
+                                    <div className="category-props">
+                                        <div className="category-info">
+                                            {/* Display Category Basic Info */}
+                                            <div>{item.userName}</div>
+                                            <div>{item.email}</div>
+                                            <div>{(item.emailConfirmed) ? "Yes" : "No"}</div>
+                                        </div>
+                                        <nav className="manipulate-buttons">
+                                            {/* Modify Button */}
+                                            {/* <a className="modify button" href={`./Edit/Category/`}>Edit</a> */}
+                                            {/* Delete Button */}
+                                            <a className="delete button" href={`./Delete/Category/${item.id}`}>Delete</a>
+                                        </nav>
+                                    </div>
+                                </li>
+                            )
+                        })}
+                    </ul>
+                </div>
             </div>
         </div>
     )
 }
 
-export default listOrderDetails;
+export default ListUsers;

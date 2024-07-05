@@ -7,7 +7,6 @@ import ListCategories from './components/Category';
 import ListCourts from './components/Court';
 import SideBar from './components/Sidebar';
 import NewCategory from './components/Add/Category';
-import EditCategory from './components/Edit/Category';
 import DeleteCategory from './components/Delete/Category';
 import ListOrders from './components/Order';
 import ListOrderDetails from './components/OrderDetails';
@@ -15,7 +14,7 @@ import NewCourt from './components/Add/Court';
 import DeleteCourt from './components/Delete/Court';
 import AuthProvider, { AuthContext } from './contexts/authContext';
 import Login from './components/Login';
-import ProtectedRoute from './services/ProtectedRoute';
+import ListUsers from './components/User';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -43,6 +42,7 @@ function App() {
               <Route path='/Category' element={<ListCategories />} />
               <Route path='/Courts' element={<ListCourts />} />
               <Route path='Order' element={<ListOrders/>} />
+              <Route path='User' element={<ListUsers/>}/>
               <Route path='OrderDetail' element={<ListOrderDetails/>} />
               <Route path='/Add/Category' element={<NewCategory />} />
               <Route path='/Add/Court' element={<NewCourt/>} />

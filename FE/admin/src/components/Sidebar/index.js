@@ -30,6 +30,10 @@ const Sidebar = ({children}) => {
             path:"/OrderDetail",
             name:"Order Details"
         },
+        {
+            path:"/User",
+            name:"Users"
+        },
     ];
 
     return (

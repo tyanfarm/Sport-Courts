@@ -125,9 +125,9 @@ public class CourtController : ControllerBase {
 
     [HttpPatch("{id:length(24)}")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Update(IFormFile? file, string id, string? name, string? description, string? address, int? price, int? discount, bool? active) {
+    public async Task<IActionResult> Update(IFormFile? file, Court court) {
         try {
-            if (file != null & name == null)
+            if (file != null & court.Name == null)
             {
                 return BadRequest(new AuthResult()
                 {
@@ -141,10 +141,10 @@ public class CourtController : ControllerBase {
             string? image = null;
 
             if (file != null) {
-                image = await _imageUploader.Upload(file, "courts", name);
+                image = await _imageUploader.Upload(file, "courts", court.Name);
             }
 
-            var result = await _courtRepository.Update(id, name, description, address, price, discount, image, active);
+            var result = await _courtRepository.Update(court.CourtId, court.Name, court.Description, court.Address, court.Price, court.Discount, court.Image, court.Active);
 
             if (result == false) {
                 return NotFound();

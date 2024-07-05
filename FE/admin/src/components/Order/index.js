@@ -70,9 +70,9 @@ const ListOrders = () => {
                                         </div>
                                         <nav className="manipulate-buttons">
                                             {/* Modify Button */}
-                                            <a className="modify button" href={`./Edit/Category/`}>Edit</a>
+                                            {/* <a className="modify button" href={`./Edit/Category/`}>Edit</a> */}
                                             {/* Delete Button */}
-                                            <a className="delete button" href={`./Delete/Category/${item.courtId}`}>Delete</a>
+                                            <a className="delete button" href={`./Delete/Order/${item.orderId}`}>Delete</a>
                                         </nav>
                                     </div>
                                 </li>
