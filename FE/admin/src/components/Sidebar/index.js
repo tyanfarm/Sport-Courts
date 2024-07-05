@@ -1,14 +1,21 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useContext } from "react";
+import { NavLink, Navigate } from "react-router-dom";
+import { AuthContext } from "../../contexts/authContext";
 
 const Sidebar = ({children}) => {
+    const token = localStorage.getItem('AT');
+
+    // if (!token) {
+    //     return <Navigate to="/AdminLogin" />;
+    // }
+
     const menuItem=[
         {
             path:"/",
             name:"Home"
         },
         {
-            path:"/Court",
+            path:"/Courts",
             name:"Courts"
         },
         {

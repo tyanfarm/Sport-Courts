@@ -1,21 +1,49 @@
-import { useEffect, useState } from "react";
-import React from "react";
-import { Link, NavLink, useParams } from "react-router-dom";
-import 'react-toastify/ReactToastify.css'
-// import { localhost } from '../../services/server';
+import React, { useEffect, useState } from "react";
+import 'react-toastify/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
+import { localhost } from "../../../services/server";
+import LoadingSpinner from "../../../services/loadingSpinner";
 
 const NewCourt = () => {
-    const localhost = `http://localhost:5102`
-    const form = document.querySelector('form')
-
-    const [listCourts, setListCourts] = useState(null);
+    const token = localStorage.getItem('AT');
+    const [isLoading, setIsLoading] = useState(false); // Add loading state
+    const [formData, setFormData] = useState({
+        name: '',
+        description: '',
+        catId: '',
+        address: '',
+        price: 0,
+        discount: 0,
+        active: false,
+        file: null
+    });
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        fetchCourts();
+        fetchCategories();
     }, [])
 
-    const fetchCourts = async () => {
+    const handleChange = (e) => {
+        const { name, value, type, checked, files } = e.target;
+        if (type === 'checkbox') {
+            setFormData({
+                ...formData,
+                [name]: checked
+            });
+        } else if (type === 'file') {
+            setFormData({
+                ...formData,
+                [name]: files[0]
+            });
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value
+            });
+        }
+    };
+
+    const fetchCategories = async () => {
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -24,109 +52,151 @@ const NewCourt = () => {
             }
         }; 
 
-        fetch(localhost + `/api/v1/Court/`, requestOptions)
-            .then(res => res.json())
-            .then(data => {
-                const dataArray = Array.isArray(data) ? data : [];
-                //console.log(dataArray);
-                setListCourts(dataArray);
-            });
-    }
+        try {
+            const response = await fetch(`${localhost}/api/v1/Category`, requestOptions);
+            const data = await response.json();
+            console.log(data);
+            setCategories(data);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const formData = new FormData(form);
+        const data = new FormData();
+        for (let key in formData) {
+            data.append(key, formData[key]);
+        }
+
         const requestOptions = {
             method: 'POST',
-            body: formData,
+            body: data,
             headers: {
                 'Accept': 'application/json',
-                //'Content-Type': 'multipart/form-data' -> missing boundary
+                'Authorization': `Bearer ${token}`, 
             }
-            
-        }; 
+        };
 
-        fetch(`http://localhost:5102/api/v1/Category/`, requestOptions)
+        setIsLoading(true); // Set loading state to true when the request starts
+
+        fetch(`${localhost}/api/v1/Court/`, requestOptions)
             .then(res => res.json())
             .then(data => {
+                setIsLoading(false);
                 console.log(data);
+                toast.success("Court added successfully!");
+                window.location.replace("/Courts");
             })
-            .then(() => {
-                window.location.replace("/Court");
-            })
-       
-    }
+            .catch(error => {
+                console.error(error);
+                toast.error("An error occurred while adding the Court.");
+            });
+    };
 
     return (
-        <div className="form-input">
-            <h2>Add new category</h2>
+        <div className="category-form create">
+            {isLoading && <LoadingSpinner />} {/* Show the spinner when loading */}
+            <h2>Add new Court</h2>
             <form onSubmit={handleSubmit}>
-                <h2>Court Name:</h2>
                 <div>
-                    <input 
-                        type="text" required placeholder="Court name" id="courtName" name="courtName"
+                    <label htmlFor="name">Court Name:</label>
+                    <input
+                        type="text"
+                        required
+                        placeholder="Sport name"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
                     />
                 </div>
-                <h2>Sport type:</h2>
                 <div>
-                    <input 
-                        type="text" required placeholder="Sport type" id="type" name="type"
+                    <label htmlFor="description">Description:</label>
+                    <input
+                        type="text"
+                        placeholder="Description"
+                        id="description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
                     />
                 </div>
-                <h2>Description:</h2>
                 <div>
-                    <input 
-                        type="text" placeholder="Description" id="description" name="description"
+                    <label htmlFor="catId">Category:</label>
+                    <select
+                        id="catId"
+                        name="catId"
+                        value={formData.catId}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">Select a category</option>
+                        {categories.map((category) => (
+                            <option key={category.catId} value={category.catId}>
+                                {category.sportName} - {category.type}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="address">Address:</label>
+                    <input
+                        type="text"
+                        placeholder="Address"
+                        id="address"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleChange}
                     />
                 </div>
-                <h2>Address:</h2>
                 <div>
-                    <input 
-                        type="text" placeholder="address" id="address" name="address"
+                    <label htmlFor="price">Price:</label>
+                    <input
+                        type="text"
+                        placeholder="Price"
+                        id="price"
+                        name="price"
+                        value={formData.price}
+                        onChange={handleChange}
                     />
                 </div>
-                <h2>Category:</h2>
                 <div>
-                    <ul>
-                        {listCategories && listCategories.map((item, index) => {
-                            return (
-                                <li className="props" key={index}>
-                                    {/* ul?  */}
-                                    <input type="checkbox">{item.catId}</input>
-                                </li>
-                            )
-                        })}
-                    </ul>
-                </div>
-                <h2>Price:</h2>
-                <div>
-                    <input 
-                        type="number" placeholder="price" id="price" name="price"
+                    <label htmlFor="discount">Discount:</label>
+                    <input
+                        type="text"
+                        placeholder="Discount"
+                        id="discount"
+                        name="discount"
+                        value={formData.discount}
+                        onChange={handleChange}
                     />
                 </div>
-                <h2>Discount:</h2>
-                <div>
-                    <input 
-                        type="number" placeholder="discount" id="discount" name="discount"
+                <div className="checkbox-group">
+                    <label htmlFor="active">Active   .</label>
+                    <input
+                        type="checkbox"
+                        id="active"
+                        name="active"
+                        checked={formData.active}
+                        onChange={handleChange}
                     />
                 </div>
-                <h2>Publish?</h2>
-                <div>
-                    <input 
-                        type="checkbox" id="published" name="published"
+                <div className="file-input">
+                    <label htmlFor="file">Image:</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        id="file"
+                        name="file"
+                        onChange={handleChange}
                     />
                 </div>
-                <h2>Image:</h2>
-                <div>
-                    <input 
-                        type="file" accept="image/*" id="file" name="file"
-                    />
-                </div>
-                
-                <button type="submit">Add Category</button>
+                <button type="submit">Add Court</button>
             </form>
+            <ToastContainer />
         </div>
-    )
+    );
 }
 
 export default NewCourt;

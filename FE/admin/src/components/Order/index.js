@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 //import { localhost } from '../../services/server';
-
+import SideBar from "../Sidebar";
 
 const ListOrders = () => {
     const localhost = `http://localhost:5102`
-
     const [listOrders, setListOrders] = useState(null);
 
     useEffect(() => {
@@ -22,43 +21,68 @@ const ListOrders = () => {
             }
         }; 
 
-        fetch(localhost + `/api/v1/Orders/`, requestOptions)
+        fetch(localhost + `/api/v1/Order/`, requestOptions)
             .then(res => res.json())
             .then(data => {
                 const dataArray = Array.isArray(data) ? data : [];
-                //console.log(dataArray);
                 setListOrders(dataArray);
             });
     }
 
     return (
-        <div className="admin-container">
-            <div className="order-admin-header">
-                <div className="order-admin-header-prop">
-                    {/* Display name and basic prop */}
+        <div>
+            <div className="admin-container">
+                <div className="category-admin-header">
+                    <div className="category-admin-header-prop">
+                        {/* Display name and basic prop */}
+                        Order Prop Here
+                    </div>
+                    {/* Add new button */}
+                    <nav className="new-section">
+                        <a className="new button" href="./Add/Category">New</a>
+                    </nav>
                 </div>
-                {/* Add new button */}
-                <button className="new button" />
-            </div>
-            <div className="order-admin-list">
-                {listOrders && listOrders.map((item, index) => {
-                    return (
-                        <div className="order-admin-props" key={index}>
-                            <div className="order-props">
-                                <div className="order-info">
-                                    {/* Display Category Basic Info */}
+                <div className="category-admin-list">
+                    <ul>
+                        {/* Header Row */}
+                        <li className="category-admin-header-row">
+                            <div className="category-props">
+                                <div className="category-info">
+                                    <div style={{ fontWeight: 'bold' }}>Order Date</div>
+                                    <div style={{ fontWeight: 'bold' }}>Paid</div>
+                                    <div style={{ fontWeight: 'bold' }}>Transact Status</div>
                                 </div>
-                                {/* Modify Button */}
-                                <button className="modify button" onClick={null}/>
-                                {/* Delete Button */}
-                                <button className="delete button" onclick={null}/>
+                                <div className="manipulate-buttons">
+
+                                </div>
                             </div>
-                        </div>
-                    )
-                })}
+                        </li>
+                        {listOrders && listOrders.map((item, index) => {
+                            return (
+                                <li className="category-admin-props" key={index}>
+                                    {/* ul?  */}
+                                    <div className="category-props">
+                                        <div className="category-info">
+                                            {/* Display Category Basic Info */}
+                                            <div>{item.orderDate}</div>
+                                            <div>{(item.paid) ? "Yes" : "No"}</div>
+                                            <div>{item.transactStatus.status}</div>
+                                        </div>
+                                        <nav className="manipulate-buttons">
+                                            {/* Modify Button */}
+                                            <a className="modify button" href={`./Edit/Category/`}>Edit</a>
+                                            {/* Delete Button */}
+                                            <a className="delete button" href={`./Delete/Category/${item.courtId}`}>Delete</a>
+                                        </nav>
+                                    </div>
+                                </li>
+                            )
+                        })}
+                    </ul>
+                </div>
             </div>
         </div>
     )
 }
 
-export default listOrders;
+export default ListOrders;

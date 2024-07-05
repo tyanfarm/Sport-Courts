@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
-//import { localhost } from '../../services/server';
-import SideBar from "../Sidebar";
-
-let deleteJSON;
+import { localhost } from "../../services/server";
 
 const ListCategories = () => {
-    const localhost = `http://localhost:5102`
     const [listCategories, setListCategories] = useState(null);
 
     useEffect(() => {
@@ -33,9 +28,6 @@ const ListCategories = () => {
 
     return (
         <div>
-            <div className="admin-type">
-                    <h1>Category</h1>
-            </div>
             <div className="admin-container">
                 <div className="category-admin-header">
                     <div className="category-admin-header-prop">
@@ -49,6 +41,19 @@ const ListCategories = () => {
                 </div>
                 <div className="category-admin-list">
                     <ul>
+                        {/* Header Row */}
+                        <li className="category-admin-header-row">
+                            <div className="category-props">
+                                <div className="category-info">
+                                    <div style={{ fontWeight: 'bold' }}>Sport Name</div>
+                                    <div style={{ fontWeight: 'bold' }}>Type</div>
+                                    <div style={{ fontWeight: 'bold' }}>Published</div>
+                                </div>
+                                <div className="manipulate-buttons">
+
+                                </div>
+                            </div>
+                        </li>
                         {listCategories && listCategories.map((item, index) => {
                             return (
                                 <li className="category-admin-props" key={index}>
