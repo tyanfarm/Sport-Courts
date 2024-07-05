@@ -8,7 +8,7 @@ const Sidebar = ({children}) => {
             name:"Home"
         },
         {
-            path:"/Courts",
+            path:"/Court",
             name:"Courts"
         },
         {

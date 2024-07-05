@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 //import { localhost } from '../../services/server';
-
+import SideBar from "../Sidebar";
 
 const ListCourts = () => {
     const localhost = `http://localhost:5102`
@@ -26,7 +26,7 @@ const ListCourts = () => {
             .then(res => res.json())
             .then(data => {
                 const dataArray = Array.isArray(data) ? data : [];
-                //console.log(dataArray);
+                console.log(dataArray);
                 setListCourts(dataArray);
             });
     }
@@ -35,8 +35,6 @@ const ListCourts = () => {
         <div className="admin-container">
             <div className="court-admin-header">
                 <div className="court-admin-header-prop">
-                    {/* Display name and basic prop */}
-                    cor
                 </div>
                 {/* Add new button */}
                 <button className="new button" />
@@ -47,12 +45,14 @@ const ListCourts = () => {
                         <div className="court-admin-props" key={index}>
                             <div className="court-props">
                                 <div className="court-info">
-                                    {/* Display Category Basic Info */}
+                                    <div>{item.name}</div>
+                                    <div>{item.address}</div>
+                                    <div>{item.price}</div>
                                 </div>
                                 {/* Modify Button */}
-                                <button className="modify button" onClick={null}/>
+                                <a className="modify button" href={`./Edit/Category`}>Edit</a>
                                 {/* Delete Button */}
-                                <button className="delete button" onclick={null}/>
+                                <a className="delete button" href={`./Delete/Court/${item.CourtId}`}>Delete</a>
                             </div>
                         </div>
                     )

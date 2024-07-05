@@ -6,26 +6,6 @@ import SideBar from "../Sidebar";
 
 let deleteJSON;
 
-
-const DeleteCategory = (id) => {
-    return deleteJSON = async () => {
-        const localhost = `http://localhost:5102`;  
-        const requestOptions = {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json'
-            }
-        }; 
-        console.log(id);
-
-        fetch(localhost + `/api/v1/Category?id=${id}`, requestOptions)
-            .then(() => {
-                console.log("deleted");
-                window.location.reload();
-            });
-    }
-}
-
 const ListCategories = () => {
     const localhost = `http://localhost:5102`
     const [listCategories, setListCategories] = useState(null);

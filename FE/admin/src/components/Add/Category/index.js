@@ -36,7 +36,7 @@ const NewCategory = () => {
     return (
         <div className="category-form create">
             <h2>Add new category</h2>
-            <form onSubmit={handleSubmit}>
+            <form>
                 <h2>Sport Name:</h2>
                 <div>
                     <input 
@@ -68,7 +68,7 @@ const NewCategory = () => {
                     />
                 </div>
                 
-                <button type="submit">Add Category</button>
+                <button type="submit" onClick={handleSubmit}>Add Category</button>
             </form>
         </div>
     )
