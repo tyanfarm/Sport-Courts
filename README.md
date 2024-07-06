@@ -1,5 +1,6 @@
 # IntroSE
 # Run Front-end 
+- Install `NodeJs`
 - `npm i`
 - `npm run start`
 # Run Back-end
