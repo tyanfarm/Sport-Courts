@@ -1,9 +1,11 @@
 import React, { useContext } from 'react'
 import { CartContext } from '../../contexts/cartContext'
+import { AuthContext } from '../../contexts/authContext';
 
 const Header = () => {
 
     const { cart } = useContext(CartContext);
+    const { auth } = useContext(AuthContext);
 
     return (
         <header>
@@ -11,13 +13,24 @@ const Header = () => {
                 <div className="logo">
                     <img src="https://firebasestorage.googleapis.com/v0/b/sport-courts-ab2d8.appspot.com/o/logo-removebg.png?alt=media&token=c68ae97e-8d28-4c4d-96f5-44d40d669e49" alt="Google logo" />
                 </div>
-                <h1 className="site-title">CAO THỦ CẦU LÔNG</h1>
+                <h1 className="site-title">TYANIPO</h1>
                 <nav>
                     <ul>
                         <li><a href="/home" className="buttonLogin">HOME PAGE</a></li>
-                        <li><a href="/profile" className="buttonLogin">MY ACCOUNT</a></li>
-                        <li><a href="/login" className="buttonRegister">LOG IN</a></li>
-                        <li><a href="/register" className="buttonRegister">SIGN UP</a></li>
+                        {
+                            auth.isAuthenticated === true ? (
+                                <React.Fragment>
+                                    <li><a href="/profile" className="buttonLogin">MY ACCOUNT</a></li>
+                                </React.Fragment>
+                            )
+                            : 
+                            (
+                                <React.Fragment>
+                                    <li><a href="/login" className="buttonRegister">LOG IN</a></li>
+                                    <li><a href="/register" className="buttonRegister">SIGN UP</a></li>
+                                </React.Fragment>
+                            )
+                        }
                     </ul>
                 </nav>
             </div>
