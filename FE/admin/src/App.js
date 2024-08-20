@@ -18,9 +18,20 @@ import ListUsers from './components/User';
 import DeleteOrder from './components/Delete/Order';
 import DeleteOrderDetail from './components/Delete/OrderDetails';
 import DeleteUser from './components/Delete/User';
+import { generateToken, messaging } from './notifications/firebase';
+import { getMessaging, onMessage } from 'firebase/messaging';
+import { toast, ToastContainer } from 'react-toastify';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    generateToken();
+    onMessage(messaging, (payload) => {
+      console.log(payload);
+      toast(payload.notification.body);
+    })
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('AT');
@@ -32,6 +43,7 @@ function App() {
   return (
     <div>
       <AuthProvider>
+        <ToastContainer/>
         <Header/>
         <BrowserRouter>
           <Routes>
