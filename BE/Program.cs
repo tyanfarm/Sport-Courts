@@ -3,6 +3,8 @@ using BE.Models;
 using BE.Private;
 using BE.Repositories;
 using BE.Services;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -45,6 +47,11 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                     builder.Configuration.GetConnectionString("DefaultConnection"),      // Connection String
                     builder.Configuration.GetSection("MongoDb:DatabaseName").Value)      // Database Name
                 .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider);
+
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sport-courts-ab2d8-firebase-adminsdk-14hr3-3439fc6419.json")),
+});
 
 // Key for checking JWT
 var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);

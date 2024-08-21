@@ -58,6 +58,10 @@
               "target": "Package",
               "version": "[1.0.0, )"
             },
+            "FirebaseAdmin": {
+              "target": "Package",
+              "version": "[2.4.0, )"
+            },
             "FirebaseStorage.net": {
               "target": "Package",
               "version": "[1.0.3, )"
