@@ -37,6 +37,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderdetailsRepository, OrderdetailsRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IFirebaseTokenRepository, FirebaseTokenRepository>();
 
 // Identity Services
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
