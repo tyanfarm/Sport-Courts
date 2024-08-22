@@ -20,7 +20,7 @@ const Login = () => {
     useEffect(() => {
         if (auth.isAuthenticated) {
             window.scrollTo(0, 0);
-            window.location.replace("/home");
+            window.location.replace("/");
         }
     })
 
@@ -48,7 +48,7 @@ const Login = () => {
                 if (data.result === true && data.token !== null && data.refreshToken !== null) {
                     setAuth({token: data.token, refreshToken: data.refreshToken, isAuthenticated: true});
                     // toast.success("Login successfully");
-                    window.location.replace("/home");
+                    window.location.replace("/");
                 }
                 else {
                     toast.error(data.errors[0]);

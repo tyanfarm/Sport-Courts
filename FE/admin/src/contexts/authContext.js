@@ -4,7 +4,6 @@ import { jwtDecode } from 'jwt-decode';
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-
     const [auth, setAuth] = useState({
         // GetItem để khởi tạo giá trị ban đầu
         token: localStorage.getItem('AT'),
@@ -26,6 +25,9 @@ const AuthProvider = ({ children }) => {
     const logOut = () => {
         localStorage.removeItem('AT');
         localStorage.removeItem('RT');
+        
+        // Notification Modal
+        localStorage.removeItem('AllowNoti');
     }
 
     return (

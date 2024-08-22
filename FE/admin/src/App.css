@@ -258,9 +258,6 @@ header .cart-count {
 
 
 /* CATEGORY LIST */
-
-
-
 .admin-container{
   width: 100%;
   margin-left: 10px;
@@ -270,8 +267,6 @@ header .cart-count {
   border: 1px #004d40 solid;
   border-radius: 6px;
 }
-
-
 
 .category-admin-header {
   width: 100%;
@@ -296,8 +291,6 @@ header .cart-count {
   width: 100%;
 
 }
-
-
 
 .category-props {
   width: 100%;
@@ -378,8 +371,46 @@ header .cart-count {
   background-color: #e44438;
 }
 
-/* SIDEBAR */
+/* HOME */
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+  background: linear-gradient(135deg, #00796b, #f79); /* Gradient background */
+  padding: 20px;
+  box-sizing: border-box;
+}
 
+/* Welcome box styles */
+.welcome-box {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+/* Welcome title styles */
+.welcome-title {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Welcome text styles */
+.welcome-text {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  font-family: 'Arial', sans-serif;
+}
+
+/* SIDEBAR */
 .sidebar {
   /* margin: 0; */
   /* padding: 0; */
@@ -544,6 +575,93 @@ nav {
 
 .button:hover {
   opacity: 0.8;
+}
+
+/* ALLOW NOTIFICATIONS MODAL */
+/* Modal overlay */
+.noti-modal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* Dark overlay */
+}
+
+/* Modal content box */
+.noti-modal-content {
+  background-color: white;
+  margin: 15% auto; /* Align vertically */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 300px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
+  position: relative;
+}
+
+/* Close button */
+.noti-modal-content .close {
+  color: #aaa;
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.noti-modal-content .close:hover,
+.noti-modal-content .close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Modal actions (buttons) */
+.noti-modal-actions {
+  margin-top: 20px;
+}
+
+.noti-modal-content h1 {
+  font-size: 22px;
+  font-weight: bold;
+  padding-bottom: 8px;
+}
+
+/* Common button styles */
+.noti-modal-actions .btn {
+  padding: 10px 20px;
+  margin: 4px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth background transition */
+  font-size: 16px;
+}
+
+/* Allow button */
+.noti-modal-actions .allow-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.noti-modal-actions .allow-btn:hover {
+  background-color: #45a049;
+}
+
+/* Deny button */
+.noti-modal-actions .deny-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.noti-modal-actions .deny-btn:hover {
+  background-color: #e53935;
 }
 
 /* LOADING SPINNER */

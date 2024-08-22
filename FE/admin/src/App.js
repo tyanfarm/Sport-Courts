@@ -21,6 +21,8 @@ import DeleteUser from './components/Delete/User';
 import { generateToken, messaging } from './notifications/firebase';
 import { getMessaging, onMessage } from 'firebase/messaging';
 import { toast, ToastContainer } from 'react-toastify';
+import NotificationModal from './components/Modal/NotificationModal';
+import Home from './components/Home/Home';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -49,25 +51,27 @@ function App() {
           <Routes>
             <Route path='/AdminLogin' element={<Login/>} />
           </Routes>
-          
+
           {isAuthenticated && 
-          <SideBar>
-            <Routes>
-              {/* <Route path='/login' element={<Login/>} /> */}
-              <Route path='/Category' element={<ListCategories />} />
-              <Route path='/Courts' element={<ListCourts />} />
-              <Route path='Order' element={<ListOrders/>} />
-              <Route path='User' element={<ListUsers/>}/>
-              <Route path='OrderDetail' element={<ListOrderDetails/>} />
-              <Route path='/Add/Category' element={<NewCategory />} />
-              <Route path='/Add/Court' element={<NewCourt/>} />
-              <Route path='/Delete/Category/:Id' element={<DeleteCategory />} />
-              <Route path='Delete/Court/:Id' element={<DeleteCourt/>} />
-              <Route path='Delete/Order/:Id' element={<DeleteOrder/>}/>
-              <Route path='Delete/OrderDetail/:Id' element={<DeleteOrderDetail/>}/>
-              <Route path='Delete/User/:Id' element={<DeleteUser/>}/>
-            </Routes>
-          </SideBar>}
+            <SideBar>
+              <Routes>
+                {/* <Route path='/login' element={<Login/>} /> */}
+                <Route path='/' element={<Home />} />
+                <Route path='/Category' element={<ListCategories />} />
+                <Route path='/Courts' element={<ListCourts />} />
+                <Route path='Order' element={<ListOrders/>} />
+                <Route path='User' element={<ListUsers/>}/>
+                <Route path='OrderDetail' element={<ListOrderDetails/>} />
+                <Route path='/Add/Category' element={<NewCategory />} />
+                <Route path='/Add/Court' element={<NewCourt/>} />
+                <Route path='/Delete/Category/:Id' element={<DeleteCategory />} />
+                <Route path='Delete/Court/:Id' element={<DeleteCourt/>} />
+                <Route path='Delete/Order/:Id' element={<DeleteOrder/>}/>
+                <Route path='Delete/OrderDetail/:Id' element={<DeleteOrderDetail/>}/>
+                <Route path='Delete/User/:Id' element={<DeleteUser/>}/>
+              </Routes>
+            </SideBar>
+          }
         </BrowserRouter>
       </AuthProvider>
     </div>
