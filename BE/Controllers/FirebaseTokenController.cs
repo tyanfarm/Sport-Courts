@@ -2,6 +2,9 @@ using BE.Models;
 using BE.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using FirebaseAdmin.Messaging;
+using BE.DTOs;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BE.Controllers;
 
@@ -86,11 +89,26 @@ public class FirebaseTokenController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(FirebaseToken data)
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+    public async Task<IActionResult> Create(FirebaseTokenDto data)
     {
         try
         {
-            var token = await _firebaseRepository.Create(data);
+            // Get userId from jwt token
+            var jwtTokenHanlder = new JwtSecurityTokenHandler();
+
+            var userId = jwtTokenHanlder.ReadJwtToken(data.UserToken)
+                                    .Claims
+                                    .FirstOrDefault(x => x.Type == "Id")?
+                                    .Value;
+
+            var firebaseToken = new FirebaseToken {
+                Token = data.FirebaseToken,
+                UserId = userId,
+            };
+
+            // Create firebase token
+            var token = await _firebaseRepository.Create(firebaseToken);
 
             if (token == null)
             {
@@ -106,11 +124,20 @@ public class FirebaseTokenController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<IActionResult> Delete(string id)
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+    public async Task<IActionResult> Delete(FirebaseTokenDto data)      // Just need userToken
     {
         try
         {
-            var result = await _firebaseRepository.Delete(id);
+            // Get userId from jwt token
+            var jwtTokenHanlder = new JwtSecurityTokenHandler();
+
+            var userId = jwtTokenHanlder.ReadJwtToken(data.UserToken)
+                                    .Claims
+                                    .FirstOrDefault(x => x.Type == "Id")?
+                                    .Value;
+
+            var result = await _firebaseRepository.Delete(userId);
 
             if (result == false)
             {

@@ -25,15 +25,8 @@ import NotificationModal from './components/Modal/NotificationModal';
 import Home from './components/Home/Home';
 
 function App() {
+  const allowNoti = localStorage.getItem('AllowNoti');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    generateToken();
-    onMessage(messaging, (payload) => {
-      console.log(payload);
-      toast(payload.notification.body);
-    })
-  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('AT');

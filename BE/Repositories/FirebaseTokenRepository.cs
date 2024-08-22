@@ -31,23 +31,19 @@ public class FirebaseTokenRepository : IFirebaseTokenRepository {
     }
 
     public async Task<FirebaseToken> Create(FirebaseToken data) {
-        // userId must be unique
-        var isOccur = await _firebaseCollection.Find(c => c.UserId == data.UserId).FirstOrDefaultAsync();
+        var result = await _firebaseCollection.Find(c => c.Token == data.Token).FirstOrDefaultAsync();
 
-        if (isOccur != null) {
-            var updateDefinition = Builders<FirebaseToken>.Update.Set(c => c.UserId, data.UserId);
-            var filter = Builders<FirebaseToken>.Filter.Eq(c => c.Id, isOccur.Id);
-            var result = await _firebaseCollection.UpdateOneAsync(filter, updateDefinition);
-        }
-        else {
+        // If token is already existed -> return null
+        if (result == null) {
             await _firebaseCollection.InsertOneAsync(data);
+            return data;
         }
 
-        return data;
+        return null;
     }
 
-    public async Task<bool> Delete(string id) {
-        await _firebaseCollection.DeleteOneAsync(c => c.Id == id);
+    public async Task<bool> Delete(string userId) {
+        await _firebaseCollection.DeleteManyAsync(c => c.UserId == userId);
 
         return true;
     }
