@@ -18,15 +18,21 @@ import ListUsers from './components/User';
 import DeleteOrder from './components/Delete/Order';
 import DeleteOrderDetail from './components/Delete/OrderDetails';
 import DeleteUser from './components/Delete/User';
-import { generateToken, messaging } from './notifications/firebase';
-import { getMessaging, onMessage } from 'firebase/messaging';
 import { toast, ToastContainer } from 'react-toastify';
-import NotificationModal from './components/Modal/NotificationModal';
 import Home from './components/Home/Home';
+import { onMessage } from 'firebase/messaging';
+import { messaging } from './notifications/firebase';
+
 
 function App() {
-  const allowNoti = localStorage.getItem('AllowNoti');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    onMessage(messaging, (payload) => {
+      console.log(payload);
+      toast.info(payload.notification.body);
+    })
+  });
 
   useEffect(() => {
     const token = localStorage.getItem('AT');

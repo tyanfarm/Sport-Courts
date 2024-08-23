@@ -21,19 +21,19 @@ firebase.initializeApp({
 // Retrieve an instance of Firebase Messaging so that it can handle background messages.
 const messaging = firebase.messaging();
 
-// messaging.onBackgroundMessage((payload) => {
-//     console.log(
-//         '[firebase-messaging-sw.js] Received background message ',
-//         payload
-//     );
+messaging.onBackgroundMessage((payload) => {
+    console.log(
+        '[firebase-messaging-sw.js] Received background message ',
+        payload
+    );
 
-//     // Customize notification here
-//     const notificationTitle = payload.notification.title;
-//     const notificationOptions = {
-//         body: payload.notification.body,
-//         icon: payload.notification.image,
-//     };
+    // // Customize notification here
+    // const notificationTitle = payload.notification.title;
+    // const notificationOptions = {
+    //     body: payload.notification.body,
+    //     icon: payload.notification.image,
+    // };
 
-//     self.registration.showNotification(notificationTitle, notificationOptions);
-//     // self.registration.showNotification("hello");
-// });
+    // self.registration.showNotification(notificationTitle, notificationOptions);
+    // self.registration.showNotification("hello");
+});
