@@ -25,6 +25,7 @@ builder.Services.AddSingleton<EmailInfo>();
 
 // Info of firebase
 builder.Services.AddSingleton<FirebaseInfo>();
+builder.Services.AddScoped<INotificationSender, FcmSender>();
 
 // EmailSender Services
 builder.Services.AddScoped<IEmailSender, EmailSender>();
@@ -48,6 +49,7 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                     builder.Configuration.GetSection("MongoDb:DatabaseName").Value)      // Database Name
                 .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider);
 
+// FCM Service
 FirebaseApp.Create(new AppOptions()
 {
     Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sport-courts-ab2d8-firebase-adminsdk-14hr3-3439fc6419.json")),

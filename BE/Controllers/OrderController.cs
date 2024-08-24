@@ -1,5 +1,6 @@
 using BE.Models;
 using BE.Repositories;
+using BE.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -11,10 +12,19 @@ namespace BE.Controllers;
 public class OrderController : ControllerBase {
     private readonly IOrderRepository _orderRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IFirebaseTokenRepository _firebaseRepository;
+    private readonly INotificationSender _fcmSender;
 
-    public OrderController(IOrderRepository orderRepository, IUserRepository userRepository) {
+    public OrderController(
+        IOrderRepository orderRepository, 
+        IUserRepository userRepository,
+        IFirebaseTokenRepository firebaseRepository,
+        INotificationSender fcmSender
+    ) {
         _orderRepository = orderRepository;
         _userRepository = userRepository;
+        _firebaseRepository = firebaseRepository;
+        _fcmSender = fcmSender;
     }
 
     [HttpGet]
@@ -80,6 +90,31 @@ public class OrderController : ControllerBase {
         try {
             var result = await _orderRepository.Create(order);
 
+            // Send Notification to admin dashboard
+            var tokens = await _firebaseRepository.GetAllTokens();
+
+            try {
+                foreach (var token in tokens) {
+                    var request = new MessageRequest {
+                        Title = "Place Order",
+                        Body = "Order has been placed at " + DateTime.Now.ToString(),
+                        DeviceToken = token.Token
+                    };
+
+                    await _fcmSender.SendNotification(request);
+                }
+            } catch {
+                return BadRequest(new AuthResult()
+                {
+                    Result = false,
+                    Errors = new List<string>()
+                    {
+                        "Notify admin ERROR !!"
+                    }
+                });
+            }
+
+            // logic handle of Order
             if (result == false) {
                 return NotFound("INVALID input");
             }
