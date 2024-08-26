@@ -3,6 +3,7 @@ using BE.Models;
 using BE.Private;
 using BE.Repositories;
 using BE.Services;
+using BE.Services.Hubs;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -92,7 +93,6 @@ builder.Services
 
     jwt.TokenValidationParameters = tokenValidationParameter;
 });
-
 // builder.Services.AddAuthorization(options =>
 // {
 //     options.AddPolicy("AdminOnly", policy => 
@@ -102,6 +102,21 @@ builder.Services
 //         policy.RequireRole("Admin");
 //     });
 // });
+
+builder.Services.AddSignalR();          // SignalR
+
+// Config CORS
+builder.Services.AddCors(options =>  
+{
+    options.AddDefaultPolicy(
+        builder => {
+            builder.WithOrigins("http://localhost:3000", "http://localhost:3001")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+        }
+    );
+});
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -143,7 +158,8 @@ builder.Services.AddSwaggerGen(options => {
 var app = builder.Build();
 
 // Enable CORS
-app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+// app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -158,5 +174,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chathub");            // signalR
 
 app.Run();
