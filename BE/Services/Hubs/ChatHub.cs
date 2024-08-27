@@ -6,28 +6,34 @@ namespace BE.Services.Hubs;
 public class ChatHub : Hub 
 {
     private readonly string _botUser;
+    private readonly IDictionary<string, UserConnection> _connections;
 
-    public ChatHub() 
+    public ChatHub(IDictionary<string, UserConnection> connections) 
     {
         _botUser = "Chat Bot";
+        _connections = connections;
     }
 
-    // this method will send notification to all clients
-    // if client have to commnunicate, it will call SendMessage() method
-    // if client have to receive notification from server it will use ReceiveMessage() method
-    public async Task SendMessage(string user, string message) {
-        await Clients.All.SendAsync("ReceiveMessage", user, message);
+    public async Task SendMessage(string message) 
+    {
+        // kiểm tra client hiện tại có lưu trong Dict không
+        if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection)) 
+        {
+            // Lấy ra hết các user trong room mà client đang sử dụng
+            await Clients.Group(userConnection.Room)            
+                        // gửi message đến tất cả các user trong room
+                        // lúc này bên FE sẽ xử lí tự lắng nghe từ method `ReceiveMessage`
+                        .SendAsync("ReceiveMessage", userConnection.User, message);     
+        }
     }
 
-    // Everyone will be notified except who have joined the chat
-    public async Task JoinChat(string user, string message) {
-        await Clients.Others.SendAsync("ReceiveMessage", user, message);
-    }
-
+    // Tạo các room chat riêng biệt
     public async Task JoinRoom(UserConnection userConnection) 
     {
         // Thêm client vào nhóm (xác định bằng connectionId)
         await Groups.AddToGroupAsync(Context.ConnectionId, userConnection.Room);
+
+        _connections[Context.ConnectionId] = userConnection;
 
         // Thông báo tới các client ở trong nhóm
         await Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", _botUser, 
