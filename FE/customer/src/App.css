@@ -1289,3 +1289,50 @@ address {
 .lobby .btn:hover:not(:disabled) {
   background-color: #218838;
 }
+
+/* Chat Container */
+.chat {
+  height: 500px;
+  overflow-y: auto;
+  padding-right: 10px;
+  border-top: 1px solid #ddd;
+  margin-top: 20px;
+}
+
+/* Message Container */
+.message-container {
+  height: 600px;
+  padding: 12px 0;
+  background-color: white;
+  overflow: auto;
+  border-radius: 5px;
+  margin-bottom: 2px;
+}
+
+.user-message {
+  text-align: right;
+  padding-right: 5px;
+  font-size: 18px;
+
+}
+
+.message {
+  display: inline-flex;
+  padding: 5px;
+  font-size: 18px;
+  color: white;
+  border-radius: 20px;
+  margin-top: 3px;
+  margin-right: 8px;
+}
+
+.from-user {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+  margin-right: 16px;
+}
+
+.message.bg-primary {
+  background-color: #007bff;
+}
