@@ -1292,7 +1292,6 @@ address {
 
 /* Chat Container */
 .chat {
-  height: 500px;
   overflow-y: auto;
   padding-right: 10px;
   border-top: 1px solid #ddd;
@@ -1301,7 +1300,7 @@ address {
 
 /* Message Container */
 .message-container {
-  height: 600px;
+  height: 450px;
   padding: 12px 0;
   background-color: white;
   overflow: auto;
@@ -1318,9 +1317,9 @@ address {
 
 .message {
   display: inline-flex;
-  padding: 5px;
+  padding: 10px 20px;
   font-size: 18px;
-  color: white;
+  color: rgb(0, 0, 0);
   border-radius: 20px;
   margin-top: 3px;
   margin-right: 8px;
@@ -1334,5 +1333,46 @@ address {
 }
 
 .message.bg-primary {
+  background-color: #f4f4f4;
+}
+
+/* SendMessageForm Styles */
+.send-message-form {
+  display: flex;
+  margin-top: 10px;
+}
+
+.input-group {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.form-control {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.send-button {
+  padding: 10px 15px;
+  margin-left: 10px;
   background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 10%;
+}
+
+.send-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.send-button:not(:disabled):hover {
+  background-color: #0056b3;
 }

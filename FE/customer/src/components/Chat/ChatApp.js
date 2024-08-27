@@ -31,13 +31,23 @@ const ChatApp = () => {
         }
     }
 
+    const sendMessage = async (message) => {
+        try {
+            // Gọi phương thức `SendMessage của ChatHub` từ server
+            await connection.invoke("SendMessage", message);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
   return (
     <div className='chatapp'>
       <h2>TYANICHAT</h2>
       <hr/>
       {!connection
         ? <Lobby joinRoom={joinRoom} />
-        : <Chat messages={messages} />
+        : <Chat messages={messages} sendMessage={sendMessage} />
       }
       
     </div>
