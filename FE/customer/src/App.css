@@ -1225,3 +1225,67 @@ address {
     align-items: center;
   }
 }
+
+/* --- CHAT APP --- */
+.chatapp {
+  margin: auto;
+  padding: 120px 0;
+  width: 950px;
+  text-align: center;
+}
+
+.chatapp h2 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.chatapp hr {
+  border: 1px solid #9e9e9e;
+  width: 40%;
+  margin: 12px auto 0;
+}
+
+/* LOBBY */
+.lobby {
+  width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.lobby .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lobby .form-control {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 100%;
+}
+
+.lobby .btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #28a745;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.lobby .btn:disabled {
+  background-color: #c8c8c8;
+  cursor: not-allowed;
+}
+
+.lobby .btn:hover:not(:disabled) {
+  background-color: #218838;
+}

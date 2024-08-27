@@ -16,6 +16,7 @@ import Checkout from './components/Checkout';
 import OrderDetails from './components/OrderDetails';
 import VerifyEmail from './components/ResetPassword/VerifyEmail';
 import ResetPassword from './components/ResetPassword/ResetPassword';
+import ChatApp from './components/Chat/ChatApp';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Header />
           <BrowserRouter>
             <Routes>
+              <Route path='/chat' element={<ChatApp/>} />
               <Route index element={<Home />} />
               <Route path='/home' element={<Home />} />
               <Route path='/login' element={<Login />} />
