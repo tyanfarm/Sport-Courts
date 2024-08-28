@@ -14,10 +14,22 @@ const ChatApp = () => {
                 .configureLogging(LogLevel.Information)
                 .build();
 
-            // Handler xử lí event `ReceiveMessage` từ server
-            connection.on("ReceiveMessage", (user, message) => {
-                console.log('message receive: ', message);
-                setMessages(messages => [...messages, {user, message}]);
+            // Handler xử lí event `ReceiveMessageJoinRoom` từ server
+            connection.on("ReceiveMessageJoinRoom", (user, message) => {
+                console.log('message receive (join): ', message);
+                setMessages(messages => [...messages, {user, message, type: 'join'}]);
+            });
+
+            // Handler xử lí event `ReceiveMessageFromSender` từ server
+            connection.on("ReceiveMessageForSender", (user, message) => {
+                console.log('message receive (sender): ', message);
+                setMessages(messages => [...messages, {user, message, type: 'sender'}]);
+            });
+
+            // Handler xử lí event `ReceiveMessageFromOthers` từ server
+            connection.on("ReceiveMessageForOthers", (user, message) => {
+                console.log('message receive (others): ', message);
+                setMessages(messages => [...messages, {user, message, type: 'others'}]);
             });
 
             await connection.start();

@@ -19,11 +19,15 @@ public class ChatHub : Hub
         // kiểm tra client hiện tại có lưu trong Dict không
         if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection)) 
         {
-            // Lấy ra hết các user trong room mà client đang sử dụng
-            await Clients.Group(userConnection.Room)            
-                        // gửi message đến tất cả các user trong room
-                        // lúc này bên FE sẽ xử lí tự lắng nghe từ method `ReceiveMessage`
-                        .SendAsync("ReceiveMessage", userConnection.User, message);     
+            await Clients.Caller.SendAsync("ReceiveMessageForSender", userConnection.User, message);
+
+            await Clients.OthersInGroup(userConnection.Room)
+                        .SendAsync("ReceiveMessageForOthers", userConnection.User, message);
+            // // Lấy ra hết các user trong room mà client đang sử dụng
+            // await Clients.Group(userConnection.Room)            
+            //             // gửi message đến tất cả các user trong room
+            //             // lúc này bên FE sẽ xử lí tự lắng nghe từ method `ReceiveMessage`
+            //             .SendAsync("ReceiveMessage", userConnection.User, message);     
         }
     }
 
@@ -36,7 +40,7 @@ public class ChatHub : Hub
         _connections[Context.ConnectionId] = userConnection;
 
         // Thông báo tới các client ở trong nhóm
-        await Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", _botUser, 
+        await Clients.Group(userConnection.Room).SendAsync("ReceiveMessageJoinRoom", _botUser, 
                 $"{userConnection.User} has joined {userConnection.Room}");
     }
 }
