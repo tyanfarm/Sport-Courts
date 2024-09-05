@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Lobby from './Lobby'
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import Chat from './Chat';
+import { localhost } from '../../services/server';
 
 const ChatApp = () => {
     const [connection, setConnection] = useState();
@@ -10,7 +11,7 @@ const ChatApp = () => {
     const joinRoom = async (user, room) => {
         try {
             const connection = new HubConnectionBuilder()
-                .withUrl("http://localhost:5102/chathub")
+                .withUrl(`${localhost}/chathub`)
                 .configureLogging(LogLevel.Information)
                 .build();
 
@@ -30,6 +31,15 @@ const ChatApp = () => {
             connection.on("ReceiveMessageForOthers", (user, message) => {
                 console.log('message receive (others): ', message);
                 setMessages(messages => [...messages, {user, message, type: 'others'}]);
+            });
+
+            // Handle receiving images
+            connection.on("ReceiveImageForSender", (user, base64Image) => {
+                setMessages(messages => [...messages, { user, image: base64Image, type: 'sender' }]);
+            });
+
+            connection.on("ReceiveImageForOthers", (user, base64Image) => {
+                setMessages(messages => [...messages, { user, image: base64Image, type: 'others' }]);
             });
 
             await connection.start();
@@ -53,13 +63,26 @@ const ChatApp = () => {
         }
     }
 
+    const sendImage = async (file) => {
+        try {
+            const reader = new FileReader();
+            reader.onload = async () => {
+                const base64Image = reader.result;
+                await connection.invoke("SendImage", base64Image);
+            };
+            reader.readAsDataURL(file);
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
   return (
     <div className='chatapp'>
       <h2>TYANICHAT</h2>
       <hr/>
       {!connection
         ? <Lobby joinRoom={joinRoom} />
-        : <Chat messages={messages} sendMessage={sendMessage} />
+        : <Chat messages={messages} sendMessage={sendMessage} sendImage={sendImage} />
       }
       
     </div>

@@ -31,6 +31,15 @@ public class ChatHub : Hub
         }
     }
 
+    public async Task SendImage(string base64Image) {
+        if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection)) {
+            await Clients.Caller.SendAsync("ReceiveImageForSender", userConnection.User, base64Image);
+
+            await Clients.OthersInGroup(userConnection.Room)
+                        .SendAsync("ReceiveImageForOthers", userConnection.User, base64Image);
+        }
+    }
+
     // Tạo các room chat riêng biệt
     public async Task JoinRoom(UserConnection userConnection) 
     {

@@ -1,16 +1,27 @@
-import React, {useState} from 'react'
+import React, { useState, useRef } from 'react'
 
-const SendMessageForm = ({ sendMessage }) => {
+const SendMessageForm = ({ sendMessage, sendImage }) => {
     const [message, setMessage] = useState('');
+    const [file, setFile] = useState(null);
+    const fileInputRef = useRef(null);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (message) {
+            sendMessage(message);
+            setMessage('');
+        }
+        if (file) {
+            sendImage(file);
+            setFile(null);
+            fileInputRef.current.value = null; // Reset the file input
+        }
+    };
 
     return (
         <form className="send-message-form"
-            onSubmit={e => {
-                e.preventDefault();
-                sendMessage(message);
-                setMessage('');
-            }}>
-            <div className="input-group">
+            onSubmit={handleSubmit}>
+            <div className="input-group-chat">
                 <input
                     type="text"
                     className="form-control"
@@ -18,10 +29,17 @@ const SendMessageForm = ({ sendMessage }) => {
                     onChange={e => setMessage(e.target.value)}
                     value={message}
                 />
+                <input 
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setFile(e.target.files[0])}
+                    ref={fileInputRef}  // Attach ref to the file input
+                    className="input-file"
+                />
                 <button
                     type="submit"
                     className="send-button"
-                    disabled={!message}
+                    disabled={!message && !file}
                 >
                     Send
                 </button>

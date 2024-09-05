@@ -1229,7 +1229,7 @@ address {
 /* --- CHAT APP --- */
 .chatapp {
   margin: auto;
-  padding: 120px 0;
+  padding-top: 12px;
   width: 950px;
   text-align: center;
 }
@@ -1306,6 +1306,7 @@ address {
   overflow: auto;
   border-radius: 5px;
   margin-bottom: 2px;
+  overflow-y: auto;
 }
 
 .user-message {
@@ -1350,11 +1351,11 @@ address {
 }
 
 .user-message.sender .from-user {
-  margin: 4px 20px 8px 0;
+  margin: 4px 20px 28px 0;
 }
 
 .user-message.others .from-user {
-  margin: 4px 0 8px 24px;
+  margin: 4px 0 28px 24px;
 }
 
 .message.bg-primary {
@@ -1371,13 +1372,14 @@ address {
   margin-top: 10px;
 }
 
-.input-group {
+.input-group-chat {
   display: flex;
   width: 100%;
   align-items: center;
 }
 
 .form-control {
+  margin-right: 8px;
   flex: 1;
   padding: 10px;
   border: 1px solid #ccc;
@@ -1404,4 +1406,18 @@ address {
 
 .send-button:not(:disabled):hover {
   background-color: #28a745;
+}
+
+.message-file.sender {
+  padding-left: 77%;
+}
+
+.message-file.others {
+  padding-left: 16px;
+}
+
+.message-image {
+  max-width: 200px;
+  height: auto;
+  border-radius: 5px;
 }
