@@ -101,7 +101,11 @@ builder.Services
 //     });
 // });
 
-builder.Services.AddSignalR();          // SignalR
+// SignalR
+builder.Services.AddSignalR(options =>
+{
+    options.MaximumReceiveMessageSize = 1024 * 1024; // 1MB
+});          
 
 // Config CORS
 // cho phép truy cập từ mọi nguồn gốc

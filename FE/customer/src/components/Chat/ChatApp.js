@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Lobby from './Lobby'
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { ToastContainer, toast } from 'react-toastify';
 import Chat from './Chat';
 import { localhost } from '../../services/server';
 
@@ -18,19 +19,19 @@ const ChatApp = () => {
             // Handler xử lí event `ReceiveMessageJoinRoom` từ server
             connection.on("ReceiveMessageJoinRoom", (user, message) => {
                 console.log('message receive (join): ', message);
-                setMessages(messages => [...messages, {user, message, type: 'join'}]);
+                setMessages(messages => [...messages, { user, message, type: 'join' }]);
             });
 
             // Handler xử lí event `ReceiveMessageFromSender` từ server
             connection.on("ReceiveMessageForSender", (user, message) => {
                 console.log('message receive (sender): ', message);
-                setMessages(messages => [...messages, {user, message, type: 'sender'}]);
+                setMessages(messages => [...messages, { user, message, type: 'sender' }]);
             });
 
             // Handler xử lí event `ReceiveMessageFromOthers` từ server
             connection.on("ReceiveMessageForOthers", (user, message) => {
                 console.log('message receive (others): ', message);
-                setMessages(messages => [...messages, {user, message, type: 'others'}]);
+                setMessages(messages => [...messages, { user, message, type: 'others' }]);
             });
 
             // Handle receiving images
@@ -45,7 +46,7 @@ const ChatApp = () => {
             await connection.start();
 
             // Gọi phương thức `JoinRoom của ChatHub` từ server
-            await connection.invoke("JoinRoom", {user, room});  
+            await connection.invoke("JoinRoom", { user, room });
 
             setConnection(connection);
         } catch (e) {
@@ -64,6 +65,12 @@ const ChatApp = () => {
     }
 
     const sendImage = async (file) => {
+        if (file.size > 1024 * 1024)     // 1MB 
+        {
+            toast.warn("File size exceeds 1MB");
+            return;
+        }
+
         try {
             const reader = new FileReader();
             reader.onload = async () => {
@@ -76,17 +83,18 @@ const ChatApp = () => {
         }
     };
 
-  return (
-    <div className='chatapp'>
-      <h2>TYANICHAT</h2>
-      <hr/>
-      {!connection
-        ? <Lobby joinRoom={joinRoom} />
-        : <Chat messages={messages} sendMessage={sendMessage} sendImage={sendImage} />
-      }
-      
-    </div>
-  )
+    return (
+        <div className='chatapp'>
+            <ToastContainer/>
+            <h2>TYANICHAT</h2>
+            <hr />
+            {!connection
+                ? <Lobby joinRoom={joinRoom} />
+                : <Chat messages={messages} sendMessage={sendMessage} sendImage={sendImage} />
+            }
+
+        </div>
+    )
 }
 
 export default ChatApp

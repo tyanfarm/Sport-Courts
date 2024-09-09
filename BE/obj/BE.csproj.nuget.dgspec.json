@@ -1,28 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj": {}
+    "D:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj": {}
   },
   "projects": {
-    "C:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj": {
+    "D:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj",
+        "projectUniqueName": "D:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj",
         "projectName": "BE",
-        "projectPath": "C:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj",
-        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "C:\\Tyan\\ASPNET\\Sport-Courts\\BE\\obj\\",
+        "projectPath": "D:\\Tyan\\ASPNET\\Sport-Courts\\BE\\BE.csproj",
+        "packagesPath": "C:\\Users\\Tyan\\.nuget\\packages\\",
+        "outputPath": "D:\\Tyan\\ASPNET\\Sport-Courts\\BE\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Tyan\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -35,11 +32,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -94,24 +86,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[7.0.20, 7.0.20]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -120,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.410\\RuntimeIdentifierGraph.json"
         }
       }
     }
