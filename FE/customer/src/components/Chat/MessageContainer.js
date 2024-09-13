@@ -4,10 +4,16 @@ import React, { useEffect, useRef } from 'react'
 const MessageContainer = ({ messages }) => {
     const chatContainerRef = useRef(null);
 
-    useEffect(() => {
+    const scrollToBottom = () => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
             // đặt `scrolllTop = scrollHeight` để cuộn phần tử xuống cuối
+        }
+    };
+
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            scrollToBottom(); // Mỗi khi messages thay đổi, cuộn xuống cuối
         }
     }, [messages]);
 
@@ -25,7 +31,12 @@ const MessageContainer = ({ messages }) => {
                         </div>
                     ) : (
                         <div className={`message-file ${m.type}`}>
-                            <img src={m.image} alt="Sent Image" className="message-image" />
+                            <img
+                                src={m.image}
+                                alt="Sent Image"
+                                className="message-image"
+                                onLoad={scrollToBottom}     // Cuộn sau khi ảnh được tải xong
+                            />
                         </div>
                     )}
 
