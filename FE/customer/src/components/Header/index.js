@@ -21,6 +21,7 @@ const Header = () => {
                             auth.isAuthenticated === true ? (
                                 <React.Fragment>
                                     <li><a href="/profile" className="buttonLogin">MY ACCOUNT</a></li>
+                                    <li><a href="/chat" className="buttonLogin">CHAT</a></li>
                                 </React.Fragment>
                             )
                             : 

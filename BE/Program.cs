@@ -19,6 +19,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<IDictionary<string, UserConnection>>
 (opts => new Dictionary<string, UserConnection>());
 
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(Program));
+
 // Info of gmail sender
 builder.Services.AddSingleton<EmailInfo>();
 
@@ -40,6 +43,8 @@ builder.Services.AddScoped<IOrderdetailsRepository, OrderdetailsRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFirebaseTokenRepository, FirebaseTokenRepository>();
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+builder.Services.AddScoped<IContentConversationRepository, ContentConversationRepository>();
 
 // Identity Services
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()

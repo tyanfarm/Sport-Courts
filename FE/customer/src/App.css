@@ -749,6 +749,11 @@ footer {
   display: flex;
 }
 
+.search-chat-area {
+  position: relative;
+  margin: 12px;
+}
+
 .search-input {
   padding: 10px;
   margin-bottom: 20px;
@@ -1230,8 +1235,9 @@ address {
 .chatapp {
   margin: auto;
   padding-top: 12px;
-  width: 950px;
+  width: 1300px;
   text-align: center;
+  padding-bottom: 40px;
 }
 
 .chatapp h2 {
@@ -1292,10 +1298,10 @@ address {
 
 /* Chat Container */
 .chat {
-  overflow-y: auto;
-  padding-right: 10px;
-  border-top: 1px solid #ddd;
-  margin-top: 20px;
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Message Container */
@@ -1366,10 +1372,52 @@ address {
   background-color: #f4f4f4;
 }
 
+/* Chat and Client List Container */
+.chat-container {
+  display: flex;
+  height: 100%;
+}
+
+/* Client List Sidebar */
+.client-list {
+  width: 250px;
+  background-color: #f0f0f0;
+  margin: 20px;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+
+.client-list h3 {
+  margin-bottom: 15px;
+}
+
+.client-list ul {
+  list-style-type: none;
+  display: block; 
+  padding: 0;
+}
+
+.client-list li {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+  margin: 12px;
+  text-align: left; 
+  padding-left: 12px;
+}
+
+.client-list li:hover {
+  background-color: #e0e0e0;
+}
+
 /* SendMessageForm Styles */
 .send-message-form {
   display: flex;
   margin-top: 10px;
+  margin-bottom: -8px;
 }
 
 .input-group-chat {

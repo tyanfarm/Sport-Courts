@@ -34,7 +34,7 @@ const Profile = () => {
 
             setMessageDisplayed(true);
         }
-    }, [auth.token, auth.isAuthenticated, location.state, messageDisplayed])
+    }, [auth.token, auth.isAuthenticated])
 
     useEffect(() => {
         if (token) {
@@ -130,7 +130,7 @@ const Profile = () => {
 const Dashboard = ({ user }) => (
     <div style={{ paddingBottom: '200px' }} className="tab-pane fade show active" id="account-dashboard" role="tabpanel" aria-labelledby="account-dashboard-tab">
         <div className="myaccount-dashboard">
-            <p>Hello <b>{user.userName} ---</b> Welcome to Cao Thu Cau Long.</p>
+            <p>Hello <b>{user.fullName} ---</b> Welcome to Cao Thu Cau Long.</p>
             <p>From your account dashboard you can view your recent orders, manage your shipping and
                 billing addresses and <b>edit your password and account details</b>.</p>
         </div>

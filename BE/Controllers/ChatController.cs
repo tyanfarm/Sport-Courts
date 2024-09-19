@@ -1,0 +1,125 @@
+using BE.Models;
+using BE.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BE.Controllers;
+
+[ApiController]
+[Route("api/v1/[controller]")]
+public class ChatController : ControllerBase {
+    private readonly IConversationRepository _conversationRepository;
+    private readonly IContentConversationRepository _contentRepository;
+    private readonly IUserRepository _userRepository;
+
+    public ChatController
+    (
+        IConversationRepository conversationRepository,
+        IContentConversationRepository contentRepository,
+        IUserRepository userRepository
+    )
+    {
+        _conversationRepository = conversationRepository;
+        _contentRepository = contentRepository;
+        _userRepository = userRepository;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllConversations() {
+        try
+        {
+            var conversations = await _conversationRepository.GetAllConversations();
+
+            if (conversations == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(conversations);
+        }
+        catch
+        {
+            return StatusCode(500, "ERROR !");
+        }
+    }
+
+    [HttpGet]
+    [Route("conversations/otherUser/{customerId}")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Customer")]
+    public async Task<IActionResult> GetOtherCustomerInConversation(string customerId) {
+        try
+        {
+            // Find all conversations that customer has joined
+            var conversations = await _conversationRepository.GetConversationsByCustomerId(customerId);
+
+            var otherCustomers = new List<ApplicationUser>();
+
+            foreach (var conversation in conversations) {
+                // Get different customerId with input Id
+                var otherCustomerId = conversation.CustomersId?.FirstOrDefault(id => id != customerId);
+
+                if (otherCustomerId != null) {
+                    var user = await _userRepository.GetUserByIdAsync(otherCustomerId);
+
+                    if (user != null)
+                    {
+                        otherCustomers.Add(user);
+                    }
+                }
+            }
+
+            if (otherCustomers == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(otherCustomers);
+        }
+        catch
+        {
+            return StatusCode(500, "ERROR !");
+        }
+    }
+
+    [HttpPost]
+    [Route("conversations")]
+    public async Task<IActionResult> CreateConversation(Conversation data)
+    {
+        try
+        {
+            var result = await _conversationRepository.Create(data);
+
+            if (result != true)
+            {
+                return NotFound();
+            }
+
+            return Ok(data);
+        }
+        catch
+        {
+            return StatusCode(500, "ERROR !");
+        }
+    }
+
+    [HttpPost]
+    [Route("contentConversations")]
+    public async Task<IActionResult> CreateContentConversation(ContentConversation data)
+    {
+        try
+        {
+            var result = await _contentRepository.Create(data);
+
+            if (result != true)
+            {
+                return NotFound();
+            }
+
+            return Ok(data);
+        }
+        catch
+        {
+            return StatusCode(500, "ERROR !");
+        }
+    }
+}

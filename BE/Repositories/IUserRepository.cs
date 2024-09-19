@@ -12,6 +12,7 @@ public interface IUserRepository {
     Task<ApplicationUser> GetUserByIdAsync(string userId);
     Task<ApplicationUser> GetUserByEmailAsync(string email);
     Task<ApplicationUser> GetUserByNameAsync(string userName);
+    Task<List<ApplicationUser>> SearchFullNameFilter(string searchString);
     Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password);
     Task<IdentityResult> CreateRoleAsync(ApplicationRole role);
     Task<IdentityResult> AddRoleToUserAsync(ApplicationUser user, string role);

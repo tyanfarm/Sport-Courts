@@ -1,3 +1,7 @@
+using System.Net;
+using System.Net.Mail;
+using AutoMapper;
+using BE.DTOs;
 using BE.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +12,11 @@ namespace BE.Controllers;
 [Route("api/v1/[controller]")]
 public class UserController : ControllerBase {
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
-    public UserController(IUserRepository userRepository) {
+    public UserController(IUserRepository userRepository, IMapper mapper) {
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -37,6 +43,26 @@ public class UserController : ControllerBase {
 
         return Ok(user);
     }
+
+    [HttpGet]
+    [Route("Filter")]
+    public async Task<IActionResult> SearchFullNameFilter(string searchString) {
+        try {
+            var user = await _userRepository.SearchFullNameFilter(searchString);
+
+            if (user == null) {
+                return NotFound();
+            }
+
+            var userResponse = _mapper.Map<List<UserDTO>>(user);
+
+            return Ok(userResponse);
+        }
+        catch {
+            return StatusCode(500, "ERROR");
+        }
+    }
+
 
     [HttpDelete]
     [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]

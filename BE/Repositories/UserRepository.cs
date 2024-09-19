@@ -1,6 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using BE.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
 
 namespace BE.Repositories;
 
@@ -8,15 +10,23 @@ public class UserRepository : IUserRepository {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly IMongoCollection<ApplicationUser> _userCollection;
     
     public UserRepository(
         UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager,
-        SignInManager<ApplicationUser> signInManager
+        SignInManager<ApplicationUser> signInManager,
+        IConfiguration configuration
     ) {
         _userManager = userManager;
         _roleManager = roleManager;
         _signInManager = signInManager;
+
+        var mongoClient = new MongoClient(configuration.GetConnectionString("DefaultConnection"));
+        // Get Database
+        var mongoDb = mongoClient.GetDatabase("SportCourts");
+        // Get Collection
+        _userCollection = mongoDb.GetCollection<ApplicationUser>("Users");
     }
 
     public async Task<ApplicationUser> GetUser(string token) {
@@ -67,6 +77,19 @@ public class UserRepository : IUserRepository {
 
     public async Task<ApplicationUser> GetUserByNameAsync(string userName) {
         return await _userManager.FindByNameAsync(userName);
+    }
+
+    public async Task<List<ApplicationUser>> SearchFullNameFilter(string searchString) {
+        if (searchString.IsNullOrEmpty() == true) {
+            return null;
+        }
+
+        // var user = await _userCollection.Find(u => u.FullName.Contains(searchString)).FirstOrDefaultAsync();
+        
+        // Tìm kiếm không phân biệt hoa thường bằng biểu thức chính quy (Regex)
+        var filter = Builders<ApplicationUser>.Filter.Regex(u => u.FullName, new MongoDB.Bson.BsonRegularExpression(searchString, "i"));
+
+        return await _userCollection.Find(filter).ToListAsync();;
     }
 
     public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password) {

@@ -43,7 +43,7 @@ public class AuthenticationController : ControllerBase
     [Route("AdminRegister")]
     public async Task<IActionResult> AdminRegister(UserDTO userDTO)
     {
-        if (userDTO.Name == null || userDTO.Email == null)
+        if (userDTO.UserName == null || userDTO.Email == null)
         {
             return BadRequest(new AuthResult()
             {
@@ -57,7 +57,7 @@ public class AuthenticationController : ControllerBase
         // Create new user
         ApplicationUser user = new ApplicationUser()
         {
-            UserName = userDTO.Name.ToLower(),
+            UserName = userDTO.UserName.ToLower(),
             Email = userDTO.Email
         };
 
@@ -121,7 +121,7 @@ public class AuthenticationController : ControllerBase
         if (ModelState.IsValid)
         {
             // Check if user is existed
-            var user = await _userRepository.GetUserByNameAsync(userDTO.Name);
+            var user = await _userRepository.GetUserByNameAsync(userDTO.UserName);
 
             if (user == null)
             {
@@ -193,7 +193,8 @@ public class AuthenticationController : ControllerBase
             ApplicationUser newUser = new ApplicationUser()
             {
                 Email = userDTO.Email,
-                UserName = userDTO.Name,
+                UserName = userDTO.Email,
+                FullName = userDTO.FullName,
                 PhoneNumber = userDTO.Phone,
                 Address = userDTO.Address,
                 EmailConfirmed = false

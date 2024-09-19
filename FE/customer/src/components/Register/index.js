@@ -12,7 +12,7 @@ const Register = () => {
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const [name, setName] = useState("");
+    const [fullname, setFullname] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
@@ -52,7 +52,7 @@ const Register = () => {
                 'Content-Type': 'application/json' 
             },
             body: JSON.stringify({ 
-                name: name,
+                fullName: fullname,
                 email: email,
                 phone: phone,
                 address: address,
@@ -78,7 +78,7 @@ const Register = () => {
                 <h2 className="login-title">Register</h2>
                 <div className="input-group">
                     <input type="text" placeholder="Full Name"
-                        value={name} onChange={(event) => setName(event.target.value)} />
+                        value={fullname} onChange={(event) => setFullname(event.target.value)} />
                 </div>
                 <div className="input-group">
                 <input type="text" placeholder="Email"
