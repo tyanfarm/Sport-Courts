@@ -28,11 +28,22 @@ public class ConversationRepository : IConversationRepository {
         return conversations;
     }
 
-    public async Task<bool> Create(Conversation conversation)
+    public async Task<Conversation> GetOrCreate(Conversation conversation)
     {
+        // Kiểm tra xem đã tồn tại conversation với danh sách CustomersId này chưa
+        var existingConversation = await _conversationCollection.Find(c => c.CustomersId != null
+                                            && c.CustomersId.Count == conversation.CustomersId.Count
+                                            && c.CustomersId.All(id => conversation.CustomersId.Contains(id)))
+                                        .FirstOrDefaultAsync();
+
+        // Nếu đã tồn tại Convesation thì trả về false
+        if (existingConversation != null) {
+            return existingConversation;
+        }
+
         await _conversationCollection.InsertOneAsync(conversation);
 
-        return true;
+        return conversation;
     }
 
     public async Task<bool> Delete(string id)

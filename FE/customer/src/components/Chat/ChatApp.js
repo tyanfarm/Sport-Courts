@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Lobby from './Lobby'
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { ToastContainer, toast } from 'react-toastify';
 import Chat from './Chat';
 import { localhost } from '../../services/server';
+import axios from 'axios';
 
 const ChatApp = () => {
     const [connection, setConnection] = useState();
@@ -11,44 +12,50 @@ const ChatApp = () => {
 
     const joinRoom = async (user, room) => {
         try {
-            const connection = new HubConnectionBuilder()
+            // Nếu đã có kết nối, chỉ cần gọi JoinRoom
+            if (connection) {
+                await connection.invoke("JoinRoom", { user, room });
+                return;
+            }
+
+            const newConnection = new HubConnectionBuilder()
                 .withUrl(`${localhost}/chathub`)
                 .configureLogging(LogLevel.Information)
                 .build();
 
             // Handler xử lí event `ReceiveMessageJoinRoom` từ server
-            connection.on("ReceiveMessageJoinRoom", (user, message) => {
+            newConnection.on("ReceiveMessageJoinRoom", (user, message) => {
                 console.log('message receive (join): ', message);
                 setMessages(messages => [...messages, { user, message, type: 'join' }]);
             });
 
             // Handler xử lí event `ReceiveMessageFromSender` từ server
-            connection.on("ReceiveMessageForSender", (user, message) => {
+            newConnection.on("ReceiveMessageForSender", (user, message) => {
                 console.log('message receive (sender): ', message);
                 setMessages(messages => [...messages, { user, message, type: 'sender' }]);
             });
 
             // Handler xử lí event `ReceiveMessageFromOthers` từ server
-            connection.on("ReceiveMessageForOthers", (user, message) => {
+            newConnection.on("ReceiveMessageForOthers", (user, message) => {
                 console.log('message receive (others): ', message);
                 setMessages(messages => [...messages, { user, message, type: 'others' }]);
             });
 
             // Handle receiving images
-            connection.on("ReceiveImageForSender", (user, base64Image) => {
+            newConnection.on("ReceiveImageForSender", (user, base64Image) => {
                 setMessages(messages => [...messages, { user, image: base64Image, type: 'sender' }]);
             });
 
-            connection.on("ReceiveImageForOthers", (user, base64Image) => {
+            newConnection.on("ReceiveImageForOthers", (user, base64Image) => {
                 setMessages(messages => [...messages, { user, image: base64Image, type: 'others' }]);
             });
 
-            await connection.start();
+            await newConnection.start();
 
             // Gọi phương thức `JoinRoom của ChatHub` từ server
-            await connection.invoke("JoinRoom", { user, room });
+            await newConnection.invoke("JoinRoom", { user, room });
 
-            setConnection(connection);
+            setConnection(newConnection);       // Lưu kết nối mới vào state
         } catch (e) {
             console.log(e);
         }
@@ -85,13 +92,16 @@ const ChatApp = () => {
 
     return (
         <div className='chatapp'>
-            <ToastContainer/>
+            <ToastContainer />
             <h2>TYANICHAT</h2>
             <hr />
-            {!connection
+            {/* {!connection
                 ? <Lobby joinRoom={joinRoom} />
-                : <Chat messages={messages} sendMessage={sendMessage} sendImage={sendImage} />
-            }
+                : <Chat messages={messages} sendMessage={sendMessage} sendImage={sendImage} setMessages={setMessages}
+                    token={token} handleUserClick={handleUserClick}/>
+            } */}
+            <Chat messages={messages} sendMessage={sendMessage} sendImage={sendImage} setMessages={setMessages}
+                joinRoom={joinRoom}/>
 
         </div>
     )

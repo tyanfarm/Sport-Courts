@@ -1,17 +1,26 @@
 using BE.Models;
+using BE.Repositories;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BE.Services.Hubs;
 
 public class ChatHub : Hub 
 {
-    private readonly string _botUser;
+    private readonly string _botUser;   
     private readonly IDictionary<string, UserConnection> _connections;
+    private readonly IConversationRepository _conversationRepository;
+    private readonly IContentConversationRepository _contentRepository;
 
-    public ChatHub(IDictionary<string, UserConnection> connections) 
+    public ChatHub(
+        IDictionary<string, UserConnection> connections,
+        IConversationRepository conversationRepository,
+        IContentConversationRepository contentRepository
+    ) 
     {
         _botUser = "Chat Bot";
         _connections = connections;
+        _conversationRepository = conversationRepository;
+        _contentRepository = contentRepository;
     }
 
     public async Task SendMessage(string message) 
@@ -19,15 +28,13 @@ public class ChatHub : Hub
         // kiểm tra client hiện tại có lưu trong Dict không
         if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection)) 
         {
+            // Save message to database
+
+
             await Clients.Caller.SendAsync("ReceiveMessageForSender", userConnection.User, message);
 
             await Clients.OthersInGroup(userConnection.Room)
-                        .SendAsync("ReceiveMessageForOthers", userConnection.User, message);
-            // // Lấy ra hết các user trong room mà client đang sử dụng
-            // await Clients.Group(userConnection.Room)            
-            //             // gửi message đến tất cả các user trong room
-            //             // lúc này bên FE sẽ xử lí tự lắng nghe từ method `ReceiveMessage`
-            //             .SendAsync("ReceiveMessage", userConnection.User, message);     
+                        .SendAsync("ReceiveMessageForOthers", userConnection.User, message); 
         }
     }
 

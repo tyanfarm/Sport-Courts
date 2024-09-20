@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
+import MessageContainer from './MessageContainer'
 import { AuthContext } from '../../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
-import MessageContainer from './MessageContainer'
 import { localhost } from '../../services/server';
 import SendMessageForm from './SendMessageForm'
 
-const Chat = ({ messages, sendMessage, sendImage }) => {
-    const [listUsers, setListUsers] = useState([]);
-    const [info, setInfo] = useState({});
-    const { auth, logOut } = useContext(AuthContext);
+const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom }) => {
+    const [defaultListUsers, setDefaultListUsers] = useState([]);
+    const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
     const [token, setToken] = useState("");
+    const [listUsers, setListUsers] = useState([]);
+    const [info, setInfo] = useState({});
 
+    // Lấy token từ localStorage
     useEffect(() => {
         if (!auth.isAuthenticated) {
             navigate('/login');
@@ -24,7 +26,6 @@ const Chat = ({ messages, sendMessage, sendImage }) => {
         }
 
     }, [auth.token, auth.isAuthenticated])
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,6 +48,8 @@ const Chat = ({ messages, sendMessage, sendImage }) => {
     }, [info.id]);  // Trigger when info.id changes
 
 
+    // Lấy thông tin người dùng hiện tại 
+    // LƯU Ý: CẦN MAPPER QUA DTO Ở BE
     const fetchInfo = async () => {
         try {
             const response = await axios.get(`${localhost}/api/v1/User/${token}`, {
@@ -66,6 +69,7 @@ const Chat = ({ messages, sendMessage, sendImage }) => {
         }
     }
 
+    // Tìm kiếm trong bảng Conversations
     const fetchUsers = async (userId) => {
         try {
             const response = await axios.get(`${localhost}/api/v1/Chat/conversations/otherUser/${userId}`, {
@@ -75,8 +79,9 @@ const Chat = ({ messages, sendMessage, sendImage }) => {
                     'Content-Type': 'application/json'
                 }
             });
-
+            console.log(response.data);
             setListUsers(response.data);
+            setDefaultListUsers(response.data);
         } 
         catch (error) {
             console.error('Error fetching user info:', error);
@@ -88,12 +93,51 @@ const Chat = ({ messages, sendMessage, sendImage }) => {
         
         if (value === '') {
             // If search term is empty, fetch all courts
-            fetchUsers(info.id);
+            setListUsers(defaultListUsers);
         } else {
             searchUser(value);
         }
     }
 
+    // Khởi tạo room Conversation
+    const createConversation = async (user1, user2) => {
+        try {
+            const response = await axios.post(`${localhost}/api/v1/Chat/conversations?emailUser1=${user1}&emailUser2=${user2}`,
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            console.log(response);
+                
+            console.log(response.data);
+
+            return response.data;
+        }
+        catch (error) {
+            console.error('Error creating conversation:', error);
+        }
+    }
+
+    // Xử lý joinRoom khi click vào user list
+    const handleUserClick = async (currentUserEmail, clickedUserEmail) => {
+        // Tạo Conversation giữa currentUser và clickedUser
+        const conversation = await createConversation(currentUserEmail, clickedUserEmail);
+
+        if (conversation) {
+            // Tham gia vào room của conversation
+            console.log(currentUserEmail);
+            console.log(conversation.conversationId);
+            joinRoom(currentUserEmail, conversation.conversationId);
+            setListUsers(defaultListUsers);
+        }
+    }
+
+    // Tìm kiếm trong bảng User
     const searchUser = async (searchString) => {
         try {
             const response = await axios.get(`${localhost}/api/v1/User/Filter?searchString=${searchString}`);
@@ -111,7 +155,6 @@ const Chat = ({ messages, sendMessage, sendImage }) => {
                     <input
                         type="text"
                         placeholder="Search"
-                        // value={searchTerm}
                         onChange={handleSearchChange}
                         className="search-input"
                         style={{ margin: "0" }}
@@ -120,9 +163,9 @@ const Chat = ({ messages, sendMessage, sendImage }) => {
                 </div>
                 <ul>
                     {listUsers.map(user => (
-                        <li key={user.email} >
+                        <li key={user.email} onClick={() => handleUserClick(info.email, user.email)} >
                             <i style={{ paddingRight: "8px" }} class='fas fa-user-alt'></i>
-                            {user.fullName}
+                            {user.fullName} {user.email}
                         </li>
                     ))}
                 </ul>

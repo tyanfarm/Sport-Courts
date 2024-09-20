@@ -1,3 +1,4 @@
+using BE.DTOs;
 using BE.Models;
 using BE.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -52,7 +53,7 @@ public class ChatController : ControllerBase {
             // Find all conversations that customer has joined
             var conversations = await _conversationRepository.GetConversationsByCustomerId(customerId);
 
-            var otherCustomers = new List<ApplicationUser>();
+            var otherCustomers = new List<OtherCustomerDTO>();
 
             foreach (var conversation in conversations) {
                 // Get different customerId with input Id
@@ -63,7 +64,11 @@ public class ChatController : ControllerBase {
 
                     if (user != null)
                     {
-                        otherCustomers.Add(user);
+                        otherCustomers.Add(new OtherCustomerDTO {
+                            ConversationId = conversation.ConversationId,
+                            FullName = user.FullName,
+                            Email = user.Email
+                        });
                     }
                 }
             }
@@ -83,18 +88,25 @@ public class ChatController : ControllerBase {
 
     [HttpPost]
     [Route("conversations")]
-    public async Task<IActionResult> CreateConversation(Conversation data)
+    public async Task<IActionResult> CreateConversation(string emailUser1, string emailUser2)
     {
         try
         {
-            var result = await _conversationRepository.Create(data);
+            var user1 = await _userRepository.GetUserByEmailAsync(emailUser1);
+            var user2 = await _userRepository.GetUserByEmailAsync(emailUser2);
 
-            if (result != true)
+            var conversation = new Conversation {
+                CustomersId = new List<string> {user1.Id.ToString(), user2.Id.ToString()}
+            };
+
+            var result = await _conversationRepository.GetOrCreate(conversation);
+
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return Ok(data);
+            return Ok(result);
         }
         catch
         {

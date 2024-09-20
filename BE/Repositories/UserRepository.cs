@@ -3,6 +3,7 @@ using BE.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using BE.Helper;
 
 namespace BE.Repositories;
 
@@ -84,12 +85,10 @@ public class UserRepository : IUserRepository {
             return null;
         }
 
-        // var user = await _userCollection.Find(u => u.FullName.Contains(searchString)).FirstOrDefaultAsync();
-        
         // Tìm kiếm không phân biệt hoa thường bằng biểu thức chính quy (Regex)
         var filter = Builders<ApplicationUser>.Filter.Regex(u => u.FullName, new MongoDB.Bson.BsonRegularExpression(searchString, "i"));
-
-        return await _userCollection.Find(filter).ToListAsync();;
+        
+        return await _userCollection.Find(filter).ToListAsync();
     }
 
     public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password) {
