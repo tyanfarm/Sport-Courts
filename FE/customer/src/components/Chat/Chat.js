@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { localhost } from '../../services/server';
 import SendMessageForm from './SendMessageForm'
 
-const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom }) => {
+const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom, setCurrentUser }) => {
     const [defaultListUsers, setDefaultListUsers] = useState([]);
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -99,7 +99,7 @@ const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom }) => {
         }
     }
 
-    // Khởi tạo room Conversation
+    // Khởi tạo room Conversation bằng email của 2 user
     const createConversation = async (user1, user2) => {
         try {
             const response = await axios.post(`${localhost}/api/v1/Chat/conversations?emailUser1=${user1}&emailUser2=${user2}`,
@@ -123,7 +123,8 @@ const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom }) => {
         }
     }
 
-    // Xử lý joinRoom khi click vào user list
+    // Xử lý joinRoom khi click vào user list 
+    // -> lấy email hiện tại của client với email của client được click
     const handleUserClick = async (currentUserEmail, clickedUserEmail) => {
         // Tạo Conversation giữa currentUser và clickedUser
         const conversation = await createConversation(currentUserEmail, clickedUserEmail);
@@ -133,6 +134,8 @@ const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom }) => {
             console.log(currentUserEmail);
             console.log(conversation.conversationId);
             joinRoom(currentUserEmail, conversation.conversationId);
+            setCurrentUser(currentUserEmail);
+            
             setListUsers(defaultListUsers);
         }
     }

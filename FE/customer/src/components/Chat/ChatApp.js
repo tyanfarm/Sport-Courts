@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import Lobby from './Lobby'
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { ToastContainer, toast } from 'react-toastify';
@@ -6,9 +6,13 @@ import Chat from './Chat';
 import { localhost } from '../../services/server';
 import axios from 'axios';
 
+// useState không cập nhật giá trị ngay lập tức mà sau khi render component
+// useRep - thay đổi ngay lập tức, không re-render
 const ChatApp = () => {
     const [connection, setConnection] = useState();
     const [messages, setMessages] = useState([]);
+    // const [currentUser, setCurrentUser] = useState("");
+    const currentUserRef = useRef("");
 
     const joinRoom = async (user, room) => {
         try {
@@ -37,8 +41,17 @@ const ChatApp = () => {
 
             // Handler xử lí event `ReceiveMessageFromOthers` từ server
             newConnection.on("ReceiveMessageForOthers", (user, message) => {
-                console.log('message receive (others): ', message);
-                setMessages(messages => [...messages, { user, message, type: 'others' }]);
+                console.log(currentUserRef);
+                console.log(user);
+                if (user === currentUserRef.current) {
+                    // Đây là message của chính sender
+                    console.log('message receive (sender): ', message);
+                    setMessages(messages => [...messages, { user, message, type: 'sender' }]);
+                }
+                else {
+                    console.log('message receive (others): ', message);
+                    setMessages(messages => [...messages, { user, message, type: 'others' }]);
+                }
             });
 
             // Handle receiving images
@@ -101,7 +114,7 @@ const ChatApp = () => {
                     token={token} handleUserClick={handleUserClick}/>
             } */}
             <Chat messages={messages} sendMessage={sendMessage} sendImage={sendImage} setMessages={setMessages}
-                joinRoom={joinRoom}/>
+                joinRoom={joinRoom} setCurrentUser={(user) => currentUserRef.current = user}/>
 
         </div>
     )
