@@ -80,6 +80,13 @@ public class UserRepository : IUserRepository {
         return await _userManager.FindByNameAsync(userName);
     }
 
+    public async Task<string> GetEmailByIdAsync(string userId) {
+        var user = await _userManager.FindByIdAsync(userId);
+        var email = await _userManager.GetEmailAsync(user);
+
+        return email;
+    }
+
     public async Task<List<ApplicationUser>> SearchFullNameFilter(string searchString) {
         if (searchString.IsNullOrEmpty() == true) {
             return null;

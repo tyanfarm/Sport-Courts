@@ -8,5 +8,9 @@ public class MappingProfile : Profile {
     public MappingProfile() 
     {
         CreateMap<ApplicationUser, UserDTO>();
+
+        CreateMap<ContentConversation, ContentConversationDTO>()
+            .ForMember(dest => dest.CustomerEmail,
+                        opt => opt.MapFrom<UserEmailResolver>());
     }
 }

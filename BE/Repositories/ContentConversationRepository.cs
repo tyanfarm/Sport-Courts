@@ -35,4 +35,12 @@ public class ContentConversationRepository : IContentConversationRepository
 
         return contents;
     }
+
+    public async Task<List<ContentConversation>> GetByConversationId(string conversationId) {
+        var contents = await _contentCollection.Find(c => c.ConversationId == conversationId)
+                                                .SortBy(c => c.Time) 
+                                                .ToListAsync();
+
+        return contents;
+    }
 }

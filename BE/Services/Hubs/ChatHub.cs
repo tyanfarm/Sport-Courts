@@ -10,17 +10,20 @@ public class ChatHub : Hub
     private readonly IDictionary<string, UserConnection> _connections;
     private readonly IConversationRepository _conversationRepository;
     private readonly IContentConversationRepository _contentRepository;
+    private readonly IUserRepository _userRepository;
 
     public ChatHub(
         IDictionary<string, UserConnection> connections,
         IConversationRepository conversationRepository,
-        IContentConversationRepository contentRepository
+        IContentConversationRepository contentRepository,
+        IUserRepository userRepository
     ) 
     {
         _botUser = "Chat Bot";
         _connections = connections;
         _conversationRepository = conversationRepository;
         _contentRepository = contentRepository;
+        _userRepository = userRepository;
     }
 
     public async Task SendMessage(string message) 
@@ -28,8 +31,16 @@ public class ChatHub : Hub
         // kiểm tra client hiện tại có lưu trong Dict không
         if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection)) 
         {
-            // Save message to database
+            // Find user
+            var customer = await _userRepository.GetUserByEmailAsync(userConnection.User);
 
+            // Save message to database
+            await _contentRepository.Create(new ContentConversation {
+                ConversationId = userConnection.Room,
+                CustomerId = customer.Id.ToString(),
+                Content = message,
+                Time = DateTime.Now
+            });
 
             await Clients.Caller.SendAsync("ReceiveMessageForSender", userConnection.User, message);
 

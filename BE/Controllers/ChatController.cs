@@ -1,3 +1,4 @@
+using AutoMapper;
 using BE.DTOs;
 using BE.Models;
 using BE.Repositories;
@@ -9,6 +10,7 @@ namespace BE.Controllers;
 [ApiController]
 [Route("api/v1/[controller]")]
 public class ChatController : ControllerBase {
+    private readonly IMapper _mapper;
     private readonly IConversationRepository _conversationRepository;
     private readonly IContentConversationRepository _contentRepository;
     private readonly IUserRepository _userRepository;
@@ -17,12 +19,14 @@ public class ChatController : ControllerBase {
     (
         IConversationRepository conversationRepository,
         IContentConversationRepository contentRepository,
-        IUserRepository userRepository
+        IUserRepository userRepository,
+        IMapper mapper
     )
     {
         _conversationRepository = conversationRepository;
         _contentRepository = contentRepository;
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -37,6 +41,28 @@ public class ChatController : ControllerBase {
             }
 
             return Ok(conversations);
+        }
+        catch
+        {
+            return StatusCode(500, "ERROR !");
+        }
+    }
+
+    [HttpGet]
+    [Route("contentConversations/{conversationId}")]
+    public async Task<IActionResult> GetContentsByConversationId(string conversationId) {
+        try
+        {
+            var contents = await _contentRepository.GetByConversationId(conversationId);
+
+            var contentsDto = _mapper.Map<List<ContentConversationDTO>>(contents);
+
+            if (contentsDto == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(contentsDto);
         }
         catch
         {

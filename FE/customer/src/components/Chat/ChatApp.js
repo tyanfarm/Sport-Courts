@@ -11,7 +11,6 @@ import axios from 'axios';
 const ChatApp = () => {
     const [connection, setConnection] = useState();
     const [messages, setMessages] = useState([]);
-    // const [currentUser, setCurrentUser] = useState("");
     const currentUserRef = useRef("");
 
     const joinRoom = async (user, room) => {
@@ -21,6 +20,24 @@ const ChatApp = () => {
                 await connection.invoke("JoinRoom", { user, room });
                 return;
             }
+
+            const chatHistory = await getChatHistory(room);
+            chatHistory.map((element) => {
+                const email = element.customerEmail;
+                const content = element.content;
+
+                if (email === currentUserRef) {
+                    console.log(email, content);
+                    setMessages(messages => [...messages, { email, content, type: 'sender' }]);
+                    console.log(messages);
+                }
+                else {
+                    console.log(email, content);
+                    setMessages(messages => [...messages, { email, content, type: 'others' }]);
+                    console.log(messages);
+                }
+            })
+            
 
             const newConnection = new HubConnectionBuilder()
                 .withUrl(`${localhost}/chathub`)
@@ -41,8 +58,6 @@ const ChatApp = () => {
 
             // Handler xử lí event `ReceiveMessageFromOthers` từ server
             newConnection.on("ReceiveMessageForOthers", (user, message) => {
-                console.log(currentUserRef);
-                console.log(user);
                 if (user === currentUserRef.current) {
                     // Đây là message của chính sender
                     console.log('message receive (sender): ', message);
@@ -60,7 +75,12 @@ const ChatApp = () => {
             });
 
             newConnection.on("ReceiveImageForOthers", (user, base64Image) => {
-                setMessages(messages => [...messages, { user, image: base64Image, type: 'others' }]);
+                if (user === currentUserRef.current) {
+                    setMessages(messages => [...messages, { user, image: base64Image, type: 'sender' }]);
+                }
+                else {
+                    setMessages(messages => [...messages, { user, image: base64Image, type: 'others' }]);
+                }
             });
 
             await newConnection.start();
@@ -71,6 +91,25 @@ const ChatApp = () => {
             setConnection(newConnection);       // Lưu kết nối mới vào state
         } catch (e) {
             console.log(e);
+        }
+    }
+
+    const getChatHistory = async (room) => {
+        try {
+            const response = await axios.get(`${localhost}/api/v1/Chat/contentConversations/${room}`,
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        // 'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            return response.data;
+        }
+        catch (error) {
+            console.error('Error get chat history:', error);
         }
     }
 
