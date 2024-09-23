@@ -11,34 +11,42 @@ import axios from 'axios';
 const ChatApp = () => {
     const [connection, setConnection] = useState();
     const [messages, setMessages] = useState([]);
+    const currentRoomRef = useRef("");
     const currentUserRef = useRef("");
 
     const joinRoom = async (user, room) => {
         try {
+            console.log(currentRoomRef);
+            console.log(room);
+
             // Nếu đã có kết nối, chỉ cần gọi JoinRoom
             if (connection) {
+                // Kiểm tra xem có phải room khác không
+                if (currentRoomRef.current !== room) {
+                    // Reset messages
+                    setMessages([]);
+
+                    // Cập nhật messages từ chatHistory một lần
+                    const historyMessages = await fetchAndMapChatHistory(room, currentUserRef);
+
+                    // Cập nhật state với lịch sử chat
+                    setMessages(historyMessages);
+                    currentRoomRef.current = room;
+                }
+
                 await connection.invoke("JoinRoom", { user, room });
                 return;
             }
 
-            const chatHistory = await getChatHistory(room);
-            chatHistory.map((element) => {
-                const email = element.customerEmail;
-                const content = element.content;
+            // Cập nhật messages từ chatHistory một lần
+            const historyMessages = await fetchAndMapChatHistory(room, currentUserRef);
 
-                if (email === currentUserRef) {
-                    console.log(email, content);
-                    setMessages(messages => [...messages, { email, content, type: 'sender' }]);
-                    console.log(messages);
-                }
-                else {
-                    console.log(email, content);
-                    setMessages(messages => [...messages, { email, content, type: 'others' }]);
-                    console.log(messages);
-                }
-            })
-            
+            // Cập nhật state với lịch sử chat
+            setMessages(historyMessages);
 
+            currentRoomRef.current = room;
+
+            // Kết nối SignalR
             const newConnection = new HubConnectionBuilder()
                 .withUrl(`${localhost}/chathub`)
                 .configureLogging(LogLevel.Information)
@@ -94,9 +102,10 @@ const ChatApp = () => {
         }
     }
 
-    const getChatHistory = async (room) => {
+    // Lấy lịch sử chat
+    const getChatHistory = async (room, pageNumber, pageSize) => {
         try {
-            const response = await axios.get(`${localhost}/api/v1/Chat/contentConversations/${room}`,
+            const response = await axios.get(`${localhost}/api/v1/Chat/contentConversations/${room}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
                 {
                     headers: {
                         'Accept': 'application/json',
@@ -112,6 +121,34 @@ const ChatApp = () => {
             console.error('Error get chat history:', error);
         }
     }
+
+    // Load lịch sử chat vào [messages]
+    const fetchAndMapChatHistory = async (room, currentUserRef) => {
+        const chatHistory = await getChatHistory(room, 1, 6);
+
+        // Cập nhật messages từ chatHistory
+        const historyMessages = chatHistory.contents.map((element) => {
+            const email = element.customerEmail;
+            const content = element.content;
+
+            // Kiểm tra nếu content chứa "base64" để phân biệt là hình ảnh hay tin nhắn văn bản
+            if (content.includes("base64")) {
+                return {
+                    user: email,
+                    image: content,   // Nếu content chứa "base64", trả về thuộc tính image
+                    type: email === currentUserRef.current ? 'sender' : 'others'
+                };
+            } else {
+                return {
+                    user: email,
+                    message: content,  // Nếu không chứa "base64", trả về thuộc tính message
+                    type: email === currentUserRef.current ? 'sender' : 'others'
+                };
+            }
+        });
+
+        return historyMessages;
+    };
 
     const sendMessage = async (message) => {
         try {
@@ -153,7 +190,7 @@ const ChatApp = () => {
                     token={token} handleUserClick={handleUserClick}/>
             } */}
             <Chat messages={messages} sendMessage={sendMessage} sendImage={sendImage} setMessages={setMessages}
-                joinRoom={joinRoom} setCurrentUser={(user) => currentUserRef.current = user}/>
+                joinRoom={joinRoom} setCurrentUser={(user) => currentUserRef.current = user} />
 
         </div>
     )

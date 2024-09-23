@@ -36,11 +36,19 @@ public class ContentConversationRepository : IContentConversationRepository
         return contents;
     }
 
-    public async Task<List<ContentConversation>> GetByConversationId(string conversationId) {
+    public async Task<List<ContentConversation>> GetByConversationId(string conversationId, int pageNumber, int pageSize) {
         var contents = await _contentCollection.Find(c => c.ConversationId == conversationId)
                                                 .SortBy(c => c.Time) 
+                                                .Skip((pageNumber - 1) * pageSize)
+                                                .Limit(pageSize)        
                                                 .ToListAsync();
 
         return contents;
+    }
+
+    public async Task<long> CountByConversationId(string conversationId) {
+        var count = await _contentCollection.CountDocumentsAsync(c => c.ConversationId == conversationId);
+
+        return count;
     }
 }

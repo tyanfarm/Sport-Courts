@@ -51,6 +51,17 @@ public class ChatHub : Hub
 
     public async Task SendImage(string base64Image) {
         if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection)) {
+            // Find user
+            var customer = await _userRepository.GetUserByEmailAsync(userConnection.User);
+
+            // Save message to database
+            await _contentRepository.Create(new ContentConversation {
+                ConversationId = userConnection.Room,
+                CustomerId = customer.Id.ToString(),
+                Content = base64Image,
+                Time = DateTime.Now
+            });
+
             await Clients.Caller.SendAsync("ReceiveImageForSender", userConnection.User, base64Image);
 
             await Clients.OthersInGroup(userConnection.Room)

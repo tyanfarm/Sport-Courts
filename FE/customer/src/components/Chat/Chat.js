@@ -62,7 +62,6 @@ const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom, setCurr
 
             const data = response.data;
             setInfo(data);
-            console.log(data);  
         }
         catch (error) {
             console.error('Error fetching user info:', error);
@@ -79,7 +78,6 @@ const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom, setCurr
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(response.data);
             setListUsers(response.data);
             setDefaultListUsers(response.data);
         } 
@@ -112,10 +110,6 @@ const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom, setCurr
                 }
             );
 
-            console.log(response);
-                
-            console.log(response.data);
-
             return response.data;
         }
         catch (error) {
@@ -131,8 +125,6 @@ const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom, setCurr
 
         if (conversation) {
             // Tham gia vào room của conversation
-            console.log(currentUserEmail);
-            console.log(conversation.conversationId);
             joinRoom(currentUserEmail, conversation.conversationId);
             setCurrentUser(currentUserEmail);
             

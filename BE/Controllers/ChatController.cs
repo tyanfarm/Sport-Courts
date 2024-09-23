@@ -9,7 +9,8 @@ namespace BE.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class ChatController : ControllerBase {
+public class ChatController : ControllerBase
+{
     private readonly IMapper _mapper;
     private readonly IConversationRepository _conversationRepository;
     private readonly IContentConversationRepository _contentRepository;
@@ -30,7 +31,8 @@ public class ChatController : ControllerBase {
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllConversations() {
+    public async Task<IActionResult> GetAllConversations()
+    {
         try
         {
             var conversations = await _conversationRepository.GetAllConversations();
@@ -50,19 +52,24 @@ public class ChatController : ControllerBase {
 
     [HttpGet]
     [Route("contentConversations/{conversationId}")]
-    public async Task<IActionResult> GetContentsByConversationId(string conversationId) {
+    public async Task<IActionResult> GetContentsByConversationId(string conversationId, int pageNumber, int pageSize)
+    {
         try
         {
-            var contents = await _contentRepository.GetByConversationId(conversationId);
+            var totalContents = await _contentRepository.CountByConversationId(conversationId);
 
+            // Tính tổng số trang
+            var total = (int)Math.Ceiling((double)totalContents / pageSize);
+
+            var contents = await _contentRepository.GetByConversationId(conversationId, pageNumber, pageSize);
             var contentsDto = _mapper.Map<List<ContentConversationDTO>>(contents);
 
-            if (contentsDto == null)
+            if (contentsDto == null || contentsDto.Count == 0)
             {
-                return NotFound();
+                return Ok(new { totalPage = 0, contents = new List<ContentConversationDTO>() });
             }
 
-            return Ok(contentsDto);
+            return Ok(new { totalPage = total, contents = contentsDto });
         }
         catch
         {
@@ -73,7 +80,8 @@ public class ChatController : ControllerBase {
     [HttpGet]
     [Route("conversations/otherUser/{customerId}")]
     [Authorize(AuthenticationSchemes = "Bearer", Roles = "Customer")]
-    public async Task<IActionResult> GetOtherCustomerInConversation(string customerId) {
+    public async Task<IActionResult> GetOtherCustomerInConversation(string customerId)
+    {
         try
         {
             // Find all conversations that customer has joined
@@ -81,16 +89,19 @@ public class ChatController : ControllerBase {
 
             var otherCustomers = new List<OtherCustomerDTO>();
 
-            foreach (var conversation in conversations) {
+            foreach (var conversation in conversations)
+            {
                 // Get different customerId with input Id
                 var otherCustomerId = conversation.CustomersId?.FirstOrDefault(id => id != customerId);
 
-                if (otherCustomerId != null) {
+                if (otherCustomerId != null)
+                {
                     var user = await _userRepository.GetUserByIdAsync(otherCustomerId);
 
                     if (user != null)
                     {
-                        otherCustomers.Add(new OtherCustomerDTO {
+                        otherCustomers.Add(new OtherCustomerDTO
+                        {
                             ConversationId = conversation.ConversationId,
                             FullName = user.FullName,
                             Email = user.Email
@@ -121,8 +132,9 @@ public class ChatController : ControllerBase {
             var user1 = await _userRepository.GetUserByEmailAsync(emailUser1);
             var user2 = await _userRepository.GetUserByEmailAsync(emailUser2);
 
-            var conversation = new Conversation {
-                CustomersId = new List<string> {user1.Id.ToString(), user2.Id.ToString()}
+            var conversation = new Conversation
+            {
+                CustomersId = new List<string> { user1.Id.ToString(), user2.Id.ToString() }
             };
 
             var result = await _conversationRepository.GetOrCreate(conversation);
