@@ -14,6 +14,39 @@ const ChatApp = () => {
     const currentRoomRef = useRef("");
     const currentUserRef = useRef("");
 
+    const chatContainerRef = useRef(null);
+    const [pageNumber, setPageNumber] = useState(1); // Quản lý số trang để tải thêm dữ liệu
+    const [hasMoreMessages, setHasMoreMessages] = useState(true); // Kiểm soát xem có còn tin nhắn để tải không
+
+
+    useEffect(() => {
+        // Lắng nghe sự kiện cuộn
+        const chatContainer = chatContainerRef.current;
+        if (chatContainer) {
+            chatContainer.addEventListener('scroll', handleScroll);
+        }
+
+        return () => {
+            if (chatContainer) {
+                chatContainer.removeEventListener('scroll', handleScroll);
+            }
+        };
+    }, [hasMoreMessages, pageNumber]);
+
+    // Phát hiện cuộn lên đầu để tải thêm lịch sử
+    const handleScroll = async () => {
+        if (chatContainerRef.current.scrollTop === 0 && hasMoreMessages) {
+            const newPage = pageNumber + 1;
+            const additionalMessages = await fetchAndMapChatHistory(currentRoomRef.current, currentUserRef, newPage);
+            if (additionalMessages.length > 0) {
+                setMessages(prevMessages => [...additionalMessages, ...prevMessages]);
+                setPageNumber(newPage); // Tăng số trang lên
+            } else {
+                setHasMoreMessages(false); // Hết tin nhắn
+            }
+        }
+    };
+
     const joinRoom = async (user, room) => {
         try {
             console.log(currentRoomRef);
@@ -123,27 +156,28 @@ const ChatApp = () => {
     }
 
     // Load lịch sử chat vào [messages]
-    const fetchAndMapChatHistory = async (room, currentUserRef) => {
-        const chatHistory = await getChatHistory(room, 1, 6);
+    const fetchAndMapChatHistory = async (room, currentUserRef, pageNumber = 1) => {
+        const chatHistory = await getChatHistory(room, pageNumber, 6);
 
         // Cập nhật messages từ chatHistory
-        const historyMessages = chatHistory.contents.map((element) => {
+        const historyMessages = [];
+        chatHistory.contents.forEach((element) => {
             const email = element.customerEmail;
             const content = element.content;
 
             // Kiểm tra nếu content chứa "base64" để phân biệt là hình ảnh hay tin nhắn văn bản
             if (content.includes("base64")) {
-                return {
+                historyMessages.unshift({
                     user: email,
                     image: content,   // Nếu content chứa "base64", trả về thuộc tính image
                     type: email === currentUserRef.current ? 'sender' : 'others'
-                };
+                });
             } else {
-                return {
+                historyMessages.unshift({
                     user: email,
                     message: content,  // Nếu không chứa "base64", trả về thuộc tính message
                     type: email === currentUserRef.current ? 'sender' : 'others'
-                };
+                });
             }
         });
 
@@ -184,13 +218,8 @@ const ChatApp = () => {
             <ToastContainer />
             <h2>TYANICHAT</h2>
             <hr />
-            {/* {!connection
-                ? <Lobby joinRoom={joinRoom} />
-                : <Chat messages={messages} sendMessage={sendMessage} sendImage={sendImage} setMessages={setMessages}
-                    token={token} handleUserClick={handleUserClick}/>
-            } */}
             <Chat messages={messages} sendMessage={sendMessage} sendImage={sendImage} setMessages={setMessages}
-                joinRoom={joinRoom} setCurrentUser={(user) => currentUserRef.current = user} />
+                joinRoom={joinRoom} chatContainerRef={chatContainerRef} setCurrentUser={(user) => currentUserRef.current = user} />
 
         </div>
     )

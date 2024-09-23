@@ -1,22 +1,20 @@
-import React, { useEffect, useRef } from 'react'
-// useRef là 1 hook để lưu trữ và truy cập trực tiếp các phần tử DOM mà không cần re-render cả page
+import React, { useEffect, useRef, useState } from 'react';
 
-const MessageContainer = ({ messages }) => {
-    const chatContainerRef = useRef(null);
+const MessageContainer = ({ messages, chatContainerRef }) => {
 
     const scrollToBottom = () => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-            // đặt `scrolllTop = scrollHeight` để cuộn phần tử xuống cuối
         }
     };
 
     useEffect(() => {
-        if (chatContainerRef.current) {
-            scrollToBottom(); // Mỗi khi messages thay đổi, cuộn xuống cuối
+        const chatContainer = chatContainerRef.current;
+        // Only scroll to bottom if user is not scrolling upwards
+        if (chatContainer) {
+            scrollToBottom();
         }
     }, [messages]);
-
 
     return (
         <div
@@ -35,7 +33,7 @@ const MessageContainer = ({ messages }) => {
                                 src={m.image}
                                 alt="Sent Image"
                                 className="message-image"
-                                onLoad={scrollToBottom}     // Cuộn sau khi ảnh được tải xong
+                                onLoad={() => scrollToBottom()} // Scroll only when not scrolling up
                             />
                         </div>
                     )}
@@ -44,7 +42,7 @@ const MessageContainer = ({ messages }) => {
                 </div>
             )}
         </div>
-    )
-}
+    );
+};
 
 export default MessageContainer;

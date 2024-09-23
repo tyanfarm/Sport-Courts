@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { localhost } from '../../services/server';
 import SendMessageForm from './SendMessageForm'
 
-const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom, setCurrentUser }) => {
+const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom, setCurrentUser, chatContainerRef }) => {
     const [defaultListUsers, setDefaultListUsers] = useState([]);
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -167,7 +167,7 @@ const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom, setCurr
             </div>
 
             <div className='chat'>
-                <MessageContainer messages={messages} />
+                <MessageContainer messages={messages} chatContainerRef={chatContainerRef} />
                 <SendMessageForm sendMessage={sendMessage} sendImage={sendImage} />
             </div>
         </div>
