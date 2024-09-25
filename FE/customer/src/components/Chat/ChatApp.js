@@ -7,7 +7,7 @@ import { localhost } from '../../services/server';
 import axios from 'axios';
 
 // useState không cập nhật giá trị ngay lập tức mà sau khi render component
-// useRep - thay đổi ngay lập tức, không re-render
+// useRef - thay đổi ngay lập tức, không re-render
 const ChatApp = () => {
     const [connection, setConnection] = useState();
     const [messages, setMessages] = useState([]);
@@ -18,6 +18,12 @@ const ChatApp = () => {
     const [pageNumber, setPageNumber] = useState(1); // Quản lý số trang để tải thêm dữ liệu
     const [hasMoreMessages, setHasMoreMessages] = useState(true); // Kiểm soát xem có còn tin nhắn để tải không
 
+    const [isLoading, setIsLoading] = useState(false); // Add loading state
+    const [isMessageSent, setIsMessageSent] = useState(true);
+
+    useEffect(() => {
+        console.log("messages updated:", messages);
+    }, [messages]);
 
     useEffect(() => {
         // Lắng nghe sự kiện cuộn
@@ -36,12 +42,18 @@ const ChatApp = () => {
     // Phát hiện cuộn lên đầu để tải thêm lịch sử
     const handleScroll = async () => {
         if (chatContainerRef.current.scrollTop === 0 && hasMoreMessages) {
+            setIsLoading(true); // Set loading state to true when the request starts
+
             const newPage = pageNumber + 1;
             const additionalMessages = await fetchAndMapChatHistory(currentRoomRef.current, currentUserRef, newPage);
             if (additionalMessages.length > 0) {
                 setMessages(prevMessages => [...additionalMessages, ...prevMessages]);
                 setPageNumber(newPage); // Tăng số trang lên
+
+                setIsLoading(false);
+                setIsMessageSent(false);
             } else {
+                setIsLoading(false);
                 setHasMoreMessages(false); // Hết tin nhắn
             }
         }
@@ -49,33 +61,35 @@ const ChatApp = () => {
 
     const joinRoom = async (user, room) => {
         try {
-            console.log(currentRoomRef);
-            console.log(room);
-
-            // Nếu đã có kết nối, chỉ cần gọi JoinRoom
+            // Nếu đã có kết nối, hủy đăng ký sự kiện trước khi tạo kết nối mới
             if (connection) {
-                // Kiểm tra xem có phải room khác không
-                if (currentRoomRef.current !== room) {
-                    // Reset messages
-                    setMessages([]);
-
-                    // Cập nhật messages từ chatHistory một lần
-                    const historyMessages = await fetchAndMapChatHistory(room, currentUserRef);
-
-                    // Cập nhật state với lịch sử chat
-                    setMessages(historyMessages);
-                    currentRoomRef.current = room;
-                }
-
-                await connection.invoke("JoinRoom", { user, room });
-                return;
+                connection.off("ReceiveMessageJoinRoom");
+                connection.off("ReceiveMessageForSender");
+                connection.off("ReceiveMessageForOthers");
+                connection.off("ReceiveImageForSender");
+                connection.off("ReceiveImageForOthers");
             }
+
+            // Reset messages
+            setMessages([]);
+
+            setPageNumber(1);
+            setIsMessageSent(true);
+            setIsLoading(true); // Set loading state to true when the request starts
+            setHasMoreMessages(true);  // Reset trạng thái hasMoreMessages về true khi tạo kết nối mới
 
             // Cập nhật messages từ chatHistory một lần
             const historyMessages = await fetchAndMapChatHistory(room, currentUserRef);
 
-            // Cập nhật state với lịch sử chat
+            console.log('Messages: ', messages)
+            console.log('History msg: ', historyMessages)
+
+            // Nếu có tin nhắn, cập nhật state; nếu không, giữ trống
             setMessages(historyMessages);
+
+
+            setIsLoading(false);
+            setIsMessageSent(true);
 
             currentRoomRef.current = room;
 
@@ -89,12 +103,14 @@ const ChatApp = () => {
             newConnection.on("ReceiveMessageJoinRoom", (user, message) => {
                 console.log('message receive (join): ', message);
                 setMessages(messages => [...messages, { user, message, type: 'join' }]);
+
             });
 
             // Handler xử lí event `ReceiveMessageFromSender` từ server
             newConnection.on("ReceiveMessageForSender", (user, message) => {
                 console.log('message receive (sender): ', message);
                 setMessages(messages => [...messages, { user, message, type: 'sender' }]);
+
             });
 
             // Handler xử lí event `ReceiveMessageFromOthers` từ server
@@ -103,10 +119,12 @@ const ChatApp = () => {
                     // Đây là message của chính sender
                     console.log('message receive (sender): ', message);
                     setMessages(messages => [...messages, { user, message, type: 'sender' }]);
+
                 }
                 else {
                     console.log('message receive (others): ', message);
                     setMessages(messages => [...messages, { user, message, type: 'others' }]);
+
                 }
             });
 
@@ -118,9 +136,11 @@ const ChatApp = () => {
             newConnection.on("ReceiveImageForOthers", (user, base64Image) => {
                 if (user === currentUserRef.current) {
                     setMessages(messages => [...messages, { user, image: base64Image, type: 'sender' }]);
+
                 }
                 else {
                     setMessages(messages => [...messages, { user, image: base64Image, type: 'others' }]);
+
                 }
             });
 
@@ -188,6 +208,8 @@ const ChatApp = () => {
         try {
             // Gọi phương thức `SendMessage của ChatHub` từ server
             await connection.invoke("SendMessage", message);
+            setIsMessageSent(true);
+            console.log(`${isMessageSent} --- slskdkp`);
         }
         catch (e) {
             console.log(e);
@@ -198,6 +220,7 @@ const ChatApp = () => {
         if (file.size > 1024 * 1024)     // 1MB 
         {
             toast.warn("File size exceeds 1MB");
+            setIsMessageSent(true);
             return;
         }
 
@@ -219,7 +242,7 @@ const ChatApp = () => {
             <h2>TYANICHAT</h2>
             <hr />
             <Chat messages={messages} sendMessage={sendMessage} sendImage={sendImage} setMessages={setMessages}
-                joinRoom={joinRoom} chatContainerRef={chatContainerRef} setCurrentUser={(user) => currentUserRef.current = user} />
+                joinRoom={joinRoom} chatContainerRef={chatContainerRef} isMessageSent={isMessageSent} isLoading={isLoading} setCurrentUser={(user) => currentUserRef.current = user} />
 
         </div>
     )

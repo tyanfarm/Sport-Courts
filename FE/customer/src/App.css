@@ -1469,3 +1469,26 @@ address {
   height: auto;
   border-radius: 5px;
 }
+
+/* LOADING MESSAGE */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.loading-spinner {
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #4f46e5; /* Optional: Customize color */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+      transform: rotate(360deg);
+  }
+}

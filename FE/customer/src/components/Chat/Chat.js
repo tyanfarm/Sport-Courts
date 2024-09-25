@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { localhost } from '../../services/server';
 import SendMessageForm from './SendMessageForm'
 
-const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom, setCurrentUser, chatContainerRef }) => {
+const Chat = ({ messages, sendMessage, sendImage, joinRoom, setCurrentUser, chatContainerRef, isMessageSent, isLoading }) => {
     const [defaultListUsers, setDefaultListUsers] = useState([]);
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -127,7 +127,7 @@ const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom, setCurr
             // Tham gia vào room của conversation
             joinRoom(currentUserEmail, conversation.conversationId);
             setCurrentUser(currentUserEmail);
-            
+
             setListUsers(defaultListUsers);
         }
     }
@@ -167,7 +167,7 @@ const Chat = ({ messages, sendMessage, sendImage, setMessages, joinRoom, setCurr
             </div>
 
             <div className='chat'>
-                <MessageContainer messages={messages} chatContainerRef={chatContainerRef} />
+                <MessageContainer messages={messages} chatContainerRef={chatContainerRef} isMessageSent={isMessageSent} isLoading={isLoading} />
                 <SendMessageForm sendMessage={sendMessage} sendImage={sendImage} />
             </div>
         </div>
