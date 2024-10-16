@@ -1,6 +1,6 @@
 using BE.Models;
 
-namespace BE.Repositories;
+namespace BE.Contracts.Repositories;
 
 public interface IOrderRepository {
     Task<List<Order>> GetAllOrders();

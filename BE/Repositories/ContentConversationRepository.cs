@@ -1,4 +1,5 @@
 using BE.Models;
+using BE.Contracts.Repositories;
 using MongoDB.Driver;
 
 namespace BE.Repositories;

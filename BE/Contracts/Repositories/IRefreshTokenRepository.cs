@@ -1,6 +1,6 @@
 using BE.Models;
 
-namespace BE.Repositories;
+namespace BE.Contracts.Repositories;
 
 public interface IRefreshTokenRepository {
     Task<bool> Create(RefreshToken token);

@@ -1,8 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using BE.DTOs;
 using BE.Models;
-using BE.Repositories;
-using BE.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +9,8 @@ using BE.Helper;
 using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using BE.Contracts.Repositories;
+using BE.Contracts.Services;
 
 namespace BE.Controllers;
 

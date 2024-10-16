@@ -1,10 +1,10 @@
 using BE.Models;
-using BE.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using FirebaseAdmin.Messaging;
 using BE.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
+using BE.Contracts.Repositories;
 
 namespace BE.Controllers;
 

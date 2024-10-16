@@ -1,6 +1,6 @@
 using BE.Models;
 
-namespace BE.Repositories;
+namespace BE.Contracts.Repositories;
 
 public interface IContentConversationRepository {
     Task<List<ContentConversation>> GetAllContents();

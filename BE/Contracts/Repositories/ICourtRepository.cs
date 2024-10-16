@@ -2,7 +2,7 @@ using BE.DTOs;
 using BE.Models;
 using MongoDB.Bson;
 
-namespace BE.Repositories;
+namespace BE.Contracts.Repositories;
 
 public interface ICourtRepository {
     Task<List<Court>> GetAllCourts();

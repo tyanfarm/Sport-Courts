@@ -1,5 +1,5 @@
 using BE.Models;
-using Microsoft.AspNetCore.Identity;
+using BE.Contracts.Repositories;
 using MongoDB.Driver;
 
 namespace BE.Repositories;

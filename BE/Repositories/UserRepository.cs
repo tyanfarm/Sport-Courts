@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using BE.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using BE.Contracts.Repositories;
 using MongoDB.Driver;
 using BE.Helper;
 

@@ -1,9 +1,8 @@
+using BE.Contracts.Repositories;
+using BE.Contracts.Services;
 using BE.Models;
-using BE.Repositories;
-using BE.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace BE.Controllers;
 

@@ -1,6 +1,6 @@
 using BE.Models;
 
-namespace BE.Repositories;
+namespace BE.Contracts.Repositories;
 
 public interface IFirebaseTokenRepository {
     Task<List<FirebaseToken>> GetAllTokens();

@@ -1,4 +1,5 @@
 using System.Net;
+using BE.Contracts.Services;
 using System.Net.Mail;
 using BE.Private;
 

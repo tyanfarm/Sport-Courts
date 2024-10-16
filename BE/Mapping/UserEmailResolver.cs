@@ -1,7 +1,7 @@
 using AutoMapper;
+using BE.Contracts.Repositories;
 using BE.DTOs;
 using BE.Models;
-using BE.Repositories;
 
 namespace BE.Mapping;
 

@@ -1,4 +1,6 @@
 using System.Text;
+using BE.Contracts.Repositories;
+using BE.Contracts.Services;
 using BE.Models;
 using BE.Private;
 using BE.Repositories;
@@ -11,7 +13,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
-using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 

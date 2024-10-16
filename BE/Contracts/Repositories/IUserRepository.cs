@@ -2,7 +2,7 @@ using BE.DTOs;
 using BE.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace BE.Repositories;
+namespace BE.Contracts.Repositories;
 
 public interface IUserRepository {
     Task<ApplicationUser> GetUser(string token);

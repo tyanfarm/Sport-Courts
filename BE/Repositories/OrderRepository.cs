@@ -1,6 +1,7 @@
 using BE.Models;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
+using BE.Contracts.Repositories;
 using MongoDB.Driver;
 
 namespace BE.Repositories;

@@ -1,5 +1,5 @@
+using BE.Contracts.Repositories;
 using BE.Models;
-using BE.Repositories;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BE.Services.Hubs;

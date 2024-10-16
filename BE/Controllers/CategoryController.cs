@@ -1,12 +1,8 @@
+using BE.Contracts.Repositories;
+using BE.Contracts.Services;
 using BE.Models;
-using BE.Private;
-using BE.Repositories;
-using BE.Services;
-using Firebase.Auth;
-using Firebase.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 
 namespace BE.Controllers;
 

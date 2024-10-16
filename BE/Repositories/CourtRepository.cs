@@ -2,6 +2,7 @@ using BE.DTOs;
 using BE.Models;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
+using BE.Contracts.Repositories;
 using MongoDB.Driver;
 
 namespace BE.Repositories;
