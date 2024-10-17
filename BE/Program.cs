@@ -13,12 +13,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Save message of chat service
 builder.Services.AddSingleton<IDictionary<string, UserConnection>>
 (opts => new Dictionary<string, UserConnection>());
+
+// MongoClient
+builder.Services.AddSingleton<MongoDbConnectionPool>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
@@ -47,6 +51,10 @@ builder.Services.AddScoped<IFirebaseTokenRepository, FirebaseTokenRepository>();
 builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 builder.Services.AddScoped<IContentConversationRepository, ContentConversationRepository>();
 
+// Logging Services
+builder.Services.AddSingleton<IUserLoggingService, UserLogger>();
+builder.Services.AddSingleton<IDatabaseLoggingService, DatabaseLogger>();
+
 // Identity Services
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddMongoDbStores<ApplicationUser, ApplicationRole, ObjectId>(
@@ -62,7 +70,7 @@ FirebaseApp.Create(new AppOptions()
 
 // Key for checking JWT
 var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
-var tokenValidationParameter = new TokenValidationParameters() 
+var tokenValidationParameter = new TokenValidationParameters()
 {
     ValidateIssuerSigningKey = true,
     IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -70,7 +78,7 @@ var tokenValidationParameter = new TokenValidationParameters()
     ValidateAudience = false,   // for dev
 
     ClockSkew = TimeSpan.Zero,
-        
+
     // Kiểm tra token có ngày hết hạn không
     RequireExpirationTime = true,      // for dev - need to update when refresh token is added
 
@@ -82,7 +90,7 @@ builder.Services.AddSingleton(tokenValidationParameter);
 
 // Authentication
 builder.Services
-.AddAuthentication(options => 
+.AddAuthentication(options =>
 {
     // chỉ định rằng JWT Bearer sẽ được sử dụng cho xác thực mặc định.
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -90,7 +98,7 @@ builder.Services
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 // Middleware xác thực JWT
-.AddJwtBearer(jwt => 
+.AddJwtBearer(jwt =>
 {
     // token sẽ được lưu trong HttpContext sau khi xác thực
     jwt.SaveToken = true;
@@ -111,14 +119,15 @@ builder.Services
 builder.Services.AddSignalR(options =>
 {
     options.MaximumReceiveMessageSize = 1024 * 1024; // 1MB
-});          
+});
 
 // Config CORS
 // cho phép truy cập từ mọi nguồn gốc
-builder.Services.AddCors(options =>  
+builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
-        builder => {
+        builder =>
+        {
             builder.WithOrigins("http://localhost:3000", "http://localhost:3001", "http://113.160.253.36")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
@@ -135,9 +144,11 @@ builder.Services.AddEndpointsApiExplorer();
 
 // Cấu hình Swagger để hỗ trợ JWT
 // Cho phép người dùng nhập token JWT vào Swagger UI và thực hiện các yêu cầu đến các endpoint bảo mật.
-builder.Services.AddSwaggerGen(options => {
+builder.Services.AddSwaggerGen(options =>
+{
     options.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme,
-        securityScheme: new OpenApiSecurityScheme {
+        securityScheme: new OpenApiSecurityScheme
+        {
             // Tên của header HTTP mà token sẽ được gửi trong đó.
             Name = "Authorization",
             Description = "Enter the Bearer Authorization : `Bearer Generated-JWT-Token`",
@@ -149,8 +160,8 @@ builder.Services.AddSwaggerGen(options => {
             Type = SecuritySchemeType.ApiKey,
             Scheme = "Bearer"
         });
-    
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement 
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme {
@@ -158,7 +169,7 @@ builder.Services.AddSwaggerGen(options => {
                     Type = ReferenceType.SecurityScheme,
                     Id = JwtBearerDefaults.AuthenticationScheme
                 }
-            }, 
+            },
             new string[] {}
         }
     });

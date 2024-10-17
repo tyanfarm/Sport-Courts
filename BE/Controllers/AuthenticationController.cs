@@ -11,6 +11,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using BE.Contracts.Repositories;
 using BE.Contracts.Services;
+using Serilog;
 
 namespace BE.Controllers;
 
@@ -23,15 +24,18 @@ public class AuthenticationController : ControllerBase
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IEmailSender _emailSender;
     private readonly TokenValidationParameters _tokenValidationParameters;
+    private readonly IUserLoggingService _logger;
 
     public AuthenticationController(
         IUserRepository userRepository,
         IConfiguration configuration,
         IRefreshTokenRepository refreshTokenRepository,
         IEmailSender emailSender,
+        IUserLoggingService logger,
         TokenValidationParameters tokenValidationParameters
     )
     {
+        _logger = logger;
         _userRepository = userRepository;
         _configuration = configuration;
         _refreshTokenRepository = refreshTokenRepository;
@@ -356,6 +360,8 @@ public class AuthenticationController : ControllerBase
 
             // Create access token & refresh token
             var jwtToken = await generateJwtToken(user);
+
+            _logger.LogInfo($"User Login => Id: {user.Id}, Email: {user.Email}");
 
             return Ok(jwtToken);
         }
