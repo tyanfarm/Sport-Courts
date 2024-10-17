@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using BE.Contracts.Repositories;
 using MongoDB.Driver;
+using BE.Services;
 
 namespace BE.Repositories;
 
@@ -12,11 +13,9 @@ public class CourtRepository : ICourtRepository
     private readonly IMongoCollection<Court> _courtCollection;
     private readonly IMongoCollection<Category> _categoryCollection;
 
-    public CourtRepository(IConfiguration configuration) {
-        var mongoClient = new MongoClient(configuration.GetConnectionString("DefaultConnection"));
-        // Get Database
-        var mongoDb = mongoClient.GetDatabase("SportCourts");
-        // Get Collection
+    public CourtRepository(MongoDbConnectionPool mongoDbConnectionPool) {
+        var mongoDb = mongoDbConnectionPool.GetDatabase("SportCourts");
+
         _courtCollection = mongoDb.GetCollection<Court>("Courts");
         _categoryCollection = mongoDb.GetCollection<Category>("Categories");
     }

@@ -9,14 +9,6 @@ public class CategoryRepository : ICategoryRepository
 {
     private readonly IMongoCollection<Category> _categoryCollection;
 
-    // public CategoryRepository(IConfiguration configuration) {
-    //     var mongoClient = new MongoClient(configuration.GetConnectionString("DefaultConnection"));
-    //     // Get Database
-    //     var mongoDb = mongoClient.GetDatabase("SportCourts");
-    //     // Get Collection
-    //     _categoryCollection = mongoDb.GetCollection<Category>("Categories");
-    // }
-
     public CategoryRepository(MongoDbConnectionPool mongoDbConnectionPool)
     {
         var mongoDb = mongoDbConnectionPool.GetDatabase("SportCourts");

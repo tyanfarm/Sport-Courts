@@ -1,6 +1,7 @@
 using BE.Models;
 using BE.Contracts.Repositories;
 using MongoDB.Driver;
+using BE.Services;
 
 namespace BE.Repositories;
 
@@ -8,11 +9,9 @@ public class RefreshTokenRepository : IRefreshTokenRepository
 {
     private readonly IMongoCollection<RefreshToken> _refreshTokenCollection;
 
-    public RefreshTokenRepository(IConfiguration configuration) {
-        var mongoClient = new MongoClient(configuration.GetConnectionString("DefaultConnection"));
-        // Get Database
-        var mongoDb = mongoClient.GetDatabase("SportCourts");
-        // Get Collection
+    public RefreshTokenRepository(MongoDbConnectionPool mongoDbConnectionPool) {
+        var mongoDb = mongoDbConnectionPool.GetDatabase("SportCourts");
+
         _refreshTokenCollection = mongoDb.GetCollection<RefreshToken>("RefreshTokens");
     }
 

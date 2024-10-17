@@ -1,6 +1,7 @@
 using BE.Models;
 using BE.Contracts.Repositories;
 using MongoDB.Driver;
+using BE.Services;
 
 namespace BE.Repositories;
 
@@ -8,11 +9,9 @@ public class ContentConversationRepository : IContentConversationRepository
 {
     private readonly IMongoCollection<ContentConversation> _contentCollection;
 
-    public ContentConversationRepository(IConfiguration configuration) {
-        var mongoClient = new MongoClient(configuration.GetConnectionString("DefaultConnection"));
-        // Get Database
-        var mongoDb = mongoClient.GetDatabase("SportCourts");
-        // Get Collection
+    public ContentConversationRepository(MongoDbConnectionPool mongoDbConnectionPool) {
+        var mongoDb = mongoDbConnectionPool.GetDatabase("SportCourts");
+
         _contentCollection = mongoDb.GetCollection<ContentConversation>("ContentConversations");
     }
 

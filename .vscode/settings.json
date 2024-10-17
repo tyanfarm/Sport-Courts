@@ -1,5 +1,0 @@
-{
-    "csharp.showOmnisharpLogOnError": true,
-    "omnisharp.autoStart": true,
-    "dotnet.server.useOmnisharp": true
-}

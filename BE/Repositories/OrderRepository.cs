@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using BE.Contracts.Repositories;
 using MongoDB.Driver;
+using BE.Services;
 
 namespace BE.Repositories;
 
@@ -12,13 +13,11 @@ public class OrderRepository : IOrderRepository
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IMongoCollection<TransactStatus> _transactStatusCollection;
 
-    public OrderRepository(IConfiguration configuration, UserManager<ApplicationUser> userManager) {
+    public OrderRepository(MongoDbConnectionPool mongoDbConnectionPool, UserManager<ApplicationUser> userManager) {
         _userManager = userManager;
         
-        var mongoClient = new MongoClient(configuration.GetConnectionString("DefaultConnection"));
-        // Get Database
-        var mongoDb = mongoClient.GetDatabase("SportCourts");
-        // Get Collection
+        var mongoDb = mongoDbConnectionPool.GetDatabase("SportCourts");
+
         _orderCollection = mongoDb.GetCollection<Order>("Orders");
         _transactStatusCollection = mongoDb.GetCollection<TransactStatus>("TransactStatuses");
     }

@@ -1,6 +1,7 @@
 using BE.Models;
 using BE.Contracts.Repositories;
 using MongoDB.Driver;
+using BE.Services;
 
 namespace BE.Repositories;
 
@@ -10,11 +11,9 @@ public class OrderdetailsRepository : IOrderdetailsRepository
     private readonly IMongoCollection<Order> _orderCollection;
     private readonly IMongoCollection<Court> _courtCollection;
 
-    public OrderdetailsRepository(IConfiguration configuration) {
-        var mongoClient = new MongoClient(configuration.GetConnectionString("DefaultConnection"));
-        // Get Database
-        var mongoDb = mongoClient.GetDatabase("SportCourts");
-        // Get Collection
+    public OrderdetailsRepository(MongoDbConnectionPool mongoDbConnectionPool) {
+        var mongoDb = mongoDbConnectionPool.GetDatabase("SportCourts");
+
         _orderdetailsCollection = mongoDb.GetCollection<Orderdetails>("OrderDetails");
         _orderCollection = mongoDb.GetCollection<Order>("Orders");
         _courtCollection = mongoDb.GetCollection<Court>("Courts");

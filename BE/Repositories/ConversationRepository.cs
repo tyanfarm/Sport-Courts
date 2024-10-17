@@ -1,17 +1,16 @@
 using BE.Models;
 using BE.Contracts.Repositories;
 using MongoDB.Driver;
+using BE.Services;
 
 namespace BE.Repositories;
 
 public class ConversationRepository : IConversationRepository {
     private readonly IMongoCollection<Conversation> _conversationCollection;
 
-    public ConversationRepository(IConfiguration configuration) {
-        var mongoClient = new MongoClient(configuration.GetConnectionString("DefaultConnection"));
-        // Get Database
-        var mongoDb = mongoClient.GetDatabase("SportCourts");
-        // Get Collection
+    public ConversationRepository(MongoDbConnectionPool mongoDbConnectionPool) {
+        var mongoDb = mongoDbConnectionPool.GetDatabase("SportCourts");
+
         _conversationCollection = mongoDb.GetCollection<Conversation>("Conversations");
     }
 

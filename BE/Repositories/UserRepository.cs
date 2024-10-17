@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using BE.Contracts.Repositories;
 using MongoDB.Driver;
 using BE.Helper;
+using BE.Services;
 
 namespace BE.Repositories;
 
@@ -18,16 +19,14 @@ public class UserRepository : IUserRepository {
         UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager,
         SignInManager<ApplicationUser> signInManager,
-        IConfiguration configuration
+        MongoDbConnectionPool mongoDbConnectionPool
     ) {
         _userManager = userManager;
         _roleManager = roleManager;
         _signInManager = signInManager;
 
-        var mongoClient = new MongoClient(configuration.GetConnectionString("DefaultConnection"));
-        // Get Database
-        var mongoDb = mongoClient.GetDatabase("SportCourts");
-        // Get Collection
+        var mongoDb = mongoDbConnectionPool.GetDatabase("SportCourts");
+
         _userCollection = mongoDb.GetCollection<ApplicationUser>("Users");
     }
 

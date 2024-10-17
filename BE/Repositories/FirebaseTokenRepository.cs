@@ -1,19 +1,16 @@
 using BE.Models;
 using BE.Contracts.Repositories;
 using MongoDB.Driver;
+using BE.Services;
 
 namespace BE.Repositories;
 
 public class FirebaseTokenRepository : IFirebaseTokenRepository {
     private readonly IMongoCollection<FirebaseToken> _firebaseCollection;
 
-    public FirebaseTokenRepository(
-        IConfiguration configuration
-    ) {
-        var mongoClient = new MongoClient(configuration.GetConnectionString("DefaultConnection"));
-        // Get Database
-        var mongoDb = mongoClient.GetDatabase("SportCourts");
-        // Get Collection
+    public FirebaseTokenRepository(MongoDbConnectionPool mongoDbConnectionPool) {
+        var mongoDb = mongoDbConnectionPool.GetDatabase("SportCourts");
+
         _firebaseCollection = mongoDb.GetCollection<FirebaseToken>("FirebaseTokens");
     }
 
